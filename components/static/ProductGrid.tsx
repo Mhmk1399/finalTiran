@@ -8,12 +8,10 @@ import Link from "next/link";
 export default function ProductGrid({ categoryFilter }: ProductGridProps) {
   const [products, setProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
   console.log(allProducts);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true);
       try {
         const url = "/api/shop"; // Your products API endpoint
 
@@ -60,27 +58,11 @@ export default function ProductGrid({ categoryFilter }: ProductGridProps) {
         console.log("Error fetching products:", error);
         setProducts([]);
         setAllProducts([]);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchProducts();
   }, [categoryFilter]); // Re-fetch when filter changes
-
-  if (loading) {
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-12">
-        {[...Array(8)].map((_, index) => (
-          <div key={index} className="animate-pulse">
-            <div className="bg-gray-200 aspect-square rounded-lg mb-4"></div>
-            <div className="bg-gray-200 h-4 rounded mb-2"></div>
-            <div className="bg-gray-200 h-4 rounded w-3/4"></div>
-          </div>
-        ))}
-      </div>
-    );
-  }
 
   return (
     <CartProvider>

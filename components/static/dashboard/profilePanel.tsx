@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { RiUser3Line, RiCheckLine, RiCloseLine } from "react-icons/ri";
+import { RiUser3Line, RiMapPinLine, RiPhoneLine } from "react-icons/ri";
 import { UserProfile } from "@/types/type";
 
 interface ProfilePanelProps {
@@ -8,283 +7,308 @@ interface ProfilePanelProps {
 }
 
 const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
+  if (!userProfile) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-gray-500">در حال بارگذاری اطلاعات...</p>
+      </div>
+    );
+  }
 
-  const [formData, setFormData] = useState({
-    firstName: userProfile?.user?.first_name || "",
-    lastName: userProfile?.user?.last_name || "",
-    email: userProfile?.user?.email || "",
-    job: userProfile?.user?.job || "",
-    nationalID: userProfile?.nationalID || "",
-    birthday: userProfile?.birthday || "",
-    sex: userProfile?.user?.sex?.key || 1,
-  });
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setSuccess(false);
-
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("/api/user/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          job: formData.job,
-          nationalID: formData.nationalID,
-          birthday: formData.birthday,
-          sex: formData.sex,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setSuccess(true);
-        setIsEditing(false);
-        // In a real app, you would update the userProfile state here
-      } else {
-        setError(data.message || "خطا در بروزرسانی اطلاعات");
-      }
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      setError("خطا در ارتباط با سرور");
-    } finally {
-      setLoading(false);
+  const getSexDisplay = (sexKey: number) => {
+    switch (sexKey) {
+      case 1:
+        return "مرد";
+      case 2:
+        return "زن";
+      default:
+        return "تعیین نشده";
     }
-
-    // For demo purposes, simulate success
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-      setIsEditing(false);
-    }, 1000);
   };
+
+  const selectedAddress = userProfile.addresses?.find((addr) => addr.selected);
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center">
-          <RiUser3Line className="w-6 h-6 ml-2 text-gray-700" />
-          <h2 className="text-xl font-semibold text-gray-800">اطلاعات شخصی</h2>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center mb-6">
+        <RiUser3Line className="w-6 h-6 ml-2 text-gray-700" />
+        <h2 className="text-xl font-semibold text-gray-800">اطلاعات شخصی</h2>
+      </div>
+
+      {/* Personal Information */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-lg p-6 shadow-sm border"
+      >
+        <h3 className="text-lg font-medium text-gray-800 mb-4">
+          اطلاعات کاربری
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              شماره تلفن
+            </label>
+            <p className="p-3 bg-gray-50 rounded-md">
+              {userProfile.user?.username || "تعیین نشده"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              نام
+            </label>
+            <p className="p-3 bg-gray-50 rounded-md">
+              {userProfile.user?.first_name || "تعیین نشده"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              نام خانوادگی
+            </label>
+            <p className="p-3 bg-gray-50 rounded-md">
+              {userProfile.user?.last_name || "تعیین نشده"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              ایمیل
+            </label>
+            <p className="p-3 bg-gray-50 rounded-md">
+              {userProfile.user?.email || "تعیین نشده"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              شغل
+            </label>
+            <p className="p-3 bg-gray-50 rounded-md">
+              {userProfile.user?.job || "تعیین نشده"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              جنسیت
+            </label>
+            <p className="p-3 bg-gray-50 rounded-md">
+              {getSexDisplay(userProfile.user?.sex?.key)}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              کد ملی
+            </label>
+            <p className="p-3 bg-gray-50 rounded-md">
+              {userProfile.nationalID || "تعیین نشده"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              تاریخ تولد
+            </label>
+            <p className="p-3 bg-gray-50 rounded-md">
+              {userProfile.birthday || "تعیین نشده"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              ملیت
+            </label>
+            <p className="p-3 bg-gray-50 rounded-md">
+              {userProfile.national?.value || "تعیین نشده"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              نوع شخص
+            </label>
+            <p className="p-3 bg-gray-50 rounded-md">
+              {userProfile.type_legal?.value || "تعیین نشده"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              وضعیت احراز هویت
+            </label>
+            <p
+              className={`p-3 rounded-md ${
+                userProfile.identity_verification?.key === 1
+                  ? "bg-green-50 text-green-700"
+                  : "bg-red-50 text-red-700"
+              }`}
+            >
+              {userProfile.identity_verification?.value || "تعیین نشده"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              نوع کاربر
+            </label>
+            <p className="p-3 bg-gray-50 rounded-md">
+              {userProfile.type?.type_name || "تعیین نشده"}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Selected Address */}
+      {selectedAddress && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white rounded-lg p-6 shadow-sm border"
+        >
+          <div className="flex items-center mb-4">
+            <RiMapPinLine className="w-5 h-5 ml-2 text-gray-700" />
+            <h3 className="text-lg font-medium text-gray-800">
+              آدرس انتخاب شده
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                نام گیرنده
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md flex items-center">
+                <RiUser3Line className="w-4 h-4 ml-2 text-gray-500" />
+                {selectedAddress.receiver_name}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                شماره تماس
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md flex items-center">
+                <RiPhoneLine className="w-4 h-4 ml-2 text-gray-500" />
+                {selectedAddress.receiver_number}
+              </p>
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                آدرس کامل
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {selectedAddress.province?.name} - {selectedAddress.city?.name}
+                <br />
+                {selectedAddress.adress}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                کد پستی
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {selectedAddress.zipcode}
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Address Summary */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-white rounded-lg p-6 shadow-sm border"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            <RiMapPinLine className="w-5 h-5 ml-2 text-gray-700" />
+            <h3 className="text-lg font-medium text-gray-800">خلاصه آدرس‌ها</h3>
+          </div>
+          <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
+            {userProfile.addresses?.length || 0} آدرس
+          </span>
         </div>
 
-        {!isEditing ? (
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setIsEditing(true)}
-            className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors"
-          >
-            ویرایش اطلاعات
-          </motion.button>
+        {userProfile.addresses && userProfile.addresses.length > 0 ? (
+          <div className="space-y-3 max-h-64 overflow-y-auto">
+            {userProfile.addresses.slice(0, 5).map((address) => (
+              <div
+                key={address.id}
+                className={`p-3 rounded-md border ${
+                  address.selected
+                    ? "border-blue-200 bg-blue-50"
+                    : "border-gray-200 bg-gray-50"
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <p className="font-medium text-sm text-gray-800">
+                      {address.receiver_name}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {address.province?.name} - {address.city?.name}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                      {address.adress}
+                    </p>
+                  </div>
+                  {address.selected && (
+                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">
+                      انتخاب شده
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
+            {userProfile.addresses.length > 5 && (
+              <p className="text-sm text-gray-500 text-center pt-2">
+                و {userProfile.addresses.length - 5} آدرس دیگر...
+              </p>
+            )}
+          </div>
         ) : (
-          <div className="flex gap-2">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setIsEditing(false)}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-            >
-              انصراف
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleSubmit}
-              disabled={loading}
-              className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors disabled:opacity-70"
-            >
-              {loading ? "در حال ذخیره..." : "ذخیره تغییرات"}
-            </motion.button>
-          </div>
+          <p className="text-gray-500 text-center py-4">
+            هیچ آدرسی ثبت نشده است
+          </p>
         )}
-      </div>
+      </motion.div>
 
-      {success && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6 p-4 bg-green-50 text-green-700 rounded-md flex items-center"
-        >
-          <RiCheckLine className="w-5 h-5 ml-2" />
-          اطلاعات شما با موفقیت بروزرسانی شد.
-        </motion.div>
-      )}
+      {/* Profile Completion Status */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-white rounded-lg p-6 shadow-sm border"
+      >
+        <h3 className="text-lg font-medium text-gray-800 mb-4">
+          وضعیت تکمیل پروفایل
+        </h3>
 
-      {error && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6 p-4 bg-red-50 text-red-700 rounded-md flex items-center"
-        >
-          <RiCloseLine className="w-5 h-5 ml-2" />
-          {error}
-        </motion.div>
-      )}
-
-      <div className="bg-white rounded-lg">
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                نام
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-transparent"
-                />
-              ) : (
-                <p className="p-3 bg-gray-50 rounded-md">
-                  {userProfile?.user?.first_name || "تعیین نشده"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                نام خانوادگی
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-transparent"
-                />
-              ) : (
-                <p className="p-3 bg-gray-50 rounded-md">
-                  {userProfile?.user?.last_name || "تعیین نشده"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                ایمیل
-              </label>
-              {isEditing ? (
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-transparent"
-                />
-              ) : (
-                <p className="p-3 bg-gray-50 rounded-md">
-                  {userProfile?.user?.email || "تعیین نشده"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                شغل
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="job"
-                  value={formData.job}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-transparent"
-                />
-              ) : (
-                <p className="p-3 bg-gray-50 rounded-md">
-                  {userProfile?.user?.job || "تعیین نشده"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                کد ملی
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="nationalID"
-                  value={formData.nationalID}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-transparent"
-                />
-              ) : (
-                <p className="p-3 bg-gray-50 rounded-md">
-                  {userProfile?.nationalID || "تعیین نشده"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                تاریخ تولد
-              </label>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="birthday"
-                  value={formData.birthday}
-                  onChange={handleChange}
-                  placeholder="1370/01/01"
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-transparent"
-                />
-              ) : (
-                <p className="p-3 bg-gray-50 rounded-md">
-                  {userProfile?.birthday || "تعیین نشده"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                جنسیت
-              </label>
-              {isEditing ? (
-                <select
-                  name="sex"
-                  value={formData.sex}
-                  onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-400 focus:border-transparent"
-                >
-                  <option value={1}>مرد</option>
-                  <option value={2}>زن</option>
-                </select>
-              ) : (
-                <p className="p-3 bg-gray-50 rounded-md">
-                  {userProfile?.user?.sex?.value || "تعیین نشده"}
-                </p>
-              )}
-            </div>
-          </div>
-        </form>
-      </div>
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-600">
+            پروفایل شما {userProfile.complete ? "تکمیل شده" : "ناقص"} است
+          </span>
+          <span
+            className={`px-3 py-1 rounded-full text-sm font-medium ${
+              userProfile.complete
+                ? "bg-green-100 text-green-800"
+                : "bg-yellow-100 text-yellow-800"
+            }`}
+          >
+            {userProfile.complete ? "تکمیل شده" : "نیاز به تکمیل"}
+          </span>
+        </div>
+      </motion.div>
     </div>
   );
 };

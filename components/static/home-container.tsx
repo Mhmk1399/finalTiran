@@ -81,7 +81,7 @@ const Page = () => {
       {/* DynamicFashionGrid - shows for exactly 5 seconds on first visit */}
       {currentComponent === "grid" && (
         <div
-          className={`fixed inset-0 z-50 transition-opacity duration-300 ease-out ${
+          className={`fixed inset-0 z-50 transition-all duration-300 ease-in-out ${
             showGrid ? "opacity-100" : "opacity-0"
           }`}
         >
@@ -92,7 +92,7 @@ const Page = () => {
       {/* Main content - ONLY ScrollMediaShowcase renders here */}
       {currentComponent === "showcase" && (
         <div
-          className={`relative z-30 transition-all duration-500 ease-out ${
+          className={`relative z-30 transition-all duration-500 ease-in-out ${
             showShowcase
               ? "opacity-100 transform translate-y-0"
               : "opacity-0 transform translate-y-2"
@@ -105,9 +105,6 @@ const Page = () => {
                 ? "opacity-100 transform scale-100"
                 : "opacity-0 transform scale-98"
             }`}
-            style={{
-              transitionDelay: "0ms", // No delay for immediate show
-            }}
           >
             <ScrollMediaShowcase />
           </div>
@@ -163,6 +160,9 @@ const Page = () => {
               subtitle="کشف کنید، تجربه کنید، لذت ببرید"
             />
           </div>
+          {/* <div className="min-h-screen">
+            <VideoShowcase />
+          </div> */}
         </div>
       )}
 

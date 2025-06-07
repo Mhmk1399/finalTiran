@@ -12,7 +12,7 @@ const ScrollMediaShowcase = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  // const [scrollProgress, setScrollProgress] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isScrollLocked, setIsScrollLocked] = useState(false);
@@ -20,10 +20,11 @@ const ScrollMediaShowcase = ({
   const [accumulatedScroll, setAccumulatedScroll] = useState(0);
   const [isInitializing, setIsInitializing] = useState(true);
   const [initialImage] = useState(initialCenterImage || "");
+  console.log(isScrollLocked)
 
   // Total steps needed to show all items once
   const totalSteps = mediaItems.length;
-  const scrollStepSize = 50; // Pixels per step
+  const scrollStepSize = 150; // Pixels per step
 
   useEffect(() => {
     if (initialImage) {
@@ -47,25 +48,25 @@ const ScrollMediaShowcase = ({
   }, []);
 
   // Lock/unlock scroll based on component state
-  useEffect(() => {
-    if (!isMounted) return;
+  // useEffect(() => {
+  //   if (!isMounted) return;
 
-    if (isScrollLocked) {
-      // Prevent scrolling
-      document.body.style.overflow = "hidden";
-      document.documentElement.style.overflow = "hidden";
-    } else {
-      // Allow scrolling
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
-    }
+  //   if (isScrollLocked) {
+  //     // Prevent scrolling
+  //     document.body.style.overflow = "";
+  //     document.documentElement.style.overflow = "";
+  //   } else {
+  //     // Allow scrolling
+  //     document.body.style.overflow = "";
+  //     document.documentElement.style.overflow = "";
+  //   }
 
-    return () => {
-      // Cleanup on unmount
-      document.body.style.overflow = "";
-      document.documentElement.style.overflow = "";
-    };
-  }, [isScrollLocked, isMounted]);
+  //   return () => {
+  //     // Cleanup on unmount
+  //     document.body.style.overflow = "";
+  //     document.documentElement.style.overflow = "";
+  //   };
+  // }, [isScrollLocked, isMounted]);
 
   // Get only videos for center position
   const getCenterVideo = () => {
@@ -114,7 +115,7 @@ const ScrollMediaShowcase = ({
             newAccumulatedScroll / (totalSteps * scrollStepSize),
             1
           );
-          setScrollProgress(progress);
+          // setScrollProgress(progress);
 
           // Calculate which media item should be shown
           const newIndex = Math.floor(progress * totalSteps);
@@ -233,27 +234,6 @@ const ScrollMediaShowcase = ({
       ref={containerRef}
       className="mt-12 relative min-h-screen"
     >
-      {/* Scroll indicator */}
-      {isActive && !hasCompletedCycle && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50"
-        >
-          <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm">
-            Scroll to explore ({currentIndex + 1}/{totalSteps})
-          </div>
-          <div className="w-full bg-white/20 rounded-full h-1 mt-2">
-            <motion.div
-              className="bg-white rounded-full h-1"
-              initial={{ width: "0%" }}
-              animate={{ width: `${scrollProgress * 100}%` }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
-        </motion.div>
-      )}
-
       {/* Sticky container for media showcase */}
       <div className="sticky top-21 md:top-20 h-screen flex items-center justify-center overflow-hidden">
         {/* Background */}
@@ -585,8 +565,8 @@ const ScrollMediaShowcase = ({
                   rotate: isVisible ? -30 : -40,
                 }}
                 transition={{
-                  duration: 1.8,
-                  delay: 0.8,
+                  duration: 0.2,
+                  delay: 0.2,
                   ease: [0.25, 0.46, 0.45, 0.94],
                 }}
                 className="absolute left-35 top-1/2 transform -translate-y-1/2 z-10"
@@ -643,9 +623,9 @@ const ScrollMediaShowcase = ({
                       animate="center"
                       exit="exit"
                       transition={{
-                        duration: 0.1,
+                        duration: 0.2,
+                        delay: 0.2,
                         ease: [0.25, 0.46, 0.45, 0.94],
-                        delay: 0.1,
                       }}
                       className="absolute inset-0"
                     >
@@ -717,8 +697,8 @@ const ScrollMediaShowcase = ({
                   rotate: isVisible ? 30 : 40,
                 }}
                 transition={{
-                  duration: 1.8,
-                  delay: 0.8,
+                  duration: 0.2,
+                  delay: 0.2,
                   ease: [0.25, 0.46, 0.45, 0.94],
                 }}
                 className="absolute right-35 top-1/2 transform -translate-y-1/2 z-10"

@@ -14,7 +14,6 @@ import {
 
 import {
   RiShoppingBag3Line,
-  RiUser3Line,
   RiMenuLine,
   RiCloseLine,
   RiArrowRightSLine,
@@ -258,21 +257,6 @@ const Navbar = () => {
               </Link>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <Link href="/auth">
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: -5 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="p-2 rounded-full hidden md:block hover:bg-gray-100 transition-colors duration-300"
-                >
-                  <RiUser3Line className="h-6 w-6" />
-                </motion.div>
-              </Link>
-            </motion.div>
             <div className="relative group">
               {isLoggedIn ? (
                 <>
@@ -287,7 +271,7 @@ const Navbar = () => {
                   </motion.button>
 
                   {/* Dropdown menu */}
-                  <div className="absolute left-0 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
+                  <div className="absolute left-0 w-48 bg-white rounded-md shadow-lg py-1 z-70 hidden group-hover:block">
                     <Link href="/dashboard">
                       <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -361,9 +345,9 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Categories Row - Desktop */}
+      {/* BreadCrumbs - Desktop */}
       <motion.div
-        className="hidden md:block relative bg-white"
+        className="hidden md:block relative"
         transition={{ duration: 0.3, ease: "easeInOut" }}
       >
         {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -558,19 +542,48 @@ const Navbar = () => {
                 variants={itemVariants}
                 className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200"
               >
-                <Link href="/auth" onClick={() => setIsOpen(!isOpen)}>
-                  <motion.div
-                    whileHover={{
-                      scale: 1.05,
-                      backgroundColor: "rgba(0,0,0,0.05)",
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center px-4 py-3 rounded-lg text-base font-medium text-black"
-                  >
-                    <RiUser3Line className="ml-2 h-5 w-5" />
-                    {/* ورود / ثبت نام */}
-                  </motion.div>
-                </Link>
+                <div className="relative group">
+                  {isLoggedIn ? (
+                    <>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className=" flex md:hidden items-center text-gray-700 hover:text-gray-900"
+                      >
+                        <span className="ml-1 text-sm font-medium">
+                          {userProfile?.user.username}
+                        </span>
+                      </motion.button>
+
+                      {/* Dropdown menu */}
+                      <div className="absolute left-0 w-48 bg-white rounded-md shadow-lg py-1 z-70 hidden group-hover:block">
+                        <Link href="/dashboard">
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md w-full text-right"
+                          >
+                            <RiDashboardLine className="ml-2" />
+                            داشبورد کاربری
+                          </motion.button>
+                        </Link>
+                      </div>
+                    </>
+                  ) : (
+                    <Link href="/auth">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="hidden  md:flex  items-center  text-gray-700 hover:text-gray-900"
+                      >
+                        <RiLoginCircleLine className="ml-1" />
+                        <span className="text-sm font-medium">
+                          ورود / ثبت‌نام
+                        </span>
+                      </motion.button>
+                    </Link>
+                  )}
+                </div>
 
                 <Link href="/cart" onClick={() => setIsOpen(!isOpen)}>
                   <motion.div

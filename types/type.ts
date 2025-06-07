@@ -268,20 +268,46 @@ export interface KeyValuePair {
   key: number;
   value: string | boolean;
 }
-
-export interface UserType {
-  id: number;
-  type_name: string;
-}
-
-export interface UserBasicInfo {
+interface UserBasicInfo {
   id: number;
   username: string;
   first_name: string | null;
   last_name: string | null;
   email: string | null;
   job: string;
-  sex: KeyValuePair;
+  sex: {
+    key: number;
+    value: boolean | string;
+  };
+}
+
+export interface UserType {
+  id: number;
+  type_name: string;
+}
+interface Province {
+  id: number;
+  name: string;
+}
+
+interface City {
+  id: number;
+  name: string;
+  province_id: number;
+}
+
+interface Address {
+  id: number;
+  address_type: number;
+  zipcode: string;
+  adress: string; // Note: keeping the original spelling from API
+  province: Province;
+  city: City;
+  receiver_name: string;
+  receiver_number: string;
+  latitude: string | null;
+  longitude: string | null;
+  selected: boolean;
 }
 
 export interface UserProfile {
@@ -296,6 +322,7 @@ export interface UserProfile {
   birthday: string | null;
   complete: boolean;
   jobs: any[]; // You can define a more specific type if needed
+  addresses: Address[];
 }
 // -------------------------------- ProductGallery ---------------------
 
@@ -388,12 +415,132 @@ export interface MegaMenuProps {
   setHoveredCategory: (index: number | null) => void;
 }
 
-
-
-
-
-
 export interface ScrollMediaShowcaseProps {
   initialCenterImage?: string;
   transitionComplete?: () => void;
+}
+
+// -------------------------- categoryGrid ----------------------------------------
+export interface CategoryItem {
+  id: number;
+  imageDefault: string; // Black & white image
+  imageHover: string; // Colorful image
+  title: string;
+  subtitle?: string;
+  description?: string;
+  color?: string;
+  icon?: string;
+}
+export interface MixedGridCardProps {
+  category: CategoryItem;
+  index?: number;
+  isHovered: boolean;
+  size: string;
+  position?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  zIndex?: number;
+}
+
+export interface MixedGridShowcaseProps {
+  categories: CategoryItem[];
+  title?: string;
+  subtitle?: string;
+}
+export interface Position {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  zIndex: number;
+}
+
+//  --------------------------------- videoShowCase -------------------------------
+export interface VideoItem {
+  id: string;
+  videoUrl: string;
+  thumbnail: string;
+  title: string;
+  description: string;
+  category?: string;
+}
+
+
+
+// ------------------------------------ Orders dashboard ------------------------------
+export interface SendStatus {
+  status: number;
+  text: string;
+}
+
+export interface Status {
+  status: number;
+  text: string;
+}
+
+export interface PayStatus {
+  status: number;
+  text: string;
+}
+
+export interface SendMethodPrice {
+  id: number;
+  min_cart: number;
+  price: number;
+}
+
+export interface SendMethodReceive {
+  date: string;
+  receives: any[];
+}
+
+export interface SendMethod {
+  id: number;
+  title: string;
+  description: string;
+  price: SendMethodPrice;
+  prices: SendMethodPrice[];
+  receives: SendMethodReceive[];
+}
+
+export interface PayMethod {
+  id: number;
+  title: string;
+  description: string;
+}
+
+export interface Order {
+  id: number;
+  send_status: SendStatus;
+  status: Status;
+  pay_status: PayStatus;
+  send_price: number;
+  price_total: string | number;
+  sendMethod: SendMethod;
+  payMethod: PayMethod;
+  sendMethodReceive: any;
+  description: string;
+  receive_date: string;
+  date: string;
+  can_payment: boolean;
+  remind: number;
+  remain: string | number;
+  can_deliver: boolean;
+}
+
+export interface ApiResponse {
+  success: boolean;
+  data: {
+    items: Order[];
+    _links: any;
+    _meta: {
+      totalCount: number;
+      pageCount: number;
+      currentPage: number;
+      perPage: number;
+    };
+  };
 }

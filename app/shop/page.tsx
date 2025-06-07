@@ -1,11 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ProductGrid from "@/components/static/ProductGrid";
 import { AnimatePresence } from "framer-motion";
 import ShopIntro from "@/components/static/shopIntro";
 
-export default function ShopPage() {
+function ShopPage() {
   const [showIntro, setShowIntro] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const searchParams = useSearchParams();
@@ -100,5 +100,13 @@ export default function ShopPage() {
         <ProductGrid categoryFilter={selectedCategory} />
       </main>
     </>
+  );
+}
+
+export default function Shop() {
+  return (
+    <Suspense>
+      <ShopPage />
+    </Suspense>
   );
 }

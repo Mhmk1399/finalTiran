@@ -6,7 +6,6 @@ import { UserProfile } from "@/types/type";
 import OrdersPanel from "@/components/static/dashboard/ordersPanel";
 import ProfilePanel from "@/components/static/dashboard/profilePanel";
 import SecurityPanel from "@/components/static/dashboard/securityPanel";
-import AddressesPanel from "@/components/static/dashboard/addressesPanel";
 import DashboardSidebar from "@/components/static/dashboard/dashboardSidebar";
 
 const DashboardPageContainer = () => {
@@ -32,6 +31,7 @@ const DashboardPageContainer = () => {
         });
 
         const data = await response.json();
+        console.log(data, "hhhhhhh");
         if (data.success && data.data) {
           setUserProfile(data.data);
         } else {
@@ -56,8 +56,7 @@ const DashboardPageContainer = () => {
         return <ProfilePanel userProfile={userProfile} />;
       case "security":
         return <SecurityPanel />;
-      case "addresses":
-        return <AddressesPanel />;
+
       default:
         return <OrdersPanel />;
     }

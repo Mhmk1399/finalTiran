@@ -1,33 +1,20 @@
 "use client";
+import { videoData } from "@/lib/homePageData";
+import { VideoItem } from "@/types/type";
+import { motion } from "framer-motion";
+import Link from "next/link";
 import React, { useState, useRef, useEffect } from "react";
 
-interface VideoItem {
-  id: string;
-  videoUrl: string;
-  thumbnail: string;
-  title: string;
-  description: string;
-  category?: string;
-}
-
-interface VideoShowcaseProps {
-  videos: VideoItem[];
-  marqueeSpeed?: number;
-}
-
-const VideoShowcase: React.FC<VideoShowcaseProps> = ({
-  videos,
-  marqueeSpeed = 40,
-}) => {
-  const [activeVideo, setActiveVideo] = useState<VideoItem>(videos[0]);
+const VideoShowcase = ({ marqueeSpeed = 40 }) => {
+  const [activeVideo, setActiveVideo] = useState<VideoItem>(videoData[0]);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [descriptionScrollProgress, setDescriptionScrollProgress] = useState(0);
+  // const [descriptionScrollProgress, setDescriptionScrollProgress] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const descriptionScrollRef = useRef<HTMLDivElement>(null);
 
   // Create infinite loop for marquee
-  const infiniteVideos = [...videos, ...videos, ...videos];
+  const infiniteVideos = [...videoData, ...videoData, ...videoData];
 
   const handleVideoSelect = (video: VideoItem) => {
     setActiveVideo(video);
@@ -39,7 +26,7 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
       descriptionScrollRef.current.scrollTop = 0;
     }
     setScrollProgress(0);
-    setDescriptionScrollProgress(0);
+    // setDescriptionScrollProgress(0);
 
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
@@ -59,11 +46,11 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
 
   const handleDescriptionScroll = () => {
     if (descriptionScrollRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } =
+      const {  scrollHeight, clientHeight } =
         descriptionScrollRef.current;
       const maxScroll = Math.max(scrollHeight - clientHeight, 1);
-      const progress = scrollTop / maxScroll;
-      setDescriptionScrollProgress(progress);
+      console.log(maxScroll)
+      // setDescriptionScrollProgress(progress);
     }
   };
   const handleCloseDescription = () => {
@@ -78,7 +65,7 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
     if (descriptionScrollRef.current) {
       descriptionScrollRef.current.scrollTop = 0;
     }
-    setDescriptionScrollProgress(0);
+    // setDescriptionScrollProgress(0);
   };
 
   useEffect(() => {
@@ -96,6 +83,7 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
 
   return (
     <div className="min-h-screen z-999999 inset-0 fixed bg-black flex">
+      {" "}
       {/* Video Section - 80% */}
       <div className="w-4/5 relative">
         {/* Fixed Video Background */}
@@ -111,6 +99,50 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
           >
             <source src={activeVideo.videoUrl} type="video/mp4" />
           </video>
+        </div>
+        <div className="absolute top-8 right-2 transform  -translate-x-1/2 z-100">
+          <Link href="/shop">
+            <motion.button
+              className="group relative overflow-hidden cursor-pointer bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              {/* Background Gradient Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-gray-500/20 via-slate-500/20 to-blue-800/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              {/* Shimmer Effect */}
+              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
+
+              {/* Button Content */}
+              <div className="relative flex items-center gap-3">
+                <span className="text-lg font-semibold tracking-wide">
+                  مشاهده فروشگاه
+                </span>
+
+                {/* Arrow Icon */}
+                <motion.svg
+                  className="w-6 h-6 transform group-hover:translate-x-1 transition-transform duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  whileHover={{ x: 4 }}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </motion.svg>
+              </div>
+
+              {/* Pulse Effect */}
+              <div className="absolute inset-0 rounded-2xl bg-white/5 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </motion.button>
+          </Link>
         </div>
 
         {/* Scrollable Container for triggering description */}
@@ -217,48 +249,6 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
                       </p>
                     ))}
                 </div>
-                {/* Scroll indicators for description */}
-                <div className="mt-12 space-y-4">
-                  {/* Main scroll progress */}
-                  <div className="flex items-center space-x-4">
-                    <span className="text-white/60 text-sm">Reveal:</span>
-                    <div className="flex-1 h-px bg-white/20">
-                      <div
-                        className="h-full bg-white transition-all duration-300 ease-out"
-                        style={{ width: `${scrollProgress * 100}%` }}
-                      ></div>
-                    </div>
-                    <span className="text-white/60 text-sm">
-                      {Math.round(scrollProgress * 100)}%
-                    </span>
-                  </div>
-
-                  {/* Description scroll progress */}
-                  {isDescriptionVisible && (
-                    <div className="flex items-center space-x-4">
-                      <span className="text-white/60 text-sm">Reading:</span>
-                      <div className="flex-1 h-px bg-white/20">
-                        <div
-                          className="h-full bg-blue-400 transition-all duration-300 ease-out"
-                          style={{
-                            width: `${descriptionScrollProgress * 100}%`,
-                          }}
-                        ></div>
-                      </div>
-                      <span className="text-white/60 text-sm">
-                        {Math.round(descriptionScrollProgress * 100)}%
-                      </span>
-                    </div>
-                  )}
-                </div>
-                {/* Scroll hint for description */}
-                {isDescriptionVisible && descriptionScrollProgress < 0.1 && (
-                  <div className="mt-8 text-center">
-                    <div className="text-white/50 text-sm animate-pulse">
-                      ↓ Scroll to read more ↓
-                    </div>
-                  </div>
-                )}
                 {/* Bottom padding for better scrolling */}
                 <div className="h-20"></div>
               </div>
@@ -266,7 +256,6 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
           </div>
         </div>
       </div>
-
       {/* Marquee Section - 20% */}
       <div className="w-1/5 bg-black">
         <div className="min-h-screen overflow-hidden py-4">
@@ -296,7 +285,7 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
                 style={{ minHeight: "120px" }} // Consistent item height
               >
                 <div className="relative group">
-                  <div className="aspect-[3/4] overflow-hidden rounded-lg">
+                  <div className="aspect-[3/7] md:aspect-[3/4] overflow-hidden">
                     <img
                       src={video.thumbnail}
                       alt={video.title}
@@ -324,7 +313,6 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
           </div>
         </div>
       </div>
-
       <style jsx>{`
         @keyframes verticalMarquee {
           0% {
@@ -332,7 +320,7 @@ const VideoShowcase: React.FC<VideoShowcaseProps> = ({
           }
           100% {
             transform: translateY(
-              -${(100 * videos.length) / infiniteVideos.length}%
+              -${(100 * videoData.length) / infiniteVideos.length}%
             );
           }
         }

@@ -115,12 +115,12 @@ export default function ProductPage() {
   // Desktop Layout
   if (isDesktop) {
     return (
-      <main className="min-h-screen bg-white py-10" dir="rtl">
+      <main className="min-h-screen bg-white py-10 mx-10" dir="rtl">
         {/* Product Gallery Section - Fixed Height */}
         <div className="min-h-screen mt-20">
           <div className="grid grid-cols-12 h-full gap-0">
-            {/* Thumbnails Sidebar - 2 columns */}
-            <div className="col-span-1 mt-5">
+            {/* Thumbnails Sidebar - 1 columns */}
+            <div className="col-span-1 mt-6">
               <ProductGallery
                 primaryImage={primaryImage}
                 secondaryImage={secondaryImage}
@@ -132,7 +132,7 @@ export default function ProductPage() {
               />
             </div>
 
-            {/* Main Images - 4 columns */}
+            {/* Main Images - 5 columns */}
             <div className="col-span-5 overflow-auto min-h-full bg-white">
               <ProductGallery
                 primaryImage={primaryImage}
@@ -146,7 +146,7 @@ export default function ProductPage() {
             </div>
 
             {/* Product Info Sidebar - 6 columns */}
-            <div className="col-span-6 bg-white">
+            <div className="col-span-6 max-w-4xl mr-8 bg-white">
               <div className="h-full overflow-y-auto scrollbar-hide">
                 <ProductInfo product={product} layout="desktop" />
               </div>
@@ -176,7 +176,7 @@ export default function ProductPage() {
   // Mobile Layout
   return (
     <main className="container mx-auto px-4 py-12" dir="rtl">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:mt-36 mt-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2  sm:mt-36 mt-10">
         {/* Product Gallery */}
         <ProductGallery
           primaryImage={primaryImage}

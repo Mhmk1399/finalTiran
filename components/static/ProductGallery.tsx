@@ -205,7 +205,7 @@ ProductGalleryProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+              className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 flex items-center justify-center p-4"
               onClick={() => setIsZoomed(false)}
             >
               <motion.div
@@ -226,7 +226,7 @@ ProductGalleryProps) {
                 {/* Close button */}
                 <button
                   onClick={() => setIsZoomed(false)}
-                  className="absolute top-4 right-4 p-2 bg-white/20 text-white rounded-full hover:bg-white/30 transition-colors"
+                  className="absolute top-4 right-4 p-2 bg-white/20 text-black rounded-full hover:bg-white/30 transition-colors"
                 >
                   <svg
                     width="24"
@@ -251,7 +251,7 @@ ProductGalleryProps) {
   // Thumbnails Layout - Right Sidebar
   if (layout === "thumbnails") {
     return (
-      <div className="h-full flex flex-col">
+      <div className="h-full w-fit flex flex-col">
         <div
           ref={scrollContainerRef}
           className="flex-1 flex flex-col gap-3 p-3 overflow-y-auto scrollbar-thin"
@@ -268,20 +268,13 @@ ProductGalleryProps) {
             >
               <div className="">
                 <Image
-                  src={image || ''}
-                  width={1000}
-                  height={1000}
+                  src={image || ""}
+                  width={500}
+                  height={500}
                   alt={`${productName} - Image ${index + 1}`}
-                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  className="w-20 h-20 transition-transform duration-300 hover:scale-105"
                 />
               </div>
-
-              {/* Active indicator */}
-              {activeImageIndex === index && (
-                <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full shadow-lg"></div>
-                </div>
-              )}
             </div>
           ))}
         </div>
@@ -398,7 +391,7 @@ ProductGalleryProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/10 backdrop-blur-md z-50 flex items-center justify-center"
+            className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 flex items-center justify-center p-4"
             onClick={() => setIsZoomed(false)}
           >
             <motion.div

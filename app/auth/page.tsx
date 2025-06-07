@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,6 +14,23 @@ const AuthPage = () => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  // Add ref for SMS code input
+  const smsCodeInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto focus SMS code input when step changes to 2
+  useEffect(() => {
+    if (step === 2) {
+      // Longer delay to wait for animations to complete
+      const timer = setTimeout(() => {
+        if (smsCodeInputRef.current) {
+          smsCodeInputRef.current.focus();
+        }
+      }, 600); // Increased delay to match animation duration
+
+      return () => clearTimeout(timer);
+    }
+  }, [step]);
 
   const validatePhoneForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -267,6 +284,7 @@ const AuthPage = () => {
                           size={20}
                         />
                         <input
+                          ref={smsCodeInputRef}
                           name="smsCode"
                           value={formData.smsCode}
                           onChange={handleChange}
@@ -275,6 +293,7 @@ const AuthPage = () => {
                           disabled={isLoading}
                           type="text"
                           maxLength={6}
+                          autoFocus={step === 2}
                         />
                       </div>
                       {errors.smsCode && (
@@ -351,8 +370,6 @@ const AuthPage = () => {
 
       <div className="w-full lg:w-1/2 h-82 lg:h-auto relative bg-gradient-to-br from-blue-600 to-purple-700 order-1 lg:order-2">
         <motion.div
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
           className="absolute inset-0 bg-black bg-opacity-20"
         />

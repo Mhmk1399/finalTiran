@@ -277,11 +277,11 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
       {" "}
       <div className="min-h-screen p-8">
         <div className="min-w-full">
-          <div className="flex items-center justify-between gap-8 h-screen">
-            {/* Left Text Box */}
-            <div className="flex-1 max-w-md">
+          <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-8 h-screen">
+            {/* Left Text Box - Hidden on mobile */}
+            <div className="flex flex-1 max-w-md">
               <div className="backdrop-blur-lg rounded-2xl p-8">
-                <div className="text-white text-xl leading-relaxed font-medium min-h-[120px] flex items-center">
+                <div className="text-white md:text-xl leading-relaxed font-medium min-h-[120px] flex items-center">
                   <p
                     className={`transition-opacity duration-500 ${
                       isAnimating ? "opacity-50" : "opacity-100"
@@ -297,11 +297,11 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
             </div>
 
             {/* Center Content */}
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 w-full lg:w-auto flex justify-center">
               <div className="relative">
                 {!showVideoTransition ? (
-                  // Image Grid Phase
-                  <div className="grid grid-cols-3 gap-3 p-6 backdrop-blur-lg rounded-3xl ">
+                  // Image Grid Phase - Smaller on mobile
+                  <div className="grid grid-cols-3 gap-2 lg:gap-3 p-3 lg:p-6 backdrop-blur-lg rounded-2xl lg:rounded-3xl">
                     {currentImages.map((image, index) => (
                       <div
                         key={`${image}-${index}-${currentTextIndex}`}
@@ -309,12 +309,12 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                           index === 4
                             ? showCenterScale
                               ? showCenterOpacity
-                                ? "w-40 h-40 scale-125 z-10 ring-4 ring-white/50 rounded-lg opacity-30"
-                                : "w-40 h-40 scale-125 z-10 ring-4 ring-white/50 rounded-lg opacity-100"
-                              : "w-32 h-32 ring-2 ring-white/30 opacity-100"
+                                ? "w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 scale-110 lg:scale-125 z-10 ring-2 lg:ring-4 ring-white/50 rounded-lg opacity-30"
+                                : "w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 scale-110 lg:scale-125 z-10 ring-2 lg:ring-4 ring-white/50 rounded-lg opacity-100"
+                              : "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 ring-1 lg:ring-2 ring-white/30 opacity-100"
                             : isRapidChanging
-                            ? "w-32 h-32 scale-95 opacity-80"
-                            : "w-32 h-32 scale-100 opacity-100 hover:scale-105"
+                            ? "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 scale-95 opacity-80"
+                            : "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 scale-100 opacity-100 hover:scale-105"
                         }`}
                         style={{
                           ...getBlockHideStyle(index),
@@ -339,9 +339,9 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                     ))}
                   </div>
                 ) : (
-                  // Video Showcase Phase
+                  // Video Showcase Phase - Responsive sizing
                   <div className="relative z-20">
-                    <div className="w-96 h-[520px] overflow-hidden shadow-2xl relative">
+                    <div className="w-72 h-96 sm:w-80 sm:h-[440px] lg:w-96 lg:h-[520px] overflow-hidden shadow-2xl relative">
                       <AnimatePresence mode="wait" custom={1}>
                         <motion.div
                           key={`center-${currentVideoIndex}`}
@@ -369,13 +369,13 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                           {/* Overlay */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-                          {/* Content */}
-                          <div className="absolute bottom-8 left-6 right-6 text-center">
+                          {/* Content - Responsive text sizing */}
+                          <div className="absolute bottom-4 lg:bottom-8 left-3 lg:left-6 right-3 lg:right-6 text-center">
                             <motion.h2
                               initial={{ y: 30, opacity: 0 }}
                               animate={{ y: 0, opacity: 1 }}
                               transition={{ delay: 0.4, duration: 0.4 }}
-                              className="text-3xl font-bold text-white mb-3"
+                              className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 lg:mb-3"
                             >
                               {centerVideo.title}
                             </motion.h2>
@@ -383,7 +383,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                               initial={{ y: 30, opacity: 0 }}
                               animate={{ y: 0, opacity: 1 }}
                               transition={{ delay: 0.5, duration: 0.4 }}
-                              className="text-gray-200 text-lg"
+                              className="text-gray-200 text-sm sm:text-base lg:text-lg"
                             >
                               {centerVideo.description}
                             </motion.p>
@@ -391,7 +391,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                         </motion.div>
                       </AnimatePresence>
 
-                      {/* Glow Effect */}
+                      {/* Glow Effect - Responsive sizing */}
                       <motion.div
                         animate={{
                           scale: [1, 1.05, 1],
@@ -402,32 +402,32 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                           repeat: Infinity,
                           ease: "easeInOut",
                         }}
-                        className="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-500/20 to-blue-500/20 blur-xl -z-10"
+                        className="absolute inset-0 rounded-2xl lg:rounded-3xl bg-gradient-to-r from-purple-500/20 to-blue-500/20 blur-xl -z-10"
                       />
                     </div>
                   </div>
                 )}
 
-                {/* Center image highlight effect during scaling */}
+                {/* Center image highlight effect during scaling - Responsive sizing */}
                 {showCenterScale && !showVideoTransition && (
                   <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-white/5 rounded-full animate-ping" />
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 sm:w-32 sm:h-32 lg:w-48 lg:h-48 bg-white/5 rounded-full animate-ping" />
                   </div>
                 )}
 
-                {/* Transition overlay effect */}
+                {/* Transition overlay effect - Responsive sizing */}
                 {showCenterOpacity && !showVideoTransition && (
                   <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-2xl animate-pulse" />
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-40 sm:h-40 lg:w-64 lg:h-64 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-2xl animate-pulse" />
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Right Text Box */}
-            <div className="flex-1 max-w-md">
+            {/* Right Text Box - Hidden on mobile */}
+            <div className="flex flex-1 max-w-md">
               <div className="backdrop-blur-lg rounded-2xl p-8">
-                <div className="text-white text-xl leading-relaxed font-medium min-h-[120px] flex items-center">
+                <div className="text-white md:text-xl leading-relaxed font-medium min-h-[120px] flex items-center">
                   <p
                     className={`transition-opacity duration-500 ${
                       isAnimating ? "opacity-50" : "opacity-100"

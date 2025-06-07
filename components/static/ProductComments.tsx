@@ -306,7 +306,7 @@ export default function ProductComments({
         </div>
 
         <div className="mb-4">
-          <label htmlFor="title" className="block text-sm font-medium mb-2">
+          <label htmlFor="title" className="block text-sm font-bold mb-2">
             عنوان نظر
           </label>
           <input
@@ -315,12 +315,12 @@ export default function ProductComments({
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder="عنوان نظر شما"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border-b border-dashed border-gray-300 focus:outline-none focus:border-gray-950"
           />
         </div>
 
         <div className="mb-4">
-          <label htmlFor="comment" className="block text-sm font-medium mb-2">
+          <label htmlFor="comment" className="block text-sm font-bold mb-2">
             متن نظر
           </label>
           <textarea
@@ -329,7 +329,7 @@ export default function ProductComments({
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="نظر شما در مورد این محصول"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border-b border-dashed border-gray-300 focus:outline-none focus:border-gray-950"
             required
           />
         </div>

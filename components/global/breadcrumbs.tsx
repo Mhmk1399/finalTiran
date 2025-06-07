@@ -24,6 +24,7 @@ const routeTranslations: Record<string, string> = {
   giftCart: "کارت هدیه",
   help: "راهنما",
   categories: "دسته‌بندی‌ها",
+  dashboard: "داشبورد",
 };
 
 const Breadcrumbs = () => {
