@@ -1,5 +1,5 @@
 export async function POST(request: Request) {
-  try {
+  try { 
     const body = await request.json();
 
     // Ensure credit_deduction is properly formatted as 0 or 1
