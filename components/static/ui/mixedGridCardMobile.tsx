@@ -1,20 +1,28 @@
-// Mixed Grid Card Component (Updated for marquee)
+"use client";
 import Image from "next/image";
 import { MixedGridCardProps } from "@/types/type";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const MixedGridCardMobile: React.FC<MixedGridCardProps> = ({
   category,
   isHovered,
 }) => {
+  const navigate = useRouter();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showColorImage, setShowColorImage] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
 
+  const handleRoute = () => {
+    navigate.push("/video");
+  };
+
   return (
+    // <Link href="/video">
+
     <motion.div
+      onClick={handleRoute}
       className={`relative w-full h-full overflow-hidden shadow-lg group transform transition-all duration-300`}
       onTouchStart={() => {
         setShowColorImage(true);
@@ -40,19 +48,18 @@ const MixedGridCardMobile: React.FC<MixedGridCardProps> = ({
           }}
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          <Link href="/video">
-            <Image
-              src={category.imageDefault}
-              alt={category.title}
-              fill
-              className="object-cover"
-              style={{
-                filter: "grayscale(100%) contrast(1.1) brightness(0.9)",
-              }}
-              onLoad={() => setImageLoaded(true)}
-              sizes="(max-width: 768px) 80vw, 25vw"
-            />
-          </Link>
+          <Image
+            src={category.imageDefault}
+            alt={category.title}
+            fill
+            className="object-cover"
+            onClick={handleRoute}
+            style={{
+              filter: "grayscale(100%) contrast(1.1) brightness(0.9)",
+            }}
+            onLoad={() => setImageLoaded(true)}
+            sizes="(max-width: 768px) 80vw, 25vw"
+          />
         </motion.div>
 
         {/* Hover/Touch Color Image */}
@@ -68,11 +75,13 @@ const MixedGridCardMobile: React.FC<MixedGridCardProps> = ({
               exit={{ opacity: 0, scale: 1 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
+              {" "}
               <Image
                 src={category.imageHover}
                 alt={`${category.title} - Color`}
                 fill
                 className="object-cover"
+                onClick={handleRoute}
               />
             </motion.div>
           )}
@@ -192,6 +201,7 @@ const MixedGridCardMobile: React.FC<MixedGridCardProps> = ({
         </div>
       )}
     </motion.div>
+    // </Link>
   );
 };
 

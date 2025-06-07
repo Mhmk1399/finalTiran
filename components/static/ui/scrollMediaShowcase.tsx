@@ -1,7 +1,6 @@
 "use client";
-
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { mediaItems } from "@/lib/homePageData";
 import { ScrollMediaShowcaseProps } from "@/types/type";
 
@@ -12,15 +11,17 @@ const ScrollMediaShowcase = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  // const [scrollProgress, setScrollProgress] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isScrollLocked, setIsScrollLocked] = useState(false);
   const [hasCompletedCycle, setHasCompletedCycle] = useState(false);
   const [accumulatedScroll, setAccumulatedScroll] = useState(0);
   const [isInitializing, setIsInitializing] = useState(true);
-  const [initialImage] = useState(initialCenterImage || "");
-  console.log(isScrollLocked)
+  const [initialImage] = useState(initialCenterImage);
+  const [touchStartY, setTouchStartY] = useState(0);
+  const [isTouching, setIsTouching] = useState(false);
+
+  console.log(isScrollLocked);
 
   // Total steps needed to show all items once
   const totalSteps = mediaItems.length;
@@ -46,27 +47,6 @@ const ScrollMediaShowcase = ({
 
     return () => clearTimeout(timer);
   }, []);
-
-  // Lock/unlock scroll based on component state
-  // useEffect(() => {
-  //   if (!isMounted) return;
-
-  //   if (isScrollLocked) {
-  //     // Prevent scrolling
-  //     document.body.style.overflow = "";
-  //     document.documentElement.style.overflow = "";
-  //   } else {
-  //     // Allow scrolling
-  //     document.body.style.overflow = "";
-  //     document.documentElement.style.overflow = "";
-  //   }
-
-  //   return () => {
-  //     // Cleanup on unmount
-  //     document.body.style.overflow = "";
-  //     document.documentElement.style.overflow = "";
-  //   };
-  // }, [isScrollLocked, isMounted]);
 
   // Get only videos for center position
   const getCenterVideo = () => {
@@ -96,8 +76,13 @@ const ScrollMediaShowcase = ({
   // Handle wheel events for controlled scrolling
   const handleWheel = useCallback(
     (e: WheelEvent) => {
-      if (!isMounted || !containerRef.current || !isActive) return;
-
+      if (
+        !isMounted ||
+        !containerRef.current ||
+        !isActive ||
+        window.innerWidth < 768
+      )
+        return;
       const container = containerRef.current;
       const rect = container.getBoundingClientRect();
 
@@ -179,8 +164,22 @@ const ScrollMediaShowcase = ({
       requestAnimationFrame(handleScroll);
     };
 
+    // Add touch event prevention for mobile
+    const preventDefaultTouch = (e: TouchEvent) => {
+      if (window.innerWidth < 768 && isActive && !hasCompletedCycle) {
+        e.preventDefault();
+      }
+    };
+
     window.addEventListener("scroll", throttledScroll, { passive: true });
     window.addEventListener("wheel", handleWheel, { passive: false });
+
+    // Add touch event listeners for mobile
+    if (window.innerWidth < 768) {
+      document.addEventListener("touchmove", preventDefaultTouch, {
+        passive: false,
+      });
+    }
 
     // Initial check
     handleScroll();
@@ -188,8 +187,9 @@ const ScrollMediaShowcase = ({
     return () => {
       window.removeEventListener("scroll", throttledScroll);
       window.removeEventListener("wheel", handleWheel);
+      document.removeEventListener("touchmove", preventDefaultTouch);
     };
-  }, [handleScroll, handleWheel, isMounted]);
+  }, [handleScroll, handleWheel, isMounted, isActive, hasCompletedCycle]);
 
   // Slide animation variants
   const slideVariants = {
@@ -209,6 +209,60 @@ const ScrollMediaShowcase = ({
       scale: 1,
     }),
   };
+
+  // Add these functions BEFORE the early return
+  const handlePanStart = useCallback(
+    (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+      if (typeof window !== "undefined" && window.innerWidth >= 768) return; // Only for mobile
+      setIsTouching(true);
+      setTouchStartY(info.point.y);
+    },
+    []
+  );
+
+  const handlePan = useCallback(
+    (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+      if (
+        typeof window !== "undefined" &&
+        (window.innerWidth >= 768 || !isTouching || hasCompletedCycle)
+      )
+        return;
+
+      const deltaY = info.point.y - touchStartY;
+      const newAccumulatedScroll = Math.max(0, accumulatedScroll - deltaY * 2);
+      setAccumulatedScroll(newAccumulatedScroll);
+
+      const progress = Math.min(
+        newAccumulatedScroll / (totalSteps * scrollStepSize),
+        1
+      );
+
+      const newIndex = Math.floor(progress * totalSteps);
+      const clampedIndex = Math.min(newIndex, totalSteps - 1);
+
+      if (clampedIndex !== currentIndex) {
+        setCurrentIndex(clampedIndex);
+      }
+
+      if (progress >= 1 && !hasCompletedCycle) {
+        setHasCompletedCycle(true);
+        setIsScrollLocked(false);
+        setIsTouching(false);
+      }
+    },
+    [
+      touchStartY,
+      isTouching,
+      accumulatedScroll,
+      currentIndex,
+      totalSteps,
+      hasCompletedCycle,
+    ]
+  );
+
+  const handlePanEnd = useCallback(() => {
+    setIsTouching(false);
+  }, []);
 
   // Don't render on server
   if (!isMounted) {
@@ -259,6 +313,10 @@ const ScrollMediaShowcase = ({
                   ease: "easeOut",
                 }}
                 className="relative h-[60vh] flex items-center justify-center w-full"
+                onPanStart={handlePanStart}
+                onPan={handlePan}
+                onPanEnd={handlePanEnd}
+                style={{ touchAction: "pan-x pinch-zoom" }}
               >
                 {/* Left Image - Mobile Version */}
                 <motion.div

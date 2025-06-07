@@ -4,7 +4,7 @@ import DynamicFashionGrid from "@/components/static/ui/dynamicFashionGrid";
 import EnhancedLogoLoadingScreen from "@/components/static/ui/enhancedLogoLoadingScreen";
 import MarqueeSlider from "@/components/static/ui/marqueeSlider";
 import ScrollMediaShowcase from "@/components/static/ui/scrollMediaShowcase";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { slideItems, categories } from "@/lib/homePageData";
 
 const Page = () => {

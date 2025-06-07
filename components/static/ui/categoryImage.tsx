@@ -202,6 +202,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
                   onTouchEnd={() => setHoveredIndex(null)}
                   whileTap={{ scale: 0.95 }}
                 >
+                  {" "}
                   <MixedGridCardMobile
                     category={category}
                     index={index}
@@ -238,6 +239,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
                   onTouchEnd={() => setHoveredIndex(null)}
                   whileTap={{ scale: 0.95 }}
                 >
+                  
                   <MixedGridCardMobile
                     category={category}
                     index={index + 10}

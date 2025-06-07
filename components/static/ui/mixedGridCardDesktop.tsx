@@ -3,7 +3,7 @@ import Image from "next/image";
 import { MixedGridCardProps } from "@/types/type";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
   category,
@@ -12,13 +12,20 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
   position, // Add position prop
   zIndex, // Add zIndex prop
 }) => {
+  const navigate = useRouter();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showColorImage, setShowColorImage] = useState(false);
   console.log(imageLoaded);
 
+  const handleRoute = () => {
+    navigate.push("/video");
+  };
+
   return (
+    // <Link href="/video">
     <motion.div
       className={`absolute overflow-hidden shadow-lg group transform transition-all duration-300 cursor-pointer`}
+      onClick={handleRoute}
       style={{
         left: position?.x || 0,
         top: position?.y || 0,
@@ -46,22 +53,21 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
           }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <Link href="/video">
-            {" "}
-            <Image
-              src={category.imageDefault}
-              alt={category.title}
-              fill
-              className="object-cover"
-              style={{
-                filter: "grayscale(100%) contrast(1.1) brightness(0.9)",
-              }}
-              onLoad={() => setImageLoaded(true)}
-              sizes={`(max-width: 768px) 50vw, ${
-                size === "medium" ? "25vw" : size === "wide" ? "50vw" : "12.5vw"
-              }`}
-            />
-          </Link>
+          {" "}
+          <Image
+            src={category.imageDefault}
+            alt={category.title}
+            fill
+            className="object-cover"
+            style={{
+              filter: "grayscale(100%) contrast(1.1) brightness(0.9)",
+            }}
+            onClick={handleRoute}
+            onLoad={() => setImageLoaded(true)}
+            sizes={`(max-width: 768px) 50vw, ${
+              size === "medium" ? "25vw" : size === "wide" ? "50vw" : "12.5vw"
+            }`}
+          />
         </motion.div>
 
         {/* Hover Color Image */}
@@ -84,6 +90,7 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
                 alt={`${category.title} - Color`}
                 fill
                 className="object-cover rounded-lg"
+                onClick={handleRoute}
               />
             </motion.div>
           )}
@@ -152,6 +159,7 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
         )}
       </AnimatePresence>
     </motion.div>
+    // </Link>
   );
 };
 

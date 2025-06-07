@@ -546,38 +546,31 @@ const Navbar = () => {
                   {isLoggedIn ? (
                     <>
                       <motion.button
+                        onClick={() => setIsOpen(!isOpen)}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         className=" flex md:hidden items-center text-gray-700 hover:text-gray-900"
                       >
-                        <span className="ml-1 text-sm font-medium">
-                          {userProfile?.user.username}
-                        </span>
-                      </motion.button>
-
-                      {/* Dropdown menu */}
-                      <div className="absolute left-0 w-48 bg-white rounded-md shadow-lg py-1 z-70 hidden group-hover:block">
                         <Link href="/dashboard">
-                          <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md w-full text-right"
-                          >
-                            <RiDashboardLine className="ml-2" />
-                            داشبورد کاربری
-                          </motion.button>
+                          <span className="ml-1 text-sm font-medium">
+                            {userProfile?.user.username}
+                          </span>
                         </Link>
-                      </div>
+                      </motion.button>
                     </>
                   ) : (
                     <Link href="/auth">
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="hidden  md:flex  items-center  text-gray-700 hover:text-gray-900"
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="flex md:hidden items-center text-black hover:text-gray-900"
                       >
                         <RiLoginCircleLine className="ml-1" />
-                        <span className="text-sm font-medium">
+                        <span
+                          onClick={() => setIsOpen(!isOpen)}
+                          className="text-sm font-medium"
+                        >
                           ورود / ثبت‌نام
                         </span>
                       </motion.button>

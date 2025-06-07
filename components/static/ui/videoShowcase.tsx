@@ -46,10 +46,9 @@ const VideoShowcase = ({ marqueeSpeed = 40 }) => {
 
   const handleDescriptionScroll = () => {
     if (descriptionScrollRef.current) {
-      const {  scrollHeight, clientHeight } =
-        descriptionScrollRef.current;
+      const { scrollHeight, clientHeight } = descriptionScrollRef.current;
       const maxScroll = Math.max(scrollHeight - clientHeight, 1);
-      console.log(maxScroll)
+      console.log(maxScroll);
       // setDescriptionScrollProgress(progress);
     }
   };
@@ -100,7 +99,7 @@ const VideoShowcase = ({ marqueeSpeed = 40 }) => {
             <source src={activeVideo.videoUrl} type="video/mp4" />
           </video>
         </div>
-        <div className="absolute top-8 right-2 transform  -translate-x-1/2 z-100">
+        <div className="absolute left-1/2 top-8 md:left-1/3 md:right-2 transform  -translate-x-1/2 z-100">
           <Link href="/shop">
             <motion.button
               className="group relative overflow-hidden cursor-pointer bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl"
@@ -118,7 +117,7 @@ const VideoShowcase = ({ marqueeSpeed = 40 }) => {
 
               {/* Button Content */}
               <div className="relative flex items-center gap-3">
-                <span className="text-lg font-semibold tracking-wide">
+                <span className="md:text-lg text-nowrap font-semibold tracking-wide">
                   مشاهده فروشگاه
                 </span>
 

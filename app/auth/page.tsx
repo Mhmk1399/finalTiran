@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BiPhone, BiLock, BiLogIn } from "react-icons/bi";
 import Image from "next/image";
+import Link from "next/link";
 
 const AuthPage = () => {
   const [step, setStep] = useState(1); // Step 1: Phone number, Step 2: SMS code
@@ -352,12 +353,12 @@ const AuthPage = () => {
               <motion.div variants={itemVariants} className="text-center mt-8">
                 <p className="text-sm text-gray-500">
                   با ورود به سایت، شما{" "}
-                  <a
+                  <Link
                     href="#"
                     className="text-gray-900 font-bold hover:underline"
                   >
                     قوانین و مقررات
-                  </a>{" "}
+                  </Link>{" "}
                   را می‌پذیرید
                 </p>
               </motion.div>

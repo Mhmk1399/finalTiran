@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useMotionValue } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 export interface HeroSlide {
   id: number;
@@ -246,7 +247,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 
               {slides[currentSlide].ctaText && (
                 <motion.div variants={textVariants} custom={3}>
-                  <a
+                  <Link
                     href={slides[currentSlide].ctaLink || "#"}
                     className="group relative inline-flex items-center justify-center px-8 py-4 overflow-hidden font-medium text-white bg-transparent rounded-full border-2 border-white hover:border-transparent"
                   >
@@ -276,7 +277,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                         />
                       </motion.svg>
                     </span>
-                  </a>
+                  </Link>
                 </motion.div>
               )}
             </motion.div>
