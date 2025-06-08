@@ -165,9 +165,19 @@ const ScrollMediaShowcase = ({
     };
 
     // Add touch event prevention for mobile
+    // Add touch event prevention for mobile - more selective
     const preventDefaultTouch = (e: TouchEvent) => {
-      if (window.innerWidth < 768 && isActive && !hasCompletedCycle) {
-        e.preventDefault();
+      if (
+        window.innerWidth < 768 &&
+        isActive &&
+        !hasCompletedCycle &&
+        isTouching
+      ) {
+        // Only prevent default when actively touching our component
+        const target = e.target as Element;
+        if (containerRef.current?.contains(target)) {
+          e.preventDefault();
+        }
       }
     };
 
@@ -179,6 +189,9 @@ const ScrollMediaShowcase = ({
       document.addEventListener("touchmove", preventDefaultTouch, {
         passive: false,
       });
+      document.addEventListener("touchstart", preventDefaultTouch, {
+        passive: false,
+      });
     }
 
     // Initial check
@@ -188,6 +201,7 @@ const ScrollMediaShowcase = ({
       window.removeEventListener("scroll", throttledScroll);
       window.removeEventListener("wheel", handleWheel);
       document.removeEventListener("touchmove", preventDefaultTouch);
+      document.removeEventListener("touchstart", preventDefaultTouch);
     };
   }, [handleScroll, handleWheel, isMounted, isActive, hasCompletedCycle]);
 
@@ -211,26 +225,42 @@ const ScrollMediaShowcase = ({
   };
 
   // Add these functions BEFORE the early return
+
   const handlePanStart = useCallback(
     (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
       if (typeof window !== "undefined" && window.innerWidth >= 768) return; // Only for mobile
+      if (!isActive || hasCompletedCycle) return;
+
       setIsTouching(true);
       setTouchStartY(info.point.y);
+
+      // Prevent default touch behavior
+      if (event.cancelable) {
+        event.preventDefault();
+      }
     },
-    []
+    [isActive, hasCompletedCycle]
   );
 
   const handlePan = useCallback(
     (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-      if (
-        typeof window !== "undefined" &&
-        (window.innerWidth >= 768 || !isTouching || hasCompletedCycle)
-      )
-        return;
+      if (typeof window !== "undefined" && window.innerWidth >= 768) return;
+      if (!isTouching || hasCompletedCycle || !isActive) return;
+
+      // Prevent default touch behavior
+      if (event.cancelable) {
+        event.preventDefault();
+      }
 
       const deltaY = info.point.y - touchStartY;
-      const newAccumulatedScroll = Math.max(0, accumulatedScroll - deltaY * 2);
+      const sensitivity = 1.5; // Reduced sensitivity for better control
+      const newAccumulatedScroll = Math.max(
+        0,
+        accumulatedScroll - deltaY * sensitivity
+      );
+
       setAccumulatedScroll(newAccumulatedScroll);
+      setTouchStartY(info.point.y); // Update touch position for continuous tracking
 
       const progress = Math.min(
         newAccumulatedScroll / (totalSteps * scrollStepSize),
@@ -257,6 +287,7 @@ const ScrollMediaShowcase = ({
       currentIndex,
       totalSteps,
       hasCompletedCycle,
+      isActive,
     ]
   );
 
@@ -316,7 +347,11 @@ const ScrollMediaShowcase = ({
                 onPanStart={handlePanStart}
                 onPan={handlePan}
                 onPanEnd={handlePanEnd}
-                style={{ touchAction: "pan-x pinch-zoom" }}
+                style={{
+                  touchAction: isActive && !hasCompletedCycle ? "none" : "auto",
+                  userSelect: "none",
+                  WebkitUserSelect: "none",
+                }}
               >
                 {/* Left Image - Mobile Version */}
                 <motion.div
