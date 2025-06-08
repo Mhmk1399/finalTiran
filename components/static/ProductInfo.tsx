@@ -168,7 +168,7 @@ export default function ProductInfo({
         name: product.fa_name,
         price: selectedVariety.price_main,
         quantity: quantity,
-        image: product?.main_image_id || null,
+        image: product?.images[0]?.src,
         size: selectedSize,
         color: selectedColor,
       });

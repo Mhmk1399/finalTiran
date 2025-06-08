@@ -118,6 +118,7 @@ export default function ProductPage() {
       <main className="min-h-screen bg-white py-10 mx-10" dir="rtl">
         {/* Product Gallery Section - Fixed Height */}
         <div className="min-h-screen mt-20">
+        
           <div className="grid grid-cols-12 h-full gap-0">
             {/* Thumbnails Sidebar - 1 columns */}
             <div className="col-span-1 mt-6">

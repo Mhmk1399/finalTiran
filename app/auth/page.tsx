@@ -8,6 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 const AuthPage = () => {
+  // Add ref for SMS code input
+  const smsCodeInputRef = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState(1); // Step 1: Phone number, Step 2: SMS code
   const [formData, setFormData] = useState({
     phone: "",
@@ -15,9 +17,28 @@ const AuthPage = () => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [redirectMessage, setRedirectMessage] = useState<string>(""); // for redirect to comment page after login
+  const [isRedirecting, setIsRedirecting] = useState<string>(""); // for redirect to cart page after login
+  const [isRedirectingDashboard, setIsRedirectingDashboard] =
+    useState<string>(""); // for redirect to cart page after login
 
-  // Add ref for SMS code input
-  const smsCodeInputRef = useRef<HTMLInputElement>(null);
+  // useEffect to show redirect messages
+  useEffect(() => {
+    const redirectUrl = localStorage.getItem("redirectAfterLogin");
+    const redirectUrlCart = localStorage.getItem("redirectAfterLoginToCart");
+    const redirectUrlDashboard = localStorage.getItem(
+      "redirectAfterLoginToDashboard"
+    );
+    if (redirectUrl) {
+      setRedirectMessage(
+        "پس از ورود به صفحه محصول برای کامنت بازگردانده خواهید شد"
+      );
+    } else if (redirectUrlCart) {
+      setIsRedirecting("پس از ورود به صفحه کارت منتقل میشوید");
+    } else if (redirectUrlDashboard) {
+      setIsRedirectingDashboard("پس از ورود به داشبورد منتقل میشوید");
+    }
+  }, []);
 
   // Auto focus SMS code input when step changes to 2
   useEffect(() => {
@@ -130,9 +151,28 @@ const AuthPage = () => {
       });
 
       // Redirect to home page
+      // Check for redirect URL and navigate accordingly
       setTimeout(() => {
-        window.location.href = "/";
-      }, 1500);
+        const redirectUrl = localStorage.getItem("redirectAfterLogin");
+        const redirectUrlCart = localStorage.getItem(
+          "redirectAfterLoginToCart"
+        );
+        const redirectUrlDashboard = localStorage.getItem(
+          "redirectAfterLoginToDashboard"
+        );
+        if (redirectUrl) {
+          localStorage.removeItem("redirectAfterLogin"); // Clean up
+          window.location.href = redirectUrl;
+        } else if (redirectUrlCart) {
+          localStorage.removeItem("redirectAfterLoginToCart"); // Clean up
+          window.location.href = redirectUrlCart;
+        } else if (redirectUrlDashboard) {
+          localStorage.removeItem("redirectAfterLoginToDashboard"); // Clean up
+          window.location.href = redirectUrlDashboard;
+        } else {
+          window.location.href = "/";
+        }
+      }, 3000);
 
       return true;
     } catch (error) {
@@ -226,6 +266,32 @@ const AuthPage = () => {
                 <h1 className="text-4xl font-bold text-gray-900 mb-2">تیران</h1>
                 <p className="text-gray-600">به حساب کاربری خود وارد شوید</p>
               </motion.div>
+              {redirectMessage && (
+                <motion.div
+                  variants={itemVariants}
+                  className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200"
+                >
+                  <p className="text-blue-700 text-sm">{redirectMessage}</p>
+                </motion.div>
+              )}
+              {isRedirecting && (
+                <motion.div
+                  variants={itemVariants}
+                  className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200"
+                >
+                  <p className="text-blue-700 text-sm">{isRedirecting}</p>
+                </motion.div>
+              )}
+              {isRedirectingDashboard && (
+                <motion.div
+                  variants={itemVariants}
+                  className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200"
+                >
+                  <p className="text-blue-700 text-sm">
+                    {isRedirectingDashboard}
+                  </p>
+                </motion.div>
+              )}
 
               <motion.h2
                 variants={itemVariants}

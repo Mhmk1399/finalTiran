@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { UserProfile } from "@/types/type";
 import OrdersPanel from "@/components/static/dashboard/ordersPanel";
 import ProfilePanel from "@/components/static/dashboard/profilePanel";
-import SecurityPanel from "@/components/static/dashboard/securityPanel";
 import DashboardSidebar from "@/components/static/dashboard/dashboardSidebar";
 
 const DashboardPageContainer = () => {
@@ -19,6 +18,8 @@ const DashboardPageContainer = () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
+          const currentUrl = window.location.pathname + window.location.search;
+          localStorage.setItem("redirectAfterLoginToDashboard", currentUrl);
           router.push("/auth");
           return;
         }
@@ -54,8 +55,6 @@ const DashboardPageContainer = () => {
         return <OrdersPanel />;
       case "profile":
         return <ProfilePanel userProfile={userProfile} />;
-      case "security":
-        return <SecurityPanel />;
 
       default:
         return <OrdersPanel />;

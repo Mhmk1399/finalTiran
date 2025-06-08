@@ -16,7 +16,6 @@ import { UserProfile } from "@/types/type";
 import moment from "moment";
 import jMoment from "moment-jalaali";
 import PersianDatePicker from "@/components/static/jalaliDatePicker";
-// import PersianDatePicker from "@/components/static/jalaliDatePicker";
 // Initialize jMoment
 jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
 
@@ -60,7 +59,11 @@ const CartPage = () => {
   const fetchUserAccount = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
+      // Store current page URL for redirect after login
+      const currentUrl = window.location.pathname + window.location.search;
+      localStorage.setItem("redirectAfterLoginToCart", currentUrl);
       router.replace("/auth");
+      return;
     }
 
     try {
@@ -188,10 +191,6 @@ const CartPage = () => {
     }
   };
 
-  // Calculate min and max dates
-  // const minDate = new Date(Date.now() + 86400000); // Tomorrow
-  // const maxDate = new Date(Date.now() + 30 * 86400000); // 30 days from now
-
   return (
     <div className="min-h-screen pt-36 pb-16 px-4 sm:px-6 lg:px-8" dir="rtl">
       <motion.div
@@ -237,7 +236,7 @@ const CartPage = () => {
           </motion.div>
         ) : (
           <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="bg-white  border-t border-dashed p-6">
               <div className="divide-y divide-gray-200">
                 <AnimatePresence>
                   {items.map((item) => (
@@ -251,9 +250,7 @@ const CartPage = () => {
                       {/* Item details - same as before */}
                       <div className="flex-shrink-0 w-24 h-24 bg-gray-100 rounded-md overflow-hidden mb-4 sm:mb-0">
                         <Image
-                          src={String(
-                            item.image || "/assets/images/fashion/5.avif"
-                          )}
+                          src={item?.image ?? "/assets/images/fashion/2.avif"}
                           alt={item.name}
                           width={96}
                           height={96}
@@ -318,7 +315,7 @@ const CartPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-lg shadow-md p-6"
+              className="bg-white  border-t border-dashed p-6"
             >
               <div className="flex justify-between mb-4">
                 <span className="text-gray-600">جمع کل:</span>
@@ -332,7 +329,7 @@ const CartPage = () => {
                 <span className="text-green-600">رایگان</span>
               </div>
 
-              <div className="border-t border-gray-200 pt-4 mt-4">
+              <div className="border-t border-dashed border-gray-200 pt-4 mt-4">
                 <div className="flex justify-between">
                   <span className="text-lg font-semibold">
                     مبلغ قابل پرداخت:
@@ -349,7 +346,7 @@ const CartPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="bg-white rounded-lg shadow-md p-6"
+              className="bg-white  border-t border-dashed p-6"
             >
               <h2 className="text-lg font-semibold mb-4">روش ارسال</h2>
               <select
@@ -370,7 +367,7 @@ const CartPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="bg-white rounded-lg shadow-md p-6"
+              className="bg-white  border-t border-dashed p-6"
             >
               <h2 className="text-lg font-semibold mb-4">تاریخ تحویل</h2>
               <PersianDatePicker
@@ -393,7 +390,7 @@ const CartPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="bg-white rounded-lg shadow-md p-6"
+              className="bg-white  border-t border-dashed p-6"
             >
               <h2 className="text-lg font-semibold mb-4">روش‌های پرداخت</h2>
               <div className="space-y-3">
@@ -436,7 +433,7 @@ const CartPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.42 }}
-              className="bg-white rounded-lg shadow-md p-6"
+              className="bg-white  border-t border-dashed p-6"
             >
               <div className="flex items-center">
                 <input
@@ -464,7 +461,7 @@ const CartPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.45 }}
-              className="bg-white rounded-lg shadow-md p-6"
+              className="bg-white  border-t border-dashed p-6"
             >
               <h2 className="text-lg font-semibold mb-4">توضیحات سفارش</h2>
               <textarea
@@ -520,7 +517,7 @@ const CartPage = () => {
                 )}
               </motion.button>
 
-              <Link href="/products">
+              <Link href="/shop">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}

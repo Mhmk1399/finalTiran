@@ -56,3 +56,90 @@ export async function PUT(request: NextRequest) {
     );
   }
 }
+
+export async function PATCH(request: NextRequest) {
+  try {
+    // Get the authorization header
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { success: false, error: "Authorization token required" },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.substring(7);
+
+    // Get address_id from localStorage (will be sent in request body)
+    const body = await request.json();
+    const { address_id, ...addressData } = body;
+
+    if (!address_id) {
+      return NextResponse.json(
+        { success: false, error: "Address ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Validate required fields
+    const requiredFields = [
+      "address_type",
+      "province_id",
+      "city_id",
+      "zipcode",
+      "receiver_name",
+      "receiver_number",
+      "adress",
+    ];
+    for (const field of requiredFields) {
+      if (!addressData[field]) {
+        return NextResponse.json(
+          { success: false, error: `${field} is required` },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Make request to external API
+    const apiUrl = `https://tiran.shop.hesabroclub.ir/api/web/shop-v1/v2/profile/address?address_id=${address_id}`;
+
+    const response = await fetch(apiUrl, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(addressData),
+    });
+
+    const data = await response.json();
+    console.log(data , "boooooddddy")
+
+    if (!response.ok) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: data.message || "Failed to update address",
+          details: data,
+        },
+        { status: response.status }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Address updated successfully",
+      data: data,
+    });
+  } catch (error) {
+    console.error("Address update error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    );
+  }
+}

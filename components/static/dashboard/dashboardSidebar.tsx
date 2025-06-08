@@ -3,7 +3,6 @@ import { UserProfile } from "@/types/type";
 import {
   RiShoppingBag3Line,
   RiUser3Line,
-  RiLockLine,
   RiLogoutBoxRLine,
 } from "react-icons/ri";
 
@@ -34,11 +33,7 @@ const DashboardSidebar = ({
       label: "اطلاعات شخصی",
       icon: <RiUser3Line className="w-5 h-5" />,
     },
-    {
-      id: "security",
-      label: "امنیت و رمز عبور",
-      icon: <RiLockLine className="w-5 h-5" />,
-    },
+   
   ];
 
   return (

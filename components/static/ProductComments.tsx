@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Send } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   ProductCommentsProps,
@@ -187,22 +186,12 @@ export default function ProductComments({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="border border-gray-200 rounded-lg p-6"
+      className="border border-gray-200 p-6"
     >
       <div className="flex items-start gap-4">
-        <div className="relative w-10 h-10 rounded-full overflow-hidden">
-          <Image
-            src={comment.avatar}
-            alt={comment.name}
-            className="object-cover"
-            width={40}
-            height={40}
-          />
-        </div>
-
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <h4 className="font-medium">{comment.name}</h4>
+            <h4 className="font-medium">{comment.id}</h4>
             <span className="text-sm text-gray-500">
               {new Date(comment.date).toLocaleDateString("fa-IR", {
                 year: "numeric",
@@ -254,18 +243,18 @@ export default function ProductComments({
 
   return (
     <div className="my-16">
-      <h2 className="text-2xl font-bold mb-6">نظرات مشتریان</h2>
-
+      <h2 className="text-2xl font-bold border-b border-dashed w-fit pb-3 mb-6">
+        نظرات مشتریان
+      </h2>
+      <h3 className="text-lg font-medium mb-4">
+        {replyToId ? "پاسخ به نظر" : "نظرات خود را با ما به اشتراک بگذارید"}
+      </h3>
       {/* Add a review form */}
       <form
         id="comment-form"
         onSubmit={handleSubmitComment}
         className="mb-10 p-6 rounded-lg"
       >
-        <h3 className="text-lg font-medium mb-4">
-          {replyToId ? "پاسخ به نظر" : "نظرات خود را با ما به اشتراک بگذارید"}
-        </h3>
-
         {replyToId && (
           <div className="mb-4 p-3 bg-gray-100 rounded-lg">
             <p className="text-sm text-gray-600">
@@ -339,12 +328,18 @@ export default function ProductComments({
         )}
 
         {!isAuthenticated ? (
-          <div className="mb-4 p-3 bg-gray-600 text-white">
+          <div className="mb-4 p-3 bg-gray-900 text-white">
             برای ثبت نظر باید وارد حساب کاربری خود شوید.
             <button
               type="button"
-              onClick={() => router.push("/auth")}
-              className="mr-2 text-blue-600 hover:text-blue-800 underline"
+              onClick={() => {
+                // Store current page URL for redirect after login
+                const currentUrl =
+                  window.location.pathname + window.location.search;
+                localStorage.setItem("redirectAfterLogin", currentUrl);
+                router.push("/auth");
+              }}
+              className="mr-2 text-blue-400 hover:text-blue-600"
             >
               ورود به حساب کاربری
             </button>

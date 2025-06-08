@@ -1,12 +1,172 @@
 import { motion } from "framer-motion";
 import { RiUser3Line, RiMapPinLine, RiPhoneLine } from "react-icons/ri";
 import { UserProfile } from "@/types/type";
-
+import { RiEditLine } from "react-icons/ri";
+import { toast } from "react-toastify";
+import { useState } from "react";
+import LocationSelector from "../LocationSelector";
 interface ProfilePanelProps {
   userProfile: UserProfile | null;
+  // onProfileUpdate?: () => void; // Add this prop for refresh callback
 }
+interface AddressEditFormProps {
+  address: any;
+  onSave: (data: any) => void;
+  onCancel: () => void;
+  isLoading: boolean;
+}
+const AddressEditForm: React.FC<AddressEditFormProps> = ({
+  address,
+  onSave,
+  onCancel,
+  isLoading,
+}) => {
+  const [formData, setFormData] = useState({
+    address_type: address.address_type || "2",
+    province_id: address.province?.id || "",
+    city_id: address.city?.id || "",
+    zipcode: address.zipcode || "",
+    receiver_name: address.receiver_name || "",
+    receiver_number: address.receiver_number || "",
+    adress: address.adress || "",
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Add this function to handle location selection without form submission
+  const handleLocationSelect = (
+    provinceId: string,
+    provinceName: string,
+    cityId: string,
+    cityName: string
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      province_id: provinceId,
+      city_id: cityId,
+    }));
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          انتخاب استان و شهر
+        </label>
+        {/* Add onClick handler to prevent form submission */}
+        <div onClick={(e) => e.stopPropagation()}>
+          <LocationSelector
+            onLocationSelected={handleLocationSelect}
+            className="border border-gray-300 rounded-md"
+          />
+        </div>
+        {formData.province_id && formData.city_id && (
+          <p className="text-sm text-green-600 mt-2">
+            ✓ استان و شهر انتخاب شده (استان: {formData.province_id}, شهر:{" "}
+            {formData.city_id})
+          </p>
+        )}
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              نام گیرنده
+            </label>
+            <input
+              type="text"
+              name="receiver_name"
+              value={formData.receiver_name}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              شماره تماس
+            </label>
+            <input
+              type="tel"
+              name="receiver_number"
+              value={formData.receiver_number}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              کد پستی
+            </label>
+            <input
+              type="text"
+              name="zipcode"
+              value={formData.zipcode}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Move LocationSelector outside form context or prevent its events */}
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            آدرس کامل
+          </label>
+          <textarea
+            name="adress"
+            value={formData.adress}
+            onChange={handleChange}
+            rows={3}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            required
+          />
+        </div>
+
+        <div className="flex gap-3 pt-4">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? "در حال ذخیره..." : "ذخیره تغییرات"}
+          </button>
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isLoading}
+            className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 disabled:opacity-50"
+          >
+            انصراف
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
 const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
+  console.log(userProfile);
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [isUpdatingAddress, setIsUpdatingAddress] = useState(false);
   if (!userProfile) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -27,6 +187,55 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
   };
 
   const selectedAddress = userProfile.addresses?.find((addr) => addr.selected);
+
+  const handleSaveAddress = async (addressData: any) => {
+    setIsUpdatingAddress(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const addressId = localStorage.getItem("address_id");
+
+      if (!token) {
+        toast.error("لطفا دوباره وارد شوید");
+        return;
+      }
+
+      if (!addressId) {
+        toast.error("شناسه آدرس یافت نشد");
+        return;
+      }
+
+      const response = await fetch("/api/address", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          address_id: addressId,
+          ...addressData,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "خطا در به‌روزرسانی آدرس");
+      }
+
+      toast.success("آدرس با موفقیت به‌روزرسانی شد");
+      setIsEditingAddress(false);
+
+      // Call the refresh callback to update parent component
+    } catch (error) {
+      console.error("Error updating address:", error);
+      toast.error(
+        error instanceof Error ? error.message : "خطا در به‌روزرسانی آدرس"
+      );
+    } finally {
+      setIsUpdatingAddress(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -171,54 +380,73 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
           transition={{ delay: 0.1 }}
           className="bg-white rounded-lg p-6 shadow-sm border"
         >
-          <div className="flex items-center mb-4">
-            <RiMapPinLine className="w-5 h-5 ml-2 text-gray-700" />
-            <h3 className="text-lg font-medium text-gray-800">
-              آدرس انتخاب شده
-            </h3>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center">
+              <RiMapPinLine className="w-5 h-5 ml-2 text-gray-700" />
+              <h3 className="text-lg font-medium text-gray-800">
+                آدرس انتخاب شده
+              </h3>
+            </div>
+            <button
+              onClick={() => setIsEditingAddress(true)}
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1"
+            >
+              <RiEditLine className="w-4 h-4" />
+              ویرایش
+            </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                نام گیرنده
-              </label>
-              <p className="p-3 bg-gray-50 rounded-md flex items-center">
-                <RiUser3Line className="w-4 h-4 ml-2 text-gray-500" />
-                {selectedAddress.receiver_name}
-              </p>
-            </div>
+          {isEditingAddress ? (
+            <AddressEditForm
+              address={selectedAddress}
+              onSave={handleSaveAddress}
+              onCancel={() => setIsEditingAddress(false)}
+              isLoading={isUpdatingAddress}
+            />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  نام گیرنده
+                </label>
+                <p className="p-3 bg-gray-50 rounded-md flex items-center">
+                  <RiUser3Line className="w-4 h-4 ml-2 text-gray-500" />
+                  {selectedAddress.receiver_name}
+                </p>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                شماره تماس
-              </label>
-              <p className="p-3 bg-gray-50 rounded-md flex items-center">
-                <RiPhoneLine className="w-4 h-4 ml-2 text-gray-500" />
-                {selectedAddress.receiver_number}
-              </p>
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  شماره تماس
+                </label>
+                <p className="p-3 bg-gray-50 rounded-md flex items-center">
+                  <RiPhoneLine className="w-4 h-4 ml-2 text-gray-500" />
+                  {selectedAddress.receiver_number}
+                </p>
+              </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                آدرس کامل
-              </label>
-              <p className="p-3 bg-gray-50 rounded-md">
-                {selectedAddress.province?.name} - {selectedAddress.city?.name}
-                <br />
-                {selectedAddress.adress}
-              </p>
-            </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  آدرس کامل
+                </label>
+                <p className="p-3 bg-gray-50 rounded-md">
+                  {selectedAddress.province?.name} -{" "}
+                  {selectedAddress.city?.name}
+                  <br />
+                  {selectedAddress.adress}
+                </p>
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                کد پستی
-              </label>
-              <p className="p-3 bg-gray-50 rounded-md">
-                {selectedAddress.zipcode}
-              </p>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  کد پستی
+                </label>
+                <p className="p-3 bg-gray-50 rounded-md">
+                  {selectedAddress.zipcode}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
         </motion.div>
       )}
 

@@ -361,7 +361,7 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
-  image: null | number;
+  image: null | string;
   size: null | string;
   color: null | string;
 }

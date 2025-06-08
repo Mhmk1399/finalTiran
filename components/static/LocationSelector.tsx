@@ -242,6 +242,7 @@ export default function LocationSelector({
           >
             <button
               onClick={() => selectedProvinceId && setIsCityOpen(!isCityOpen)}
+              type="button" 
               disabled={!selectedProvinceId}
               className={`w-full py-3 px-4 border rounded-md shadow-sm text-right flex items-center justify-between ${
                 !selectedProvinceId
@@ -331,6 +332,7 @@ export default function LocationSelector({
               </div>
 
               <motion.button
+              type="button" 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={resetSelections}

@@ -108,6 +108,13 @@ const Page = () => {
           >
             <ScrollMediaShowcase />
           </div>
+          <div className="min-h-screen">
+            <CategoryShowcase
+              categories={categories}
+              title="دسته‌بندی‌های ما"
+              subtitle="کشف کنید، تجربه کنید، لذت ببرید"
+            />
+          </div>
 
           {/* Other components with faster staggered loading */}
           <div
@@ -153,13 +160,7 @@ const Page = () => {
           >
             <EnhancedLogoLoadingScreen />
           </div>
-          <div className="min-h-screen">
-            <CategoryShowcase
-              categories={categories}
-              title="دسته‌بندی‌های ما"
-              subtitle="کشف کنید، تجربه کنید، لذت ببرید"
-            />
-          </div>
+
           {/* <div className="min-h-screen">
             <VideoShowcase />
           </div> */}

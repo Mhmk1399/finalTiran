@@ -26,7 +26,7 @@ export default function RootLayout({
           draggableDirection="x"
         />
         <CartProvider>
-          <Navbar />
+          {/* <Navbar /> */}
 
           {children}
 
