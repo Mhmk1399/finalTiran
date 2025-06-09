@@ -91,7 +91,7 @@ export default function ProductSlider({
                 <div className="flex flex-col md:flex-row">
                   <div className="relative w-full md:w-1/2 aspect-square">
                     <Image
-                      src={ "/assets/images/fashion/1.avif"}
+                      src={"/assets/images/fashion/1.avif"}
                       alt={products[currentIndex].page_title || "ef"}
                       fill
                       className="object-cover"
@@ -135,7 +135,8 @@ export default function ProductSlider({
 
                       <div className="flex items-center gap-4 mb-6">
                         <span className="text-2xl font-bold text-black">
-                          {products[currentIndex].store_stock.toLocaleString()} تومان
+                          {products[currentIndex].store_stock.toLocaleString()}{" "}
+                          تومان
                         </span>
                       </div>
                     </div>
@@ -147,7 +148,10 @@ export default function ProductSlider({
                       >
                         مشاهده محصول
                       </Link>
-                      <button className="bg-gray-100 p-3 rounded-lg hover:bg-gray-200 transition-colors">
+                      <button
+                        aria-label="show products"
+                        className="bg-gray-100 p-3 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"

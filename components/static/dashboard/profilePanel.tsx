@@ -143,6 +143,7 @@ const AddressEditForm: React.FC<AddressEditFormProps> = ({
 
         <div className="flex gap-3 pt-4">
           <button
+            aria-label="save"
             type="submit"
             disabled={isLoading}
             className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -150,6 +151,7 @@ const AddressEditForm: React.FC<AddressEditFormProps> = ({
             {isLoading ? "در حال ذخیره..." : "ذخیره تغییرات"}
           </button>
           <button
+            aria-label="cancel"
             type="button"
             onClick={onCancel}
             disabled={isLoading}
@@ -388,6 +390,7 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
               </h3>
             </div>
             <button
+              aria-label="edit"
               onClick={() => setIsEditingAddress(true)}
               className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1"
             >

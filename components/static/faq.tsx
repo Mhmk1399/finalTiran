@@ -20,6 +20,7 @@ const FaqItem = ({
       dir="rtl"
     >
       <button
+        aria-label="toggle button"
         className="flex flex-row-reverse justify-between items-center w-full text-right focus:outline-none"
         onClick={() => setIsOpen(!isOpen)}
       >

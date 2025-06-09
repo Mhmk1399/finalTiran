@@ -33,7 +33,10 @@ const ProductCarousel = ({ products }: ProductSliderProps) => {
 
         <div className="flex justify-center">
           <Link href="/shop">
-            <button className="bg-transparent text-nowrap border-b text-sm text-black py-1 md:px-8 md:py-3 md:text-lg font-medium transition-all duration-300 flex items-center gap-2 group">
+            <button
+              aria-label="learn more"
+              className="bg-transparent text-nowrap border-b text-sm text-black py-1 md:px-8 md:py-3 md:text-lg font-medium transition-all duration-300 flex items-center gap-2 group"
+            >
               مشاهده همه محصولات
               <ArrowLeft className="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1" />
             </button>

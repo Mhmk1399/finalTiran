@@ -88,7 +88,7 @@ export default function ProductComments({
     };
     return comment;
   };
-  console.log(transformComment)
+  console.log(transformComment);
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -240,6 +240,7 @@ export default function ProductComments({
           {/* Reply button - only show for main comments, not replies */}
           {isAuthenticated && !isReply && (
             <button
+              aria-label="reply"
               onClick={() => handleReply(comment.id)}
               className="mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium"
             >
@@ -277,6 +278,7 @@ export default function ProductComments({
             <p className="text-sm text-gray-600">
               در حال پاسخ به نظر شماره {replyToId}
               <button
+                aria-label="reply"
                 onClick={() => setReplyToId(null)}
                 className="mr-2 text-red-500 hover:text-red-700"
               >
@@ -295,6 +297,7 @@ export default function ProductComments({
               <button
                 key={rating}
                 type="button"
+                aria-label="rate"
                 onMouseEnter={() => setHoverRating(rating)}
                 onMouseLeave={() => setHoverRating(0)}
                 onClick={() => setNewRating(rating)}
@@ -357,6 +360,7 @@ export default function ProductComments({
           <div className="mb-4 p-3 bg-gray-900 text-white">
             برای ثبت نظر باید وارد حساب کاربری خود شوید.
             <button
+              aria-label="login"
               type="button"
               onClick={() => {
                 // Store current page URL for redirect after login
@@ -372,6 +376,7 @@ export default function ProductComments({
           </div>
         ) : (
           <button
+            aria-label="submit"
             type="submit"
             disabled={submitting}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${

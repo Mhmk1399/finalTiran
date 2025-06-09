@@ -120,10 +120,11 @@ const OrdersPanel = () => {
           <p className="text-gray-500">
             سفارش‌های شما پس از خرید در این قسمت نمایش داده می‌شوند.
           </p>
-          <button className="bg-black mt-3 text-white px-4 py-2 hover:bg-black/70">
-            <Link href="/shop">
-            فروشگاه
-            </Link>
+          <button
+            aria-label="shop"
+            className="bg-black mt-3 text-white px-4 py-2 hover:bg-black/70"
+          >
+            <Link href="/shop">فروشگاه</Link>
           </button>
         </div>
       ) : (

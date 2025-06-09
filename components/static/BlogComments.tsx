@@ -92,6 +92,7 @@ export default function BlogComments() {
             />
             <div className="flex justify-end mt-2">
               <button
+                aria-label="submit"
                 type="submit"
                 className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
               >
@@ -136,7 +137,10 @@ export default function BlogComments() {
                 <p className="text-gray-700 mb-4">{comment.text}</p>
 
                 {/* Reply button */}
-                <button className="text-sm text-gray-500 hover:text-black">
+                <button
+                  aria-label="answer"
+                  className="text-sm text-gray-500 hover:text-black"
+                >
                   پاسخ
                 </button>
 

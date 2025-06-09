@@ -110,7 +110,10 @@ const DynamicHero = ({
             transition={{ duration: 0.8, delay: 0.6 }}
           >
             <Link href={buttonLink}>
-              <button className="group relative overflow-hidden rounded-lg bg-transparent border px-8 py-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
+              <button
+                aria-label="button"
+                className="group relative overflow-hidden rounded-lg bg-transparent border px-8 py-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
+              >
                 <span className="relative z-10 font-medium">{buttonText}</span>
                 <span className="absolute inset-0 bg-gray-50/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></span>
               </button>

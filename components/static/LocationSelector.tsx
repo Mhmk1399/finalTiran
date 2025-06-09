@@ -157,6 +157,7 @@ export default function LocationSelector({
             whileHover={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}
           >
             <button
+              aria-label="add province"
               onClick={() => setIsProvinceOpen(!isProvinceOpen)}
               className="w-full py-3 px-4 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-right flex items-center justify-between"
             >
@@ -241,8 +242,9 @@ export default function LocationSelector({
             }
           >
             <button
+              aria-label="add city"
               onClick={() => selectedProvinceId && setIsCityOpen(!isCityOpen)}
-              type="button" 
+              type="button"
               disabled={!selectedProvinceId}
               className={`w-full py-3 px-4 border rounded-md shadow-sm text-right flex items-center justify-between ${
                 !selectedProvinceId
@@ -332,7 +334,7 @@ export default function LocationSelector({
               </div>
 
               <motion.button
-              type="button" 
+                type="button"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={resetSelections}

@@ -27,6 +27,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
           <div className="flex gap-7">
             {tabs.map((tab) => (
               <button
+                aria-label="tab"
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`py-4 px-2 relative text-nowrap text-sm md:text-lg font-light tracking-wide transition-colors ${
@@ -217,11 +218,11 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                     تیم پشتیبانی ما آماده پاسخگویی به سوالات شما است
                   </p>
                   <div className="flex justify-center gap-6">
-                    <button className="px-6 py-2 border border-gray-300 hover:border-gray-400 transition-colors">
+                    <button
+                      aria-label="contactus"
+                      className="px-6 py-2 border border-gray-300 hover:border-gray-400 transition-colors"
+                    >
                       تماس با ما
-                    </button>
-                    <button className="px-6 py-2 bg-black text-white hover:bg-gray-800 transition-colors">
-                      چت آنلاین
                     </button>
                   </div>
                 </div>

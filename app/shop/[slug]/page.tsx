@@ -90,6 +90,7 @@ export default function ProductPage() {
           {error || "Product not found"}
         </h3>
         <button
+          aria-label="back to shop"
           onClick={() => window.history.back()}
           className="mt-4 px-4 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
         >
@@ -118,7 +119,6 @@ export default function ProductPage() {
       <main className="min-h-screen bg-white py-10 mx-10" dir="rtl">
         {/* Product Gallery Section - Fixed Height */}
         <div className="min-h-screen mt-20">
-        
           <div className="grid grid-cols-12 h-full gap-0">
             {/* Thumbnails Sidebar - 1 columns */}
             <div className="col-span-1 mt-6">

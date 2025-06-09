@@ -56,7 +56,9 @@ export default function AddressModal({
     });
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -215,6 +217,7 @@ export default function AddressModal({
           <div className="flex justify-between items-center p-6 border-b border-gray-200">
             <h2 className="text-xl font-bold text-gray-800">ثبت آدرس جدید</h2>
             <button
+              aria-label="close"
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
               disabled={loading}
@@ -313,6 +316,7 @@ export default function AddressModal({
 
               <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
                 <button
+                  aria-label="cancel"
                   type="button"
                   onClick={onClose}
                   disabled={loading}
@@ -321,6 +325,7 @@ export default function AddressModal({
                   انصراف
                 </button>
                 <button
+                  aria-label="submit"
                   type="submit"
                   disabled={loading}
                   className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"

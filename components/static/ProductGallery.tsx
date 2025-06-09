@@ -183,6 +183,7 @@ ProductGalleryProps) {
 
                 {/* Zoom Button */}
                 <button
+                  aria-label="zoom"
                   onClick={() => image && handleZoom(image)}
                   className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
                 >
@@ -225,6 +226,7 @@ ProductGalleryProps) {
 
                 {/* Close button */}
                 <button
+                  aria-label="zoom"
                   onClick={() => setIsZoomed(false)}
                   className="absolute top-4 right-4 p-2 bg-white/20 text-black rounded-full hover:bg-white/30 transition-colors"
                 >
@@ -346,6 +348,7 @@ ProductGalleryProps) {
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
         {allImages.map((_, index) => (
           <button
+            aria-label="toggle image"
             key={index}
             onClick={() => setCurrentImageIndex(index)}
             className={`w-2 h-2 rounded-full transition-all ${
@@ -359,12 +362,14 @@ ProductGalleryProps) {
       {allImages.length > 1 && (
         <>
           <button
+            aria-label="prev"
             onClick={prevImage}
             className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 rounded-full shadow-md"
           >
             <ChevronLeft size={20} />
           </button>
           <button
+            aria-label="next"
             onClick={nextImage}
             className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 rounded-full shadow-md"
           >
@@ -375,6 +380,7 @@ ProductGalleryProps) {
 
       {/* Zoom functionality for mobile */}
       <button
+        aria-label="zoom"
         onClick={() =>
           allImages[currentImageIndex] &&
           handleZoom(allImages[currentImageIndex])
@@ -411,6 +417,7 @@ ProductGalleryProps) {
 
               {/* Close button for mobile zoom */}
               <button
+                aria-label="zoom"
                 onClick={() => setIsZoomed(false)}
                 className="absolute top-4 right-4 p-2 bg-white/80 text-black rounded-full hover:bg-white/30 transition-colors"
               >
