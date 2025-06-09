@@ -111,6 +111,7 @@ const DynamicHero = ({
           >
             <Link href={buttonLink}>
               <button
+                title={buttonText}
                 aria-label="button"
                 className="group relative overflow-hidden rounded-lg bg-transparent border px-8 py-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               >

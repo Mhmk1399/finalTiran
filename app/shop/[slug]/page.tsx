@@ -90,6 +90,7 @@ export default function ProductPage() {
           {error || "Product not found"}
         </h3>
         <button
+          title="بازگشت به فروشگاه"
           aria-label="back to shop"
           onClick={() => window.history.back()}
           className="mt-4 px-4 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"

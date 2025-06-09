@@ -73,6 +73,7 @@ function ShopPage() {
                     فیلتر: {selectedCategory}
                   </div>
                   <button
+                  title="حذف فیلتر"
                     aria-label="clear filter"
                     onClick={clearFilter}
                     className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2"

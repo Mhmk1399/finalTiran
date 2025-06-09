@@ -307,6 +307,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="flex items-center space-x-2">
           {slides.map((_, index) => (
             <button
+              title=""
               key={index}
               onClick={() => {
                 goToSlide(index);
