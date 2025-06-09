@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { RiUser3Line, RiMapPinLine, RiPhoneLine } from "react-icons/ri";
-import { UserProfile } from "@/types/type";
+import { AddressFormData, UserProfile, Address } from "@/types/type";
 import { RiEditLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { useState } from "react";
@@ -10,8 +10,8 @@ interface ProfilePanelProps {
   // onProfileUpdate?: () => void; // Add this prop for refresh callback
 }
 interface AddressEditFormProps {
-  address: any;
-  onSave: (data: any) => void;
+  address: Address;
+  onSave: (data: AddressFormData) => void;
   onCancel: () => void;
   isLoading: boolean;
 }
@@ -22,9 +22,9 @@ const AddressEditForm: React.FC<AddressEditFormProps> = ({
   isLoading,
 }) => {
   const [formData, setFormData] = useState({
-    address_type: address.address_type || "2",
-    province_id: address.province?.id || "",
-    city_id: address.city?.id || "",
+    address_type: String(address.address_type || "2"),
+    province_id: String(address.province?.id || ""),
+    city_id: String(address.city?.id || ""),
     zipcode: address.zipcode || "",
     receiver_name: address.receiver_name || "",
     receiver_number: address.receiver_number || "",
@@ -49,9 +49,9 @@ const AddressEditForm: React.FC<AddressEditFormProps> = ({
   // Add this function to handle location selection without form submission
   const handleLocationSelect = (
     provinceId: string,
-    provinceName: string,
-    cityId: string,
-    cityName: string
+    // provinceName: string,
+    cityId: string
+    // cityName: string
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -186,9 +186,9 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
     }
   };
 
-  const selectedAddress = userProfile.addresses?.find((addr) => addr.selected);
+  const selectedAddress = userProfile.addresses[0];
 
-  const handleSaveAddress = async (addressData: any) => {
+  const handleSaveAddress = async (addressData: AddressFormData) => {
     setIsUpdatingAddress(true);
 
     try {
@@ -346,7 +346,7 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
             </p>
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               وضعیت احراز هویت
             </label>
@@ -359,16 +359,16 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
             >
               {userProfile.identity_verification?.value || "تعیین نشده"}
             </p>
-          </div>
+          </div> */}
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               نوع کاربر
             </label>
             <p className="p-3 bg-gray-50 rounded-md">
               {userProfile.type?.type_name || "تعیین نشده"}
             </p>
-          </div>
+          </div> */}
         </div>
       </motion.div>
 

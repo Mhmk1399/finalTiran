@@ -80,7 +80,7 @@ export default function ProductComments({
       id: item.id,
       name: item.name,
       avatar: "/images/avatars/avatar-user.jpg", // Default avatar
-      rating: 5, // Default rating as API doesn't provide rating
+      rating: item.rate || 5, // Use API rating if available, fallback to 5
       date: new Date().toISOString().split("T")[0], // Default date as API doesn't provide date
       text: item.comment,
       title: item.title,
@@ -88,6 +88,7 @@ export default function ProductComments({
     };
     return comment;
   };
+  console.log(transformComment)
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,7 +123,7 @@ export default function ProductComments({
         // name: userName || undefined,
         title: newTitle || undefined,
         comment: newComment,
-        // parent_id: replyToId || undefined,
+        parent_id: replyToId || undefined,
       };
 
       const response = await fetch("/api/comment", {
@@ -180,18 +181,34 @@ export default function ProductComments({
   };
 
   // Render a comment and its replies
-  const renderComment = (comment: Comment) => (
+  const renderComment = (comment: Comment, isReply: boolean = false) => (
     <motion.div
       key={comment.id}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="border border-gray-200 p-6"
+      className={`border border-gray-200 p-6 ${
+        isReply
+          ? "bg-gray-50 border-l-4 border-l-blue-400 ml-4 rounded-r-lg"
+          : "bg-white rounded-lg"
+      }`}
     >
       <div className="flex items-start gap-4">
+        {isReply && (
+          <div className="flex-shrink-0">
+            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+              <span className="text-blue-600 text-sm">↳</span>
+            </div>
+          </div>
+        )}
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <h4 className="font-medium">{comment.id}</h4>
+            <h4 className="font-medium">{comment.name}</h4>
+            {isReply && (
+              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                پاسخ
+              </span>
+            )}
             <span className="text-sm text-gray-500">
               {new Date(comment.date).toLocaleDateString("fa-IR", {
                 year: "numeric",
@@ -220,8 +237,8 @@ export default function ProductComments({
           )}
           <p className="text-gray-700">{comment.text}</p>
 
-          {/* Reply button */}
-          {isAuthenticated && (
+          {/* Reply button - only show for main comments, not replies */}
+          {isAuthenticated && !isReply && (
             <button
               onClick={() => handleReply(comment.id)}
               className="mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium"
@@ -232,8 +249,8 @@ export default function ProductComments({
 
           {/* Render replies if any */}
           {comment.replies && comment.replies.length > 0 && (
-            <div className="mt-4 pr-4 border-r border-gray-200">
-              {comment.replies.map((reply) => renderComment(reply))}
+            <div className="mt-4">
+              {comment.replies.map((reply) => renderComment(reply, true))}
             </div>
           )}
         </div>
@@ -270,8 +287,10 @@ export default function ProductComments({
         )}
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">امتیاز شما</label>
-          <div className="flex">
+          <label className="block text-sm font-medium mb-2">
+            امتیاز شما: {newRating} از 5
+          </label>
+          <div className="flex items-center gap-1">
             {[1, 2, 3, 4, 5].map((rating) => (
               <button
                 key={rating}
@@ -279,7 +298,7 @@ export default function ProductComments({
                 onMouseEnter={() => setHoverRating(rating)}
                 onMouseLeave={() => setHoverRating(0)}
                 onClick={() => setNewRating(rating)}
-                className="p-1"
+                className="p-1 transition-transform hover:scale-110"
               >
                 <Star
                   size={24}
@@ -291,6 +310,13 @@ export default function ProductComments({
                 />
               </button>
             ))}
+            <span className="mr-2 text-sm text-gray-600">
+              {newRating === 1 && "خیلی بد"}
+              {newRating === 2 && "بد"}
+              {newRating === 3 && "متوسط"}
+              {newRating === 4 && "خوب"}
+              {newRating === 5 && "عالی"}
+            </span>
           </div>
         </div>
 

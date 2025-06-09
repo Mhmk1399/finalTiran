@@ -218,6 +218,7 @@ export interface CommentItem {
   comment: string;
   can_edit: boolean;
   childs: CommentChild[];
+  rate?: number;
 }
 
 export interface CommentResponse {
@@ -247,6 +248,7 @@ export interface Comment {
   text: string;
   title?: string;
   replies?: Comment[];
+  rate?: number;
 }
 
 export interface ProductCommentsProps {
@@ -296,7 +298,7 @@ interface City {
   province_id: number;
 }
 
-interface Address {
+export interface Address {
   id: number;
   address_type: number;
   zipcode: string;
@@ -308,6 +310,15 @@ interface Address {
   latitude: string | null;
   longitude: string | null;
   selected: boolean;
+}
+export interface AddressFormData {
+  address_type: string;
+  province_id: string;
+  city_id: string;
+  zipcode: string;
+  receiver_name: string;
+  receiver_number: string;
+  adress: string;
 }
 
 export interface UserProfile {
@@ -467,8 +478,6 @@ export interface VideoItem {
   description: string;
   category?: string;
 }
-
-
 
 // ------------------------------------ Orders dashboard ------------------------------
 export interface SendStatus {
