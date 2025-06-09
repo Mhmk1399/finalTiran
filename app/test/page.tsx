@@ -75,7 +75,7 @@ const SmoothScrollVideo: React.FC<{ src: string }> = ({
 
             clearTimeout((window as any)._scrollTimeout);
             (window as any)._scrollTimeout = setTimeout(() => {
-              setIsScrolling(false);
+              setIsScrolling(false);  
             }, 50);
           },
         },
