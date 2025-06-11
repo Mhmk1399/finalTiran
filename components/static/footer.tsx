@@ -394,23 +394,6 @@ const Footer = () => {
         ref={footerEndRef}
         className="relative h-screen bg-gradient-to-b from-black via-gray-900 to-black overflow-hidden"
       >
-        {/* Floating Particles */}
-        {/* {[...Array(12)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full opacity-20"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            transition={{
-              delay: i * 0.1,
-              duration: 2,
-              ease: "easeOut",
-            }}
-          />
-        ))} */}
-
         {/* Main Content Container */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           {/* Logo Container with Multiple Animation Layers */}
