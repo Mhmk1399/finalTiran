@@ -395,7 +395,7 @@ const Footer = () => {
         className="relative h-screen bg-gradient-to-b from-black via-gray-900 to-black overflow-hidden"
       >
         {/* Floating Particles */}
-        {[...Array(12)].map((_, i) => (
+        {/* {[...Array(12)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full opacity-20"
@@ -409,7 +409,7 @@ const Footer = () => {
               ease: "easeOut",
             }}
           />
-        ))}
+        ))} */}
 
         {/* Main Content Container */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
