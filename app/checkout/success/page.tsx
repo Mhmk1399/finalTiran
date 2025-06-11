@@ -12,7 +12,6 @@ import {
   RiTruckLine,
   RiDownloadLine,
 } from "react-icons/ri";
-import { Router } from "next/router";
 import { useRouter } from "next/navigation";
 
 interface OrderDetails {
