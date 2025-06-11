@@ -119,6 +119,7 @@ const CartPage = () => {
       );
 
       const data = await response.json();
+      console.log(data, "methodsssss");
 
       if (!response.ok) {
         throw new Error(data.error || "خطا در دریافت اطلاعات پرداخت");
@@ -126,6 +127,8 @@ const CartPage = () => {
 
       if (data.success && data.data) {
         setAvailablePaymentMethods(data.data.payMethods || []);
+        console.log(data.data.payMethods, "availablePaymentMethods");
+        console.log(selectedPaymentMethod, "methodsssss");
 
         // Set default selections if available
         if (data.data.payMethods && data.data.payMethods.length > 0) {
