@@ -12,6 +12,8 @@ import {
   RiTruckLine,
   RiDownloadLine,
 } from "react-icons/ri";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface OrderDetails {
   order_id: string;
@@ -21,6 +23,7 @@ interface OrderDetails {
 }
 
 const CheckoutSuccessPage = () => {
+  const router = useRouter();
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [showConfetti, setShowConfetti] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -29,6 +32,10 @@ const CheckoutSuccessPage = () => {
     // Get order details from localStorage
     const orderId = localStorage.getItem("current_order_id");
     const paymentType = localStorage.getItem("payment_type");
+
+    if (!orderId || !paymentType) {
+      router.push("/");
+    }
 
     if (orderId) {
       setOrderDetails({
@@ -109,20 +116,15 @@ const CheckoutSuccessPage = () => {
 
   return (
     <div
-      className="min-h-screen bg-gradient-to-br from-green-50 mt-30 via-blue-50 to-purple-50 relative overflow-hidden"
+      className="min-h-screen bg-gradient-to-br  relative overflow-hidden"
       dir="rtl"
     >
       {/* Confetti Animation */}
       <AnimatePresence>{showConfetti && <Confetti />}</AnimatePresence>
 
       {/* Background Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-      </div>
 
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
+      <div className="relative mt-30 z-10 min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           initial={{ opacity: 0, scale: 0.8, y: 50 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}

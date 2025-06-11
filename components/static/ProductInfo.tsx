@@ -7,11 +7,13 @@ import { Product, ProductInfoProps } from "@/types/type";
 import { toast } from "react-toastify";
 import AddressModal from "./addressModal";
 import { addToCart } from "@/middleware/checkout";
+import { useRouter } from "next/navigation";
 
 export default function ProductInfo({
   product,
   layout = "mobile",
 }: ProductInfoProps) {
+  const router = useRouter();
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
@@ -131,6 +133,8 @@ export default function ProductInfo({
           position: "top-center",
           autoClose: 3000,
         });
+        router.push("/auth");
+
         return;
       }
       // Check if address exists in localStorage
