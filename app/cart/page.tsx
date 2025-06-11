@@ -13,11 +13,27 @@ import {
 import { useCart } from "@/context/cartContext";
 import { useRouter } from "next/navigation";
 import { UserProfile } from "@/types/type";
-import moment from "moment";
 import jMoment from "moment-jalaali";
 import PersianDatePicker from "@/components/static/jalaliDatePicker";
+import { getCheckoutInfo, completeCheckout } from "@/middleware/checkout";
+import { toast } from "react-toastify";
+import moment from "moment";
 // Initialize jMoment
 jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
+
+export interface PaymentMethod {
+  id: number;
+  title: string;
+  description?: string;
+  type?: string;
+  is_active?: boolean;
+}
+
+// export interface CheckoutData {
+//   payMethods: PaymentMethod[];
+//   sendMethods?: any[];
+//   // Add other properties as needed
+// }
 
 const CartPage = () => {
   const router = useRouter();
@@ -29,12 +45,6 @@ const CartPage = () => {
   const [userDataLoading, setUserDataLoading] = useState(true); // Shipping method options
   console.log(userDataLoading);
 
-  const [shippingMethods] = useState([
-    { id: 1, name: "پست پیشتاز", price: 30000 },
-    { id: 2, name: "پیک موتوری", price: 25000 },
-  ]);
-  const [selectedShippingMethod, setSelectedShippingMethod] = useState(1);
-
   const [selectedDate, setSelectedDate] = useState("1404/03/01");
   const [selectedDeliveryDate, setSelectedDeliveryDate] = useState<string>(
     moment().add(1, "day").format("jYYYY/jMM/jDD")
@@ -42,19 +52,19 @@ const CartPage = () => {
 
   console.log(setSelectedDeliveryDate);
   // Payment method options
-  const [paymentMethods] = useState([
-    { id: 1, name: "پرداخت آنلاین", value: "online" },
-    { id: 2, name: "پرداخت در محل", value: "cash" },
-  ]);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("online");
 
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<number>(0);
   // Description and credit deduction
   const [description, setDescription] = useState("");
-  const [useCreditDeduction, setUseCreditDeduction] = useState(false);
-
   // Checkout state
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Add these new state variables after existing ones
+  const [availablePaymentMethods, setAvailablePaymentMethods] = useState<
+    PaymentMethod[]
+  >([]);
+  const [paymentMethodsLoading, setPaymentMethodsLoading] = useState(false);
 
   const fetchUserAccount = async () => {
     const token = localStorage.getItem("token");
@@ -89,10 +99,54 @@ const CartPage = () => {
       setUserDataLoading(false);
     }
   };
+  const fetchPaymentMethods = async () => {
+    const addressId = localStorage.getItem("address_id");
+    const token = localStorage.getItem("token");
+
+    if (!addressId || !token) {
+      return;
+    }
+
+    try {
+      setPaymentMethodsLoading(true);
+      const response = await fetch(
+        `/api/cart/checkout?address_id=${addressId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "خطا در دریافت اطلاعات پرداخت");
+      }
+
+      if (data.success && data.data) {
+        setAvailablePaymentMethods(data.data.payMethods || []);
+
+        // Set default selections if available
+        if (data.data.payMethods && data.data.payMethods.length > 0) {
+          setSelectedPaymentMethod(data.data.payMethods[0].id);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching payment methods:", error);
+      toast.error("خطا در دریافت روش‌های پرداخت", {
+        position: "top-center",
+        autoClose: 3000,
+      });
+    } finally {
+      setPaymentMethodsLoading(false);
+    }
+  };
 
   // Call the fetch function when the component mounts
   useEffect(() => {
     fetchUserAccount();
+    fetchPaymentMethods();
   }, []);
 
   useEffect(() => {
@@ -105,17 +159,12 @@ const CartPage = () => {
   }, []);
 
   // Handle shipping method change
-  const handleShippingMethodChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectedShippingMethod(Number(e.target.value));
-  };
 
   // Handle payment method change
   const handlePaymentMethodChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setSelectedPaymentMethod(e.target.value);
+    setSelectedPaymentMethod(Number(e.target.value)); // Convert to number
   };
 
   // Format price with commas for thousands
@@ -130,62 +179,176 @@ const CartPage = () => {
       return;
     }
 
-    if (!userAccount?.user?.id) {
-      setError("اطلاعات کاربر در دسترس نیست. لطفا دوباره تلاش کنید.");
+    const addressId = localStorage.getItem("address_id");
+    if (!addressId) {
+      setError(
+        "آدرس تحویل انتخاب نشده است. لطفا ابتدا یک محصول به سبد خرید اضافه کنید تا آدرس ثبت شود."
+      );
       return;
     }
+
     if (!selectedDeliveryDate) {
       setError("لطفا تاریخ تحویل را انتخاب کنید.");
       return;
     }
-
     setCheckoutLoading(true);
     setError("");
 
     try {
-      // Get payment method ID from the selected value
-      const payMethodId =
-        paymentMethods.find((method) => method.value === selectedPaymentMethod)
-          ?.id || 1;
-
-      // Prepare checkout data
-      const checkoutData = {
-        address_id: userAccount?.user?.id, // Using the fetched user ID
-        send_method_id: selectedShippingMethod,
-        send_method_receive_id: selectedShippingMethod,
-        pay_method_id: payMethodId,
-        callback_url: window.location.origin + "/", // Redirect to home page
-        receive_date: selectedDeliveryDate,
-        description: description || undefined, // Only include if not empty
-        credit_deduction: useCreditDeduction ? 1 : 0,
-      };
-
-      // Send checkout request
-      const response = await fetch("/api/cart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(checkoutData),
-      });
-      console.log(checkoutData);
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "خطا در پردازش سفارش");
+      // 1. First, ensure all cart items are added to server cart
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("لطفا وارد حساب کاربری خود شوید");
       }
 
-      // If payment is online and we have a redirect URL
-      if (selectedPaymentMethod === "online" && data.redirect_url) {
-        window.location.href = data.redirect_url;
+      // Add each item to server cart to ensure cart is not empty
+      for (const item of items) {
+        try {
+          await fetch("/api/cart/index", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              variety_id: parseInt(item.id),
+              quantity: item.quantity,
+              unit_id: 1,
+            }),
+          });
+        } catch (addError) {
+          console.warn(
+            `Failed to add item ${item.id} to server cart:`,
+            addError
+          );
+          // Continue with other items
+        }
+      }
+
+      // 2. Get checkout information
+
+      const checkoutInfo = await getCheckoutInfo(parseInt(addressId));
+
+      if (!checkoutInfo.sendMethods || checkoutInfo.sendMethods.length === 0) {
+        throw new Error("روش ارسال در دسترس نیست");
+      }
+      // 3. Use the selected send method or first available one
+
+      // const sendMethod =
+      //   checkoutInfo.sendMethods.find(
+      //     (method: any) => method.id === selectedShippingMethod
+      //   ) || checkoutInfo.sendMethods[0];
+
+      // 4. Use selectedPaymentMethod directly (it's already the ID)
+      const payMethodId = selectedPaymentMethod;
+
+      if (!payMethodId) {
+        throw new Error("روش پرداخت انتخاب نشده است");
+      }
+
+      // 5. Get the receive date
+      const englishDate = selectedDate.replace(/[۰-۹]/g, (match) => {
+        const persianDigits = [
+          "۰",
+          "۱",
+          "۲",
+          "۳",
+          "۴",
+          "۵",
+          "۶",
+          "۷",
+          "۸",
+          "۹",
+        ];
+        return persianDigits.indexOf(match).toString();
+      });
+
+      // if (sendMethod.receives && sendMethod.receives.length > 0) {
+      //   // Use the first available receive date if exists
+      //   receiveDate = sendMethod.receives[0].date;
+      // }
+
+      // 6. Complete the checkout process
+
+      const result = await completeCheckout(
+        parseInt(addressId),
+        description,
+        // sendMethod.id,
+        payMethodId, // Use the ID directly
+        englishDate
+      );
+      console.log("Checkout result:", result);
+
+      // 7. Handle the result
+      if (result && result.success) {
+        const { data } = result;
+
+        // Store order information in localStorage for later use
+        localStorage.setItem(
+          "current_order_id",
+          data.order_id?.toString() || ""
+        );
+        localStorage.setItem("payment_type", data.payment_type || "");
+
+        // Check payment type and redirect accordingly
+        if (data.payment_type === "online" && data.go_to_ipg_url) {
+          // Show success message before redirect
+          toast.success("سفارش شما ثبت شد. در حال انتقال به درگاه پرداخت...", {
+            position: "top-center",
+            autoClose: 2000,
+          });
+
+          // Redirect to payment gateway after a short delay
+          setTimeout(() => {
+            router.push(data.go_to_ipg_url);
+          }, 1000);
+        } else if (
+          data.payment_type === "cash" ||
+          data.payment_type === "cod"
+        ) {
+          // For cash on delivery
+          toast.success("سفارش شما با موفقیت ثبت شد", {
+            position: "top-center",
+            autoClose: 3000,
+          });
+
+          // Clear cart and redirect to success page
+          setTimeout(() => {
+            router.push("/checkout/success");
+          }, 2000);
+        } else {
+          // Handle other payment types or fallback
+          toast.success("سفارش شما با موفقیت ثبت شد", {
+            position: "top-center",
+            autoClose: 3000,
+          });
+
+          // If there's a redirect URL, use it, otherwise go to success page
+          if (data.go_to_ipg_url) {
+            setTimeout(() => {
+              window.location.href = data.go_to_ipg_url;
+            }, 2000);
+          } else {
+            setTimeout(() => {
+              router.push("/checkout/success");
+            }, 2000);
+          }
+        }
       } else {
-        // For cash payment or if no redirect URL
-        router.push("/checkout/success");
+        // Handle case where success is false or result structure is different
+        throw new Error(
+          result?.message || result?.error || "خطا در پردازش سفارش"
+        );
       }
     } catch (err) {
       console.error("Checkout error:", err);
-      setError(err instanceof Error ? err.message : "خطا در پردازش سفارش");
+      const errorMessage =
+        err instanceof Error ? err.message : "خطا در پردازش سفارش";
+      setError(errorMessage);
+      toast.error(errorMessage, {
+        position: "top-center",
+        autoClose: 3000,
+      });
     } finally {
       setCheckoutLoading(false);
     }
@@ -341,27 +504,6 @@ const CartPage = () => {
               </div>
             </motion.div>
 
-            {/* Shipping Method Selection */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white  border-t border-dashed p-6"
-            >
-              <h2 className="text-lg font-semibold mb-4">روش ارسال</h2>
-              <select
-                className="w-full p-2 border border-gray-300 rounded-md"
-                value={selectedShippingMethod}
-                onChange={handleShippingMethodChange}
-              >
-                {shippingMethods.map((method) => (
-                  <option key={method.id} value={method.id}>
-                    {method.name} - {formatPrice(method.price)} تومان
-                  </option>
-                ))}
-              </select>
-            </motion.div>
-
             {/* Delivery Date */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -375,9 +517,9 @@ const CartPage = () => {
                 onChange={(newDate) => setSelectedDate(newDate)}
                 className="w-full"
               />
-              {selectedDeliveryDate && (
+              {selectedDate && (
                 <p className="mt-2 text-sm text-gray-600">
-                  تاریخ انتخاب شده: {selectedDeliveryDate}
+                  تاریخ انتخاب شده: {selectedDate}
                 </p>
               )}
               <p className="mt-2 text-xs text-gray-500">
@@ -393,43 +535,63 @@ const CartPage = () => {
               className="bg-white  border-t border-dashed p-6"
             >
               <h2 className="text-lg font-semibold mb-4">روش‌های پرداخت</h2>
-              <div className="space-y-3">
-                {paymentMethods.map((method) => (
-                  <div key={method.id} className="flex items-center">
-                    <input
-                      type="radio"
-                      id={method.value}
-                      name="payment"
-                      value={method.value}
-                      checked={selectedPaymentMethod === method.value}
-                      onChange={handlePaymentMethodChange}
-                      className="h-4 w-4 text-gray-800 focus:ring-gray-500"
-                    />
-                    <label
-                      htmlFor={method.value}
-                      className="mr-2 block text-sm text-gray-700"
-                    >
-                      {method.name}
-                    </label>
-                  </div>
-                ))}
-              </div>
 
-              {/* Payment method information */}
-              {selectedPaymentMethod === "online" && (
-                <div className="mt-4 p-3 bg-blue-50 rounded-md text-sm text-gray-700">
-                  پس از تکمیل سفارش، به درگاه پرداخت آنلاین هدایت خواهید شد.
+              {paymentMethodsLoading ? (
+                <div className="flex justify-center py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-gray-900"></div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {availablePaymentMethods.map((method) => (
+                    <div key={method.id} className="flex items-center">
+                      <input
+                        type="radio"
+                        id={`payment-${method.id}`}
+                        name="payment"
+                        value={method.id}
+                        checked={selectedPaymentMethod === method.id}
+                        onChange={handlePaymentMethodChange}
+                        className="h-4 w-4 text-gray-800 focus:ring-gray-500"
+                      />
+                      <label
+                        htmlFor={`payment-${method.id}`}
+                        className="mr-2 block text-sm text-gray-700"
+                      >
+                        {method.title}
+                        {method.description && (
+                          <span className="text-xs text-gray-500 block">
+                            {method.description}
+                          </span>
+                        )}
+                      </label>
+                    </div>
+                  ))}
                 </div>
               )}
-              {selectedPaymentMethod === "cash" && (
-                <div className="mt-4 p-3 bg-yellow-50 rounded-md text-sm text-gray-700">
-                  مبلغ سفارش در زمان تحویل کالا دریافت خواهد شد.
+
+              {/* Payment method information */}
+              {availablePaymentMethods.length > 0 && (
+                <div className="mt-4">
+                  {availablePaymentMethods
+                    .find((m) => m.id === selectedPaymentMethod)
+                    ?.title.includes("درگاه") && (
+                    <div className="p-3 bg-blue-50 rounded-md text-sm text-gray-700">
+                      پس از تکمیل سفارش، به درگاه پرداخت آنلاین هدایت خواهید شد.
+                    </div>
+                  )}
+                  {availablePaymentMethods
+                    .find((m) => m.id === selectedPaymentMethod)
+                    ?.title.includes("درب محل") && (
+                    <div className="p-3 bg-yellow-50 rounded-md text-sm text-gray-700">
+                      مبلغ سفارش در زمان تحویل کالا دریافت خواهد شد.
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>
 
             {/* Credit Deduction Option */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.42 }}
@@ -454,7 +616,7 @@ const CartPage = () => {
                 با فعال کردن این گزینه، مبلغ سفارش از اعتبار حساب شما کسر خواهد
                 شد.
               </p>
-            </motion.div>
+            </motion.div> */}
 
             {/* Order Description */}
             <motion.div

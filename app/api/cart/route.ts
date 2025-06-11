@@ -1,18 +1,22 @@
 export async function POST(request: Request) {
-  try { 
+  try {
     const body = await request.json();
+    const Authorization = request.headers.get("Authorization");
+    console.log(Authorization, "aaaaaaaaaaaaaaaaaaaaaaaaaa");
+    const token = Authorization?.split(" ")[1];
+    console.log(token, "333333333333333333333333333333333333333");
 
     // Ensure credit_deduction is properly formatted as 0 or 1
-    if (body.credit_deduction !== undefined) {
-      body.credit_deduction = body.credit_deduction ? 1 : 0;
-    }
+    // if (body.credit_deduction !== undefined) {
+    //   body.credit_deduction = body.credit_deduction ? 1 : 0;
+    // }
 
     // Remove undefined fields
-    Object.keys(body).forEach((key) => {
-      if (body[key] === undefined) {
-        delete body[key];
-      }
-    });
+    // Object.keys(body).forEach((key) => {
+    //   if (body[key] === undefined) {
+    //     delete body[key];
+    //   }
+    // });
 
     const response = await fetch(
       "https://tiran.shop.hesabroclub.ir/api/web/shop-v1/cart/checkout",
@@ -20,13 +24,14 @@ export async function POST(request: Request) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Add any authentication headers if needed
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(body),
       }
     );
 
     const data = await response.json();
+    console.log(data, "api/cart");
 
     if (!response.ok) {
       return new Response(

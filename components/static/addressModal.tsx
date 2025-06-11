@@ -3,7 +3,6 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import LocationSelector from "../static/LocationSelector";
-import { getCheckoutInfo } from "@/middleware/checkout";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { AddressModalProps, ValidationError } from "@/types/type";
@@ -151,19 +150,9 @@ export default function AddressModal({
 
       // Save address_id to localStorage
       localStorage.setItem("address_id", result.data.id.toString());
-      console.log(result.data.id, "adreeeeeeeeeeeeeeeassssssssssssssssss");
+      console.log(result.data.id, "address ID saved");
 
       toast.success("آدرس با موفقیت ثبت شد");
-
-      // Try to get checkout info to verify the address works
-      try {
-        await getCheckoutInfo(result.data.id);
-        console.log("Checkout info verified successfully");
-      } catch (checkoutError) {
-        console.error("Error getting checkout info:", checkoutError);
-        // Continue anyway, as the address was created successfully
-        toast.caller("آدرس ثبت شد اما مشکلی در بررسی اطلاعات ارسال وجود دارد");
-      }
 
       // Call the callback with the new address ID
       onAddressCreated(result.data.id);

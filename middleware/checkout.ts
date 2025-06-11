@@ -109,16 +109,10 @@ export const addToCart = async (varietyId: number, quantity: number) => {
       throw new Error("لطفا وارد حساب کاربری خود شوید");
     }
 
-    // Check if we have a valid address_id
-    const addressId = localStorage.getItem("address_id");
-    if (!addressId) {
-      throw new Error("آدرس تحویل انتخاب نشده است");
-    }
-
     const requestData = {
       variety_id: varietyId,
       quantity: quantity,
-      unit_id: 1, // Add address_id to the request
+      unit_id: 1,
     };
 
     console.log("addToCart request data:", requestData);
@@ -178,12 +172,12 @@ export const addToCart = async (varietyId: number, quantity: number) => {
   }
 };
 
-// Complete checkout process
+// Complete checkout process - Updated to include more parameters
 export const completeCheckout = async (
   addressId: number,
-  sendMethodId: number,
+  description: string,
   payMethodId: number,
-  receiveDate: string
+  selectedDate: string
 ) => {
   try {
     const token = localStorage.getItem("token");
@@ -191,29 +185,45 @@ export const completeCheckout = async (
       throw new Error("لطفا وارد حساب کاربری خود شوید");
     }
 
-    const response = await fetch("/api/cart/checkout", {
+    const checkoutData = {
+      address_id: addressId,
+      send_method_id: 22,
+      pay_method_id: payMethodId,
+      callback_url: window.location.origin + "/checkout/success",
+      receive_date: selectedDate, // Use timestamp instead of hardcoded date
+      description: description || "سفارش از فروشگاه",
+    };
+
+    console.log("Complete checkout data:", checkoutData);
+
+    const response = await fetch("/api/cart", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        address_id: addressId,
-        send_method_id: sendMethodId,
-        pay_method_id: payMethodId,
-        callback_url: "https://example.com",
-        receive_date: receiveDate,
-        description: "توضیحات",
-        credit_deduction: 1,
-      }),
+      body: JSON.stringify(checkoutData),
     });
-    console.log(response, "response");
+
+    console.log("Complete checkout response status:", response.status);
 
     // Check if the response is OK
     if (!response.ok) {
       const errorText = await response.text();
       console.error("API Error Response:", errorText);
-      throw new Error(`خطا در تکمیل سفارش: ${response.status}`);
+
+      let errorData;
+      try {
+        errorData = JSON.parse(errorText);
+      } catch {
+        throw new Error(`خطا در تکمیل سفارش: ${response.status}`);
+      }
+
+      throw new Error(
+        errorData.error ||
+          errorData.message ||
+          `خطا در تکمیل سفارش: ${response.status}`
+      );
     }
 
     // Try to parse the response as JSON
@@ -225,11 +235,10 @@ export const completeCheckout = async (
       throw new Error("خطا در پردازش پاسخ سرور");
     }
 
-    if (!result.success) {
-      throw new Error(result.message || "خطا در تکمیل سفارش");
-    }
+    console.log("Complete checkout result:", result);
 
-    return result.data;
+    // Return the full result object to preserve the structure
+    return result;
   } catch (error: any) {
     console.error("Complete Checkout Error:", error);
     throw new Error(error.message || "خطا در تکمیل سفارش");

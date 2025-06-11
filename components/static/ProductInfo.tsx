@@ -6,11 +6,7 @@ import { useCart } from "@/context/cartContext";
 import { Product, ProductInfoProps } from "@/types/type";
 import { toast } from "react-toastify";
 import AddressModal from "./addressModal";
-import {
-  addToCart,
-  completeCheckout,
-  getCheckoutInfo,
-} from "@/middleware/checkout";
+import { addToCart } from "@/middleware/checkout";
 
 export default function ProductInfo({
   product,
@@ -24,7 +20,6 @@ export default function ProductInfo({
   >(null);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   // ProductTabs states
 
@@ -129,6 +124,15 @@ export default function ProductInfo({
     setIsAddingToCart(true);
 
     try {
+      // Check if user is logged in
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("لطفا وارد حساب کاربری خود شوید", {
+          position: "top-center",
+          autoClose: 3000,
+        });
+        return;
+      }
       // Check if address exists in localStorage
       const addressId = localStorage.getItem("address_id");
 
@@ -139,7 +143,7 @@ export default function ProductInfo({
       }
 
       // If address exists, proceed with adding to cart
-      await processAddToCart(parseInt(addressId));
+      await processAddToCart();
     } catch (error: unknown) {
       toast.error(
         error instanceof Error ? error.message : "خطا در افزودن به سبد خرید",
@@ -156,9 +160,7 @@ export default function ProductInfo({
     }
   };
 
-  const processAddToCart = async (addressId: number) => {
-    setCheckoutLoading(true);
-
+  const processAddToCart = async () => {
     try {
       if (!selectedVariety) return;
 
@@ -176,53 +178,24 @@ export default function ProductInfo({
       // 2. Add item to server cart
       await addToCart(selectedVariety.id, quantity);
 
-      // 3. Get checkout information
-      const checkoutInfo = await getCheckoutInfo(addressId);
-
-      if (!checkoutInfo.sendMethods || checkoutInfo.sendMethods.length === 0) {
-        throw new Error("روش ارسال در دسترس نیست");
-      }
-      // 4. Use the first send method and pay method
-      const sendMethod = checkoutInfo.sendMethods[0];
-      const payMethod = checkoutInfo.payMethods[0];
-
-      // Get the first available receive date
-      let receiveDate = "";
-      if (sendMethod.receives && sendMethod.receives.length > 0) {
-        receiveDate = sendMethod.receives[0].date;
-      } else {
-        // Default to a date if none available
-        receiveDate = "1404/02/22";
-      }
-
-      // 5. Complete the checkout process
-      await completeCheckout(
-        addressId,
-        sendMethod.id,
-        payMethod.id,
-        receiveDate
-      );
-
-      toast.success("سفارش شما با موفقیت ثبت شد", {
+      toast.success("محصول به سبد خرید اضافه شد", {
         position: "top-center",
         autoClose: 3000,
       });
     } catch (error: unknown) {
       toast.error(
-        error instanceof Error ? error.message : "خطا در تکمیل سفارش",
+        error instanceof Error ? error.message : "خطا در افزودن به سبد خرید",
         {
           position: "top-center",
           autoClose: 3000,
         }
       );
-    } finally {
-      setCheckoutLoading(false);
     }
   };
 
-  const handleAddressCreated = (addressId: number) => {
-    // After address is created, continue with the cart process
-    processAddToCart(addressId);
+  const handleAddressCreated = () => {
+    // After address is created, continue with adding to cart
+    processAddToCart();
   };
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
@@ -230,7 +203,6 @@ export default function ProductInfo({
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   // ProductTabs configuration
-
 
   return (
     <div
@@ -244,7 +216,7 @@ export default function ProductInfo({
       <div className="space-y-2">
         {/* Header Section */}
         <div className="flex items-center justify-center">
-           <h1
+          <h1
             className={`font-light tracking-wide text-gray-900 mb-3 ${
               layout === "desktop" ? "text-2xl lg:text-3xl" : "text-2xl"
             }`}
@@ -267,11 +239,7 @@ export default function ProductInfo({
         {/* Add to Cart Button */}
         <div className="pt-4">
           <motion.button
-            disabled={
-              !selectedVariety ||
-              selectedVariety.store_stock <= 0 ||
-              checkoutLoading
-            }
+            disabled={!selectedVariety || selectedVariety.store_stock <= 0}
             onClick={handleAddToCart}
             whileHover={
               (selectedVariety?.store_stock ?? 0) > 0 ? { scale: 1 } : {}
@@ -280,7 +248,7 @@ export default function ProductInfo({
               (selectedVariety?.store_stock ?? 0) > 0 ? { scale: 0.99 } : {}
             }
             className={`w-full py-3 flex items-center justify-center gap-3 border border-dashed cursor-pointer font-medium duration-300 transition-all ${
-              (selectedVariety?.store_stock ?? 0) > 0 && !checkoutLoading
+              (selectedVariety?.store_stock ?? 0) > 0
                 ? " text-black hover:border-gray-300"
                 : "bg-gray-100 text-gray-400 cursor-not-allowed"
             } ${layout === "desktop" ? "text-sm" : "text-base"}`}
@@ -290,8 +258,6 @@ export default function ProductInfo({
                 <Check size={18} />
                 <span>اضافه شد</span>
               </>
-            ) : checkoutLoading ? (
-              <span>در حال پردازش...</span>
             ) : (
               <>
                 <ShoppingCart size={18} />
