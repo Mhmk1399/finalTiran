@@ -5,6 +5,7 @@ import { ray } from "@/next-persian-fonts/ray";
 import Footer from "@/components/static/footer";
 import { ToastContainer } from "react-toastify";
 import { CartProvider } from "@/context/cartContext";
+import CanonicalUrl from "@/components/global/CanonicalUrl";
 
 export const metadata: Metadata = {
   title: "تیران - فروشگاه آنلاین پوشاک",
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="fa">
       <body className={` ${ray.className} antialiased relative`}>
+        <CanonicalUrl />
         <ToastContainer
           position="top-center"
           rtl

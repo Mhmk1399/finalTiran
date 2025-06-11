@@ -1,19 +1,13 @@
 "use client";
+import { MarqueeSliderProps } from "@/types/type";
 import Image from "next/image";
-import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
-
-interface SlideItem {
-  image: string;
-  title: string;
-  description: string;
-}
-
-interface MarqueeSliderProps {
-  items: SlideItem[];
-  speed?: number;
-  direction?: "left" | "right";
-  pauseOnHover?: boolean;
-}
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 
 const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
   items,
@@ -46,7 +40,7 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
 
   useEffect(() => {
     if (!isClient) return;
-    
+
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);

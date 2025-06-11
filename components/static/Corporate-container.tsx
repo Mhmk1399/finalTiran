@@ -55,7 +55,7 @@ const CorporateGiftsContainer = () => {
 
   return (
     <div className="min-h-screen  py-16 px-4 sm:px-6 lg:px-8 " dir="rtl">
-      <div className="max-w-7xl mt-10 mx-auto">
+      <div className="max-w-7xl mt-20 mx-auto">
         {/* Hero Section */}
         <motion.div
           className="text-center mb-16"

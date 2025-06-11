@@ -553,3 +553,39 @@ export interface ApiResponse {
     };
   };
 }
+
+// ------------------------------ address modal --------------------------------
+export interface ValidationError {
+  field: string;
+  message: string;
+}
+
+export interface AddressModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onAddressCreated: (addressId: number) => void;
+}
+
+// ------------------------------- contact footer --------------------------------
+export interface ContactInfoItem {
+  label: string;
+  value: string;
+  icon: React.ComponentType;
+  isLink?: boolean;
+  href?: string;
+}
+
+
+// --------------------------------- marquee slider ------------------------------
+export interface SlideItem {
+  image: string;
+  title: string;
+  description: string;
+}
+
+export interface MarqueeSliderProps {
+  items: SlideItem[];
+  speed?: number;
+  direction?: "left" | "right";
+  pauseOnHover?: boolean;
+}

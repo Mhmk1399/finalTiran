@@ -6,17 +6,7 @@ import LocationSelector from "../static/LocationSelector";
 import { getCheckoutInfo } from "@/middleware/checkout";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-
-interface ValidationError {
-  field: string;
-  message: string;
-}
-
-interface AddressModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onAddressCreated: (addressId: number) => void;
-}
+import { AddressModalProps, ValidationError } from "@/types/type";
 
 export default function AddressModal({
   isOpen,

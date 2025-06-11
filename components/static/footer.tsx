@@ -3,11 +3,10 @@ import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { FaTwitter, FaInstagram, FaLinkedin, FaTelegram } from "react-icons/fa";
-import { HiMail, HiPhone, HiLocationMarker } from "react-icons/hi";
 import { usePathname } from "next/navigation";
 import Signature from "../global/signature";
 import { Category } from "@/types/type";
+import { contactInfo, MainLink, socialLinks } from "@/lib/footerData";
 
 // Animation variants
 const containerVariants = {
@@ -32,15 +31,6 @@ const itemVariants = {
     },
   },
 };
-
-const MainLink = [
-  { name: "صفحه اصلی", href: "/" },
-  { name: "محصولات", href: "/shop" },
-  { name: "راهنما", href: "/help" },
-  { name: "درباره ما", href: "/about" },
-  { name: "وبلاگ", href: "/blog" },
-  { name: "تماس با ما", href: "/contact" },
-];
 
 // Add this function to fetch categories (adjust the API endpoint as needed)
 
@@ -111,349 +101,365 @@ const Footer = () => {
   return (
     <footer dir="rtl" className="bg-white text-white relative">
       {/* Wave SVG Divider */}
- 
       <motion.div
-        className="container mx-auto px-6 pt-10 pb-16"
+        className="container mx-auto px-8 pt-20 pb-24"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* Logo and About */}
-          <motion.div variants={itemVariants} className="space-y-6">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20">
+          {/* Brand Section - Takes more space */}
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-5 space-y-8"
+          >
             <motion.div
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300 }}
+              className="inline-block"
             >
-              <Link href="/" className="flex items-center">
+              <Link href="/" className="flex items-center group">
                 <Image
                   src="/assets/images/logo.png"
                   alt="Tiran Logo"
-                  width={140}
-                  height={50}
-                  className="h-12 w-auto"
+                  width={160}
+                  height={60}
+                  className="h-10 w-auto transition-all duration-300 group-hover:brightness-110"
                 />
               </Link>
             </motion.div>
-            <p className="text-gray-400 text-sm font-medium leading-relaxed">
-              ارائه راهکارهای نوین فناوری برای کسب و کارها با هدف رشد و نوآوری
-              در دنیای دیجیتال
-            </p>
-            <div className="flex gap-6">
-              <motion.a
-                href="https://telegram.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ y: -5, color: "#0088cc" }}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <FaTelegram size={20} />
-              </motion.a>
-              <motion.a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ y: -5, color: "#E1306C" }}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <FaInstagram size={20} />
-              </motion.a>
-              <motion.a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ y: -5, color: "#0077B5" }}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <FaLinkedin size={20} />
-              </motion.a>
-              <motion.a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ y: -5, color: "#1DA1F2" }}
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <FaTwitter size={20} />
-              </motion.a>
+
+            <div className="max-w-md">
+              <p className="text-gray-600 text-base leading-relaxed font-light">
+                ارائه راهکارهای نوین فناوری برای کسب و کارها با هدف رشد و نوآوری
+                در دنیای دیجیتال
+              </p>
+            </div>
+
+            {/* Social Links with better spacing */}
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-gray-500 font-medium">
+                دنبال کنید:
+              </span>
+              <div className="flex gap-3">
+                {socialLinks.map((social, index) => {
+                  const IconComponent = social.icon;
+                  return (
+                    <motion.a
+                      key={index}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{
+                        y: -3,
+                        scale: 1.1,
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                      className="w-10 h-10 bg-gray-50 hover:bg-gray-900 text-gray-600 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 group"
+                      aria-label={social.name}
+                    >
+                      <IconComponent
+                        size={16}
+                        className="transition-transform duration-300 group-hover:scale-110"
+                      />
+                    </motion.a>
+                  );
+                })}
+              </div>
             </div>
           </motion.div>
 
-          {/* Categories */}
-          <motion.div variants={itemVariants} className="space-y-6">
-            <h3 className="text-lg text-black font-semibold relative">
-              خدمات
-              <motion.span
-                className="absolute -bottom-1 right-0 w-12 h-1 bg-gray-200"
-                initial={{ width: 0 }}
-                whileInView={{ width: 48 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              />
-            </h3>
-            <ul className="space-y-3">
-              {MainLink.map((category, index) => (
-                <motion.li
+          {/* Services Section */}
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-2 space-y-6"
+          >
+            <div className="relative">
+              <h3 className="text-lg text-gray-900 font-semibold mb-6 relative">
+                خدمات
+                <motion.div
+                  className="absolute -bottom-2 right-0 h-0.5 bg-black rounded-full"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: 80 }}
+                  transition={{ delay: 0.5, duration: 0.6 }}
+                />
+              </h3>
+            </div>
+
+            <nav className="space-y-4">
+              {MainLink.map((link, index) => (
+                <motion.div
                   key={index}
-                  whileHover={{ x: -5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
+                  whileHover={{ x: 4 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 >
                   <Link
-                    href={category.href}
-                    className="text-gray-500 hover:text-gray-400 transition-colors flex items-center"
+                    href={link.href}
+                    className="group flex items-center text-gray-600 hover:text-gray-900 transition-all duration-300 text-sm"
                   >
-                    <motion.span
-                      initial={{ width: 0 }}
-                      whileHover={{ width: 15 }}
-                      className="inline-block h-0.5 bg-amber-500 ml-2"
+                    <motion.div
+                      initial={{ width: 0, opacity: 0 }}
+                      whileHover={{ width: 12, opacity: 1 }}
+                      className="h-px bg-amber-500 mr-3 transition-all duration-300"
                     />
-                    {category.name}
+                    <span className="group-hover:font-medium transition-all duration-300">
+                      {link.name}
+                    </span>
                   </Link>
-                </motion.li>
+                </motion.div>
               ))}
-            </ul>
+            </nav>
           </motion.div>
 
-          {/* Categories */}
-
-          <motion.div variants={itemVariants} className="space-y-6">
-            <h3 className="text-lg text-black font-semibold relative">
-              دسته‌بندی‌ها
-              <motion.span
-                className="absolute -bottom-1 right-0 w-12 h-1 bg-gray-200"
-                initial={{ width: 0 }}
-                whileInView={{ width: 48 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              />
-            </h3>
+          {/* Categories Section */}
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-2 space-y-6"
+          >
+            <div className="relative">
+              <h3 className="text-lg text-gray-900 font-semibold mb-6 relative">
+                دسته‌بندی‌ها
+                <motion.div
+                  className="absolute -bottom-2 right-0 h-0.5 bg-black rounded-full"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: 80 }}
+                  transition={{ delay: 0.5, duration: 0.6 }}
+                />
+              </h3>
+            </div>
 
             {loading ? (
               <div className="space-y-3">
-                {[...Array(5)].map((_, index) => (
-                  <div
+                {[...Array(4)].map((_, index) => (
+                  <motion.div
                     key={index}
-                    className="h-4 bg-gray-200 rounded animate-pulse"
+                    className="h-3 bg-gray-100 rounded-full animate-pulse"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: index * 0.1 }}
                   />
                 ))}
               </div>
             ) : categories.length > 0 ? (
-              <ul className="space-y-3">
-                {categories.slice(0, 5).map((category) => (
-                  <motion.li
+              <nav className="space-y-4">
+                {categories.slice(0, 4).map((category) => (
+                  <motion.div
                     key={category.id}
-                    whileHover={{ x: -5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
+                    whileHover={{ x: 4 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   >
                     <Link
                       href={`/shop?category=${encodeURIComponent(
                         category.cat_name
                       )}`}
-                      className="text-gray-500 hover:text-gray-400 transition-colors flex items-center group"
+                      className="group flex items-center justify-between text-gray-600 hover:text-gray-900 transition-all duration-300 text-sm"
                     >
-                      <motion.span
-                        initial={{ width: 0 }}
-                        whileHover={{ width: 15 }}
-                        className="inline-block h-0.5 bg-amber-500 ml-2 transition-all duration-200"
-                      />
-                      <span className="group-hover:translate-x-1 transition-transform duration-200">
-                        {category.cat_name}
-                      </span>
+                      <div className="flex items-center">
+                        <motion.div
+                          initial={{ width: 0, opacity: 0 }}
+                          whileHover={{ width: 12, opacity: 1 }}
+                          className="h-px bg-blue-500 mr-3 transition-all duration-300"
+                        />
+                        <span className="group-hover:font-medium transition-all duration-300">
+                          {category.cat_name}
+                        </span>
+                      </div>
                       {category.children && category.children.length > 0 && (
-                        <span className="text-xs text-gray-400 mr-1">
-                          ({category.children.length})
+                        <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-full">
+                          {category.children.length}
                         </span>
                       )}
                     </Link>
-                  </motion.li>
+                  </motion.div>
                 ))}
 
-                {categories.length > 6 && (
-                  <motion.li
-                    whileHover={{ x: -5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
+                {categories.length > 4 && (
+                  <motion.div
+                    whileHover={{ x: 4 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    className="pt-2 border-t border-gray-100"
                   >
                     <Link
-                      href="/categories"
-                      className="text-amber-500 hover:text-amber-400 transition-colors flex items-center font-medium"
+                      href="/shop"
+                      className="group flex items-center text-blue-600 hover:text-blue-700 transition-all duration-300 text-sm font-medium"
                     >
-                      <motion.span
-                        initial={{ width: 0 }}
-                        whileHover={{ width: 15 }}
-                        className="inline-block h-0.5 bg-amber-500 ml-2"
+                      <motion.div
+                        initial={{ width: 0, opacity: 0 }}
+                        whileHover={{ width: 12, opacity: 1 }}
+                        className="h-px bg-blue-500 mr-3 transition-all duration-300"
                       />
-                      مشاهده همه دسته‌بندی‌ها
+                      مشاهده همه
+                      <svg
+                        className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:translate-x-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
                     </Link>
-                  </motion.li>
+                  </motion.div>
                 )}
-              </ul>
+              </nav>
             ) : (
-              <p className="text-gray-500 text-sm">دسته‌بندی‌ای یافت نشد</p>
+              <p className="text-gray-500 text-sm bg-gray-50 p-4 rounded-lg text-center">
+                دسته‌بندی‌ای یافت نشد
+              </p>
             )}
           </motion.div>
 
-          {/* Contact */}
-
-          <motion.div variants={itemVariants} className="space-y-6">
-            <h3 className="text-lg text-black font-semibold relative">
-              تماس با ما
-              <motion.span
-                className="absolute -bottom-1 right-0 w-12 h-1 bg-gray-200"
-                initial={{ width: 0 }}
-                whileInView={{ width: 48 }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              />
-            </h3>
-            <ul className="space-y-4">
-              {/* Address with Google Maps link */}
-              <motion.li
-                whileHover={{ x: -5 }}
-                className="flex items-start space-x-reverse space-x-3 group"
-              >
-                <HiLocationMarker
-                  className="text-black mt-1 flex-shrink-0 group-hover:text-gray-600 transition-colors duration-200"
-                  size={18}
+          {/* Contact Section */}
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-3 space-y-6"
+          >
+            <div className="relative">
+              <h3 className="text-lg text-gray-900 font-semibold mb-6 relative">
+                تماس با ما
+                <motion.div
+                  className="absolute -bottom-2 right-0 h-0.5 bg-black rounded-full"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: 80 }}
+                  transition={{ delay: 0.5, duration: 0.6 }}
                 />
-                <Link
-                  href="https://maps.google.com/?q=تهران، خیابان ولیعصر، برج نوآوری، طبقه ۵"
-                  target="_blank"
-                  className="text-gray-400 hover:text-gray-600 mr-2 text-sm transition-colors duration-200 cursor-pointer"
-                  title="مشاهده در نقشه"
-                >
-                  تهران، خیابان ولیعصر، برج نوآوری، طبقه ۵
-                </Link>
-              </motion.li>
+              </h3>
+            </div>
 
-              {/* Phone with tel link */}
-              <motion.li
-                whileHover={{ x: -5 }}
-                className="flex items-center space-x-reverse space-x-3 group"
-              >
-                <HiPhone
-                  className="text-black flex-shrink-0 group-hover:text-gray-600 transition-colors duration-200"
-                  size={18}
-                />
-                <Link
-                  href="tel:+982188776655"
-                  className="text-gray-400 hover:text-gray-600 mr-2 text-sm transition-colors duration-200 cursor-pointer"
-                  title="تماس تلفنی"
-                >
-                  ۰۲۱-۸۸۷۷۶۶۵۵
-                </Link>
-              </motion.li>
-
-              {/* Email with mailto link */}
-              <motion.li
-                whileHover={{ x: -5 }}
-                className="flex items-center space-x-reverse space-x-3 group"
-              >
-                <HiMail
-                  className="text-black flex-shrink-0 group-hover:text-gray-600 transition-colors duration-200"
-                  size={18}
-                />
-                <Link
-                  href="mailto:info@tiran.ir"
-                  className="text-gray-400 hover:text-gray-600 mr-2 text-sm transition-colors duration-200 cursor-pointer"
-                  title="ارسال ایمیل"
-                >
-                  info@tiran.ir
-                </Link>
-              </motion.li>
-            </ul>
-
-            {/* Newsletter */}
-            <div className="mt-6">
-              <h4 className="text-sm font-medium mb-3">عضویت در خبرنامه</h4>
-              <div className="flex flex-row">
-                <input
-                  type="email"
-                  placeholder="ایمیل شما"
-                  className="bg-gray-500/10 border border-dashed border-gray-400 text-black px-4 py-2 rounded-r-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 w-full transition-all duration-200"
-                />
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-l-md transition-colors duration-200 flex items-center gap-2"
-                >
-                  <span>عضویت</span>
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+            <div className="space-y-5">
+              {contactInfo.map((contact, index) => {
+                const IconComponent = contact.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    whileHover={{ x: 4 }}
+                    className="group"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                    />
-                  </svg>
-                </motion.button>
-              </div>
+                    <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300">
+                      <div className="w-10 h-10 bg-gradient-to-br text-black from-gray-100 to-gray-200 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:from-gray-200 group-hover:to-gray-300 transition-all duration-300">
+                        <IconComponent />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        {contact.isLink && contact.href ? (
+                          <Link
+                            href={contact.href}
+                            target="_blank"
+                            className="block text-gray-700 hover:text-gray-900 text-sm leading-relaxed transition-colors duration-300 group-hover:font-medium"
+                            title={contact.label}
+                          >
+                            {contact.value}
+                          </Link>
+                        ) : (
+                          <span className="block text-gray-700 text-sm leading-relaxed">
+                            {contact.value}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Section with better spacing */}
+        <motion.div className="relative mt-20 pt-8" variants={itemVariants}>
+          {/* Decorative line */}
+          <motion.div
+            className="absolute top-0 right-0 h-px bg-gradient-to-l from-transparent via-gray-300 to-transparent"
+            initial={{ width: 0 }}
+            whileInView={{ width: "100%" }}
+            transition={{ duration: 1, delay: 0.2 }}
+          />
 
-        <motion.div
-          className="border-t border-dashed border-gray-400 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center"
-          variants={itemVariants}
-        >
-          <p className="text-sm text-gray-400 mb-4 md:mb-0">
-            © {new Date().getFullYear()} تیران. تمامی حقوق محفوظ است.
-          </p>
-          <div className="flex gap-2 text-sm text-gray-400">
-            <motion.a
-              href="/privacy"
-              className="hover:text-black transition-colors"
-              whileHover={{ y: -2 }}
+          <div className="flex flex-col justify-center items-center gap-6">
+            <motion.p
+              className="text-sm text-gray-500 font-light"
+              whileHover={{ color: "#374151" }}
             >
-              حریم خصوصی
-            </motion.a>
-            <motion.a
-              href="/terms"
-              className="hover:text-black transition-colors"
-              whileHover={{ y: -2 }}
-            >
-              قوانین استفاده
-            </motion.a>
-            <motion.a
-              href="/cookies"
-              className="hover:text-black transition-colors"
-              whileHover={{ y: -2 }}
-            >
-              سیاست کوکی‌ها
-            </motion.a>
+              © {new Date().getFullYear()} تیران. تمامی حقوق محفوظ است.
+            </motion.p>
           </div>
         </motion.div>
       </motion.div>
       {/* Full-screen black section with centered logo - TiranStyle-like */}
-      <div ref={footerEndRef} className="relative h-screen bg-black z-9999 ">
-        {/* Centered logo and content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          {/* Logo with scale animation */}
+      <div
+        ref={footerEndRef}
+        className="relative h-screen bg-gradient-to-b from-black via-gray-900 to-black overflow-hidden"
+      >
+        {/* Floating Particles */}
+        {[...Array(12)].map((_, i) => (
           <motion.div
-            className="relative"
+            key={i}
+            className="absolute w-1 h-1 bg-white rounded-full opacity-20"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            transition={{
+              delay: i * 0.1,
+              duration: 2,
+              ease: "easeOut",
+            }}
+          />
+        ))}
+
+        {/* Main Content Container */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          {/* Logo Container with Multiple Animation Layers */}
+          <motion.div
+            className="relative flex flex-col items-center"
             style={{
               scale: logoScale,
               opacity: logoOpacity,
             }}
           >
-            <Image
-              src="/assets/images/whitelogo.png"
-              alt="Tiran Logo"
-              width={4000}
-              height={4000}
-              className="md:h-20 h-10 w-auto object-cover"
-            />
+            {/* Logo Image with Enhanced Effects */}
+            <motion.div className="relative z-10 mt-30">
+              <motion.div
+                className="relative"
+                whileHover={{
+                  scale: 1.05,
+                  rotateY: 10,
+                  transition: { duration: 0.3 },
+                }}
+              >
+                <Image
+                  src="/assets/images/whitelogo.png"
+                  alt="Tiran Logo"
+                  width={4000}
+                  height={4000}
+                  className="md:h-20 h-10 w-auto object-cover transition-all duration-700"
+                  priority
+                />
+              </motion.div>
+            </motion.div>
+
+            {/* Animated Text Below Logo */}
+            <motion.div className="mt-8 text-center">
+              <motion.h2
+                className="text-white text-xl md:text-2xl font-light tracking-wider mb-2"
+                animate={{
+                  opacity: [0.7, 1, 0.7],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                تیران
+              </motion.h2>
+            </motion.div>
           </motion.div>
         </div>
-      </div>
-      {/* Animated Background Elements */}
-      <div className="absolute bottom-0 left-0 w-full h-full overflow-hidden z-0 opacity-15 pointer-events-none">
-        <div className="absolute w-96 h-96 -bottom-12 -right-12 bg-gray-900 rounded-full filter blur-2xl"></div>
-        <div className="absolute w-96 h-96 -bottom-12 -left-12 bg-gray-800 rounded-full filter blur-2xl"></div>
       </div>
       <Signature
         spinDuration={5} // Faster spin (5 seconds per rotation)
