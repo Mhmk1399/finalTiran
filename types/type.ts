@@ -330,7 +330,7 @@ export interface UserProfile {
   type_legal: KeyValuePair;
   identity_verification: KeyValuePair;
   type: UserType;
-  birthday: string | null;
+  birthday: number;
   complete: boolean;
   jobs: any[]; // You can define a more specific type if needed
   addresses: Address[];

@@ -26,6 +26,8 @@ export default function RootLayout({
           rtl
           draggable
           draggableDirection="x"
+          className={ray.className}
+          toastClassName={ray.className}
         />
         <CartProvider>
           <Navbar />

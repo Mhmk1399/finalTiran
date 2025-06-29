@@ -1,20 +1,246 @@
 import { motion } from "framer-motion";
 import { RiUser3Line, RiMapPinLine, RiPhoneLine } from "react-icons/ri";
 import { AddressFormData, UserProfile, Address } from "@/types/type";
-import { RiEditLine } from "react-icons/ri";
+import { RiEditLine, RiSaveLine, RiCloseLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import LocationSelector from "../LocationSelector";
+import PersianDatePicker from "../jalaliDatePicker";
+
 interface ProfilePanelProps {
   userProfile: UserProfile | null;
-  // onProfileUpdate?: () => void; // Add this prop for refresh callback
+  onProfileUpdate?: () => void; // Add this prop for refresh callback
 }
+
 interface AddressEditFormProps {
   address: Address;
   onSave: (data: AddressFormData) => void;
   onCancel: () => void;
   isLoading: boolean;
 }
+
+interface UserProfileFormData {
+  scenario: string;
+  name: string;
+  national: number;
+  sex: number;
+  last_name: string;
+  jobs: { id: number }[];
+  nationalID: string;
+  birthday: string;
+  email: string;
+  show_title: string;
+  main_address_id: number;
+}
+
+interface UserEditFormProps {
+  userProfile: UserProfile;
+  onSave: (data: UserProfileFormData) => void;
+  onCancel: () => void;
+  isLoading: boolean;
+}
+
+const UserEditForm: React.FC<UserEditFormProps> = ({
+  userProfile,
+  onSave,
+  onCancel,
+  isLoading,
+}) => {
+  const [selectedBirthday, setSelectedBirthday] =
+    useState<string>("1404/03/01");
+
+  const [formData, setFormData] = useState<UserProfileFormData>({
+    scenario: "update_profile",
+    name: userProfile.user?.first_name || "",
+    national: userProfile.national?.key || 0,
+    sex: userProfile.user?.sex?.key || 0,
+    last_name: userProfile.user?.last_name || "",
+    jobs: userProfile.user?.job ? [{ id: parseInt(userProfile.user.job) }] : [],
+    nationalID: userProfile.nationalID || "",
+    birthday: selectedBirthday,
+    email: userProfile.user?.email || "",
+    show_title: userProfile.user?.first_name || "",
+    main_address_id: userProfile.addresses?.[0]?.id || 0,
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    onSave(formData);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]:
+        name === "sex" || name === "national" || name === "main_address_id"
+          ? parseInt(value)
+          : value,
+    }));
+  };
+
+  const handleJobChange = (jobId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      jobs: jobId ? [{ id: parseInt(jobId) }] : [],
+    }));
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            نام *
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            نام خانوادگی *
+          </label>
+          <input
+            type="text"
+            name="last_name"
+            value={formData.last_name}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            ایمیل *
+          </label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            کد ملی
+          </label>
+          <input
+            type="text"
+            name="nationalID"
+            value={formData.nationalID}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            maxLength={10}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            جنسیت
+          </label>
+          <select
+            name="sex"
+            value={formData.sex}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value={0}>انتخاب کنید</option>
+            <option value={1}>مرد</option>
+            <option value={2}>زن</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            شغل
+          </label>
+          <input
+            type="text"
+            value={formData.jobs[0]?.id || ""}
+            onChange={(e) => handleJobChange(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="کد شغل"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            عنوان نمایشی
+          </label>
+          <input
+            type="text"
+            name="show_title"
+            value={formData.show_title}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            تاریخ تولد
+          </label>
+          <PersianDatePicker
+            value={selectedBirthday}
+            onChange={(newDate) => setSelectedBirthday(newDate)}
+            className="w-full"
+            maxDate={new Date()}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            ملیت
+          </label>
+          <select
+            name="national"
+            value={formData.national}
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value={0}>انتخاب کنید</option>
+            <option value={1}>ایرانی</option>
+            <option value={2}>غیر ایرانی</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="flex gap-3 pt-4">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          <RiSaveLine className="w-4 h-4" />
+          {isLoading ? "در حال ذخیره..." : "ذخیره تغییرات"}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={isLoading}
+          className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          <RiCloseLine className="w-4 h-4" />
+          انصراف
+        </button>
+      </div>
+    </form>
+  );
+};
+
 const AddressEditForm: React.FC<AddressEditFormProps> = ({
   address,
   onSave,
@@ -24,7 +250,7 @@ const AddressEditForm: React.FC<AddressEditFormProps> = ({
   const [formData, setFormData] = useState({
     address_type: String(address.address_type || "2"),
     province_id: String(address.province?.id || ""),
-    city_id: String(address.city?.id || ""),
+    city_id: String(address.city.province_id || ""),
     zipcode: address.zipcode || "",
     receiver_name: address.receiver_name || "",
     receiver_number: address.receiver_number || "",
@@ -49,9 +275,9 @@ const AddressEditForm: React.FC<AddressEditFormProps> = ({
   // Add this function to handle location selection without form submission
   const handleLocationSelect = (
     provinceId: string,
-    // provinceName: string,
+    // provinceName: string, // Add this parameter
     cityId: string
-    // cityName: string
+    // cityName: string // Add this parameter
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -73,12 +299,6 @@ const AddressEditForm: React.FC<AddressEditFormProps> = ({
             className="border border-gray-300 rounded-md"
           />
         </div>
-        {formData.province_id && formData.city_id && (
-          <p className="text-sm text-green-600 mt-2">
-            ✓ استان و شهر انتخاب شده (استان: {formData.province_id}, شهر:{" "}
-            {formData.city_id})
-          </p>
-        )}
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -105,7 +325,7 @@ const AddressEditForm: React.FC<AddressEditFormProps> = ({
               name="receiver_number"
               value={formData.receiver_number}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-3 border border-gray-300               rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
@@ -124,8 +344,6 @@ const AddressEditForm: React.FC<AddressEditFormProps> = ({
             />
           </div>
         </div>
-
-        {/* Move LocationSelector outside form context or prevent its events */}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -165,10 +383,13 @@ const AddressEditForm: React.FC<AddressEditFormProps> = ({
   );
 };
 
-const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
+const ProfilePanel = ({ userProfile, onProfileUpdate }: ProfilePanelProps) => {
   console.log(userProfile);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [isUpdatingAddress, setIsUpdatingAddress] = useState(false);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+
   if (!userProfile) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -190,6 +411,49 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
 
   const selectedAddress = userProfile.addresses[0];
 
+  const handleSaveProfile = async (profileData: UserProfileFormData) => {
+    setIsUpdatingProfile(true);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        toast.error("لطفا دوباره وارد شوید");
+        return;
+      }
+
+      const response = await fetch("/api/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(profileData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "خطا در به‌روزرسانی پروفایل");
+      }
+
+      toast.success("پروفایل با موفقیت به‌روزرسانی شد");
+      setIsEditingProfile(false);
+
+      // Call the refresh callback if provided
+      if (onProfileUpdate) {
+        onProfileUpdate();
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error(
+        error instanceof Error ? error.message : "خطا در به‌روزرسانی پروفایل"
+      );
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
+
   const handleSaveAddress = async (addressData: AddressFormData) => {
     setIsUpdatingAddress(true);
 
@@ -207,16 +471,22 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
         return;
       }
 
+      // Convert string IDs to numbers for the API
+      const payload = {
+        address_id: addressId,
+        ...addressData,
+        province_id: parseInt(addressData.province_id), // Convert to number
+        city_id: parseInt(addressData.city_id), // Convert to number
+        address_type: parseInt(addressData.address_type), // Convert to number
+      };
+
       const response = await fetch("/api/address", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          address_id: addressId,
-          ...addressData,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -227,8 +497,6 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
 
       toast.success("آدرس با موفقیت به‌روزرسانی شد");
       setIsEditingAddress(false);
-
-      // Call the refresh callback to update parent component
     } catch (error) {
       console.error("Error updating address:", error);
       toast.error(
@@ -251,127 +519,123 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-lg p-6 shadow-sm border"
+        className="bg-white p-6 shadow-sm border"
       >
-        <h3 className="text-lg font-medium text-gray-800 mb-4">
-          اطلاعات کاربری
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              شماره تلفن
-            </label>
-            <p className="p-3 bg-gray-50 rounded-md">
-              {userProfile.user?.username || "تعیین نشده"}
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              نام
-            </label>
-            <p className="p-3 bg-gray-50 rounded-md">
-              {userProfile.user?.first_name || "تعیین نشده"}
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              نام خانوادگی
-            </label>
-            <p className="p-3 bg-gray-50 rounded-md">
-              {userProfile.user?.last_name || "تعیین نشده"}
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              ایمیل
-            </label>
-            <p className="p-3 bg-gray-50 rounded-md">
-              {userProfile.user?.email || "تعیین نشده"}
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              شغل
-            </label>
-            <p className="p-3 bg-gray-50 rounded-md">
-              {userProfile.user?.job || "تعیین نشده"}
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              جنسیت
-            </label>
-            <p className="p-3 bg-gray-50 rounded-md">
-              {getSexDisplay(userProfile.user?.sex?.key)}
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              کد ملی
-            </label>
-            <p className="p-3 bg-gray-50 rounded-md">
-              {userProfile.nationalID || "تعیین نشده"}
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              تاریخ تولد
-            </label>
-            <p className="p-3 bg-gray-50 rounded-md">
-              {userProfile.birthday || "تعیین نشده"}
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              ملیت
-            </label>
-            <p className="p-3 bg-gray-50 rounded-md">
-              {userProfile.national?.value || "تعیین نشده"}
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              نوع شخص
-            </label>
-            <p className="p-3 bg-gray-50 rounded-md">
-              {userProfile.type_legal?.value || "تعیین نشده"}
-            </p>
-          </div>
-
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              وضعیت احراز هویت
-            </label>
-            <p
-              className={`p-3 rounded-md ${
-                userProfile.identity_verification?.key === 1
-                  ? "bg-green-50 text-green-700"
-                  : "bg-red-50 text-red-700"
-              }`}
-            >
-              {userProfile.identity_verification?.value || "تعیین نشده"}
-            </p>
-          </div> */}
-
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              نوع کاربر
-            </label>
-            <p className="p-3 bg-gray-50 rounded-md">
-              {userProfile.type?.type_name || "تعیین نشده"}
-            </p>
-          </div> */}
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-medium text-gray-800">اطلاعات کاربری</h3>
+          <button
+            onClick={() => setIsEditingProfile(true)}
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1"
+          >
+            <RiEditLine className="w-4 h-4" />
+            ویرایش
+          </button>
         </div>
+
+        {isEditingProfile ? (
+          <UserEditForm
+            userProfile={userProfile}
+            onSave={handleSaveProfile}
+            onCancel={() => setIsEditingProfile(false)}
+            isLoading={isUpdatingProfile}
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                شماره تلفن
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {userProfile.user?.username || "تعیین نشده"}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                نام
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {userProfile.user?.first_name || "تعیین نشده"}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                نام خانوادگی
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {userProfile.user?.last_name || "تعیین نشده"}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                ایمیل
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {userProfile.user?.email || "تعیین نشده"}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                شغل
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {userProfile.user?.job || "تعیین نشده"}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                جنسیت
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {getSexDisplay(userProfile.user?.sex?.key)}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                کد ملی
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {userProfile.nationalID || "تعیین نشده"}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                تاریخ تولد
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {userProfile.birthday
+                  ? new Intl.DateTimeFormat("fa-IR").format(
+                      new Date(userProfile.birthday)
+                    )
+                  : "تعیین نشده"}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                ملیت
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {userProfile.national?.value || "تعیین نشده"}
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                نوع شخص
+              </label>
+              <p className="p-3 bg-gray-50 rounded-md">
+                {userProfile.type_legal?.value || "تعیین نشده"}
+              </p>
+            </div>
+          </div>
+        )}
       </motion.div>
 
       {/* Selected Address */}
@@ -380,7 +644,7 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-lg p-6 shadow-sm border"
+          className="bg-white p-6 shadow-sm border"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
@@ -458,7 +722,7 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-white rounded-lg p-6 shadow-sm border"
+        className="bg-white p-6 shadow-sm border"
       >
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
@@ -519,7 +783,7 @@ const ProfilePanel = ({ userProfile }: ProfilePanelProps) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-white rounded-lg p-6 shadow-sm border"
+        className="bg-white p-6 shadow-sm border"
       >
         <h3 className="text-lg font-medium text-gray-800 mb-4">
           وضعیت تکمیل پروفایل

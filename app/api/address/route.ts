@@ -72,6 +72,7 @@ export async function PATCH(request: NextRequest) {
 
     // Get address_id from localStorage (will be sent in request body)
     const body = await request.json();
+    console.log("Received body:", body);
     const { address_id, ...addressData } = body;
 
     if (!address_id) {

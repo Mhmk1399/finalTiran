@@ -25,6 +25,9 @@ const routeTranslations: Record<string, string> = {
   help: "راهنما",
   categories: "دسته‌بندی‌ها",
   dashboard: "داشبورد",
+  success: "موفقیت آمیز", // Add this for the success segment
+  // Keep the compound path for reference
+  "checkout/success": "تسویه حساب موفق",
 };
 
 const Breadcrumbs = () => {

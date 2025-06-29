@@ -15,7 +15,7 @@ export const mobileMenuVariants = {
     height: 0,
     transition: {
       duration: 0.3,
-      ease: "easeInOut",
+      ease: "easeInOut" as const,
       when: "afterChildren",
     },
   },
@@ -24,8 +24,8 @@ export const mobileMenuVariants = {
     height: "auto",
     transition: {
       duration: 0.4,
-      ease: "easeInOut",
-      when: "beforeChildren",
+      ease: "easeInOut" as const,
+      when: "beforeChildren" as const,
       staggerChildren: 0.1,
     },
   },
@@ -40,7 +40,7 @@ export const itemVariants = {
   open: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.4, ease: "easeOut" },
+    transition: { duration: 0.4, ease: "easeOut" as const },
   },
 };
 
@@ -55,7 +55,7 @@ export const categoryVariants = {
     height: "auto",
     transition: {
       duration: 0.3,
-      ease: "easeOut",
+      ease: "easeOut" as const,
       staggerChildren: 0.05,
       delayChildren: 0.1,
     },
@@ -74,14 +74,14 @@ export const logoVariants = {
     opacity: 1,
     transition: {
       duration: 0.5,
-      ease: "easeOut",
+      ease: "easeOut" as const,
     },
   },
   hover: {
     scale: 1.02,
     transition: {
       duration: 0.4,
-      ease: "easeInOut",
+      ease: "easeInOut" as const,
       yoyo: Infinity,
     },
   },

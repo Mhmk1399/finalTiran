@@ -97,7 +97,7 @@ const ContactContainer = () => {
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 12,
       },
@@ -110,7 +110,7 @@ const ContactContainer = () => {
       opacity: 1,
       x: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 12,
         delay: 0.3,
@@ -124,7 +124,7 @@ const ContactContainer = () => {
       opacity: 1,
       x: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 12,
         delay: 0.5,
@@ -144,7 +144,7 @@ const ContactContainer = () => {
       opacity: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 200,
         damping: 20,
       },

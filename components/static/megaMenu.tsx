@@ -26,19 +26,19 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
       opacity: 0,
       y: -20,
       height: 0,
-      transition: { duration: 0.2, ease: "easeInOut" },
+      transition: { duration: 0.2, ease: "easeInOut"as const },
     },
     visible: {
       opacity: 1,
       y: 0,
       height: "auto",
-      transition: { duration: 0.3, ease: "easeOut" },
+      transition: { duration: 0.3, ease: "easeOut" as const },
     },
     exit: {
       opacity: 0,
       y: -10,
       height: 0,
-      transition: { duration: 0.2, ease: "easeInOut" },
+      transition: { duration: 0.2, ease: "easeInOut" as const },
     },
   };
 

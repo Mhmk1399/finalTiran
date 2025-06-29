@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch comments from the external API
-    const apiUrl = `https://tiran.shop.hesabroclub.ir/api/web/shop/product/get-comments?product_slug=${productSlug}`;
+    const apiUrl = `https://tiran.shop.hesabroclub.ir/api/web/shop-v1/v2/product/get-comments?product_slug=${productSlug}`;
 
     const response = await fetch(apiUrl, {
       headers: {
@@ -117,7 +117,7 @@ export async function PUT(request: NextRequest) {
 
     // Send the comment to the external API
     const apiUrl =
-      "https://tiran.shop.hesabroclub.ir/api/web/shop/product/comment";
+      "https://tiran.shop.hesabroclub.ir/api/web/shop-v1/v2/product/comment";
 
     const response = await fetch(apiUrl, {
       method: "PUT",

@@ -89,7 +89,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
       transition: {
         duration: 0.6,
         delay: index * 0.1,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     }),
   };
@@ -113,7 +113,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
       transition: {
         duration: 0.5,
         delay: index * 0.1,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     }),
   };
@@ -239,7 +239,6 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
                   onTouchEnd={() => setHoveredIndex(null)}
                   whileTap={{ scale: 0.95 }}
                 >
-                  
                   <MixedGridCardMobile
                     category={category}
                     index={index + 10}

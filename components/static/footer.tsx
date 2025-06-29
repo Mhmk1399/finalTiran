@@ -26,7 +26,7 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 100,
     },
   },
@@ -117,7 +117,7 @@ const Footer = () => {
           >
             <motion.div
               whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
+              transition={{ type: "spring" as const, stiffness: 300 }}
               className="inline-block"
             >
               <Link href="/" className="flex items-center group">
@@ -193,7 +193,7 @@ const Footer = () => {
                 <motion.div
                   key={index}
                   whileHover={{ x: 4 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  transition={{ type: "spring" as const, stiffness: 400, damping: 25 }}
                 >
                   <Link
                     href={link.href}
@@ -248,7 +248,7 @@ const Footer = () => {
                   <motion.div
                     key={category.id}
                     whileHover={{ x: 4 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    transition={{ type: "spring" as const, stiffness: 400, damping: 25 }}
                   >
                     <Link
                       href={`/shop?category=${encodeURIComponent(
@@ -278,7 +278,7 @@ const Footer = () => {
                 {categories.length > 4 && (
                   <motion.div
                     whileHover={{ x: 4 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                    transition={{ type: "spring" as const, stiffness: 400, damping: 25 }}
                     className="pt-2 border-t border-gray-100"
                   >
                     <Link
@@ -392,7 +392,7 @@ const Footer = () => {
       {/* Full-screen black section with centered logo - TiranStyle-like */}
       <div
         ref={footerEndRef}
-        className="relative h-screen bg-gradient-to-b from-black via-gray-900 to-black overflow-hidden"
+        className="relative z-99 h-screen bg-gradient-to-b from-black via-gray-900 to-black overflow-hidden"
       >
         {/* Main Content Container */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">

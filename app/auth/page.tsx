@@ -170,7 +170,7 @@ const AuthPage = () => {
           localStorage.removeItem("redirectAfterLoginToDashboard"); // Clean up
           window.location.href = redirectUrlDashboard;
         } else {
-          window.location.href = "/";
+          window.location.href = "/dashboard";
         }
       }, 3000);
 
@@ -231,7 +231,7 @@ const AuthPage = () => {
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 300, damping: 24 },
+      transition: { type: "spring" as const, stiffness: 300, damping: 24 },
     },
   };
 

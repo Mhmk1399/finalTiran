@@ -74,7 +74,7 @@ export default function LocationSelector({
       onLocationSelected(
         selectedProvinceId,
         selectedProvinceName,
-        cityId,
+        cityId, // Make sure this is a string
         cityName
       );
     }

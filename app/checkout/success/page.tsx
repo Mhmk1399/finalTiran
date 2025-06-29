@@ -137,7 +137,7 @@ const CheckoutSuccessPage = () => {
             transition={{
               delay: 0.2,
               duration: 0.5,
-              type: "spring",
+              type: "spring" as const,
               stiffness: 200,
             }}
             className="text-center mb-8"

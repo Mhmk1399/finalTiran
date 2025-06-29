@@ -10,6 +10,7 @@ import {
   CommentItem,
   CommentResponse,
 } from "@/types/type";
+import toast from "react-hot-toast";
 
 export default function ProductComments({
   productSlug,
@@ -134,12 +135,18 @@ export default function ProductComments({
         },
         body: JSON.stringify(commentData),
       });
-      console.log(commentData, "comment");
-      console.log("API response:", await response.text());
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to submit comment");
+      }
+      console.log("Response status:", response.status);
+      console.log("Response ok:", response.ok);
+
+      if (response.status === 200) {
+        console.log("About to show toast"); // Add this
+        toast.success("نظر شما با موفقیت ثبت شد!");
+        console.log("Toast called"); // Add this
       }
 
       // Comment submitted successfully
@@ -260,175 +267,177 @@ export default function ProductComments({
   );
 
   return (
-    <div className="my-16">
-      <h2 className="text-2xl font-bold border-b border-dashed w-fit pb-3 mb-6">
-        نظرات مشتریان
-      </h2>
-      <h3 className="text-lg font-medium mb-4">
-        {replyToId ? "پاسخ به نظر" : "نظرات خود را با ما به اشتراک بگذارید"}
-      </h3>
-      {/* Add a review form */}
-      <form
-        id="comment-form"
-        onSubmit={handleSubmitComment}
-        className="mb-10 p-6 rounded-lg"
-      >
-        {replyToId && (
-          <div className="mb-4 p-3 bg-gray-100 rounded-lg">
-            <p className="text-sm text-gray-600">
-              در حال پاسخ به نظر شماره {replyToId}
-              <button
-                aria-label="reply"
-                onClick={() => setReplyToId(null)}
-                className="mr-2 text-red-500 hover:text-red-700"
-              >
-                (انصراف)
-              </button>
-            </p>
-          </div>
-        )}
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">
-            امتیاز شما: {newRating} از 5
-          </label>
-          <div className="flex items-center gap-1">
-            {[1, 2, 3, 4, 5].map((rating) => (
-              <button
-                key={rating}
-                type="button"
-                aria-label="rate"
-                onMouseEnter={() => setHoverRating(rating)}
-                onMouseLeave={() => setHoverRating(0)}
-                onClick={() => setNewRating(rating)}
-                className="p-1 transition-transform hover:scale-110"
-              >
-                <Star
-                  size={24}
-                  className={`${
-                    (hoverRating || newRating) >= rating
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300"
-                  } transition-colors`}
-                />
-              </button>
-            ))}
-            <span className="mr-2 text-sm text-gray-600">
-              {newRating === 1 && "خیلی بد"}
-              {newRating === 2 && "بد"}
-              {newRating === 3 && "متوسط"}
-              {newRating === 4 && "خوب"}
-              {newRating === 5 && "عالی"}
-            </span>
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="title" className="block text-sm font-bold mb-2">
-            عنوان نظر
-          </label>
-          <input
-            id="title"
-            type="text"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            placeholder="عنوان نظر شما"
-            className="w-full px-3 py-2 border-b border-dashed border-gray-300 focus:outline-none focus:border-gray-950"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="comment" className="block text-sm font-bold mb-2">
-            متن نظر
-          </label>
-          <textarea
-            id="comment"
-            rows={4}
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="نظر شما در مورد این محصول"
-            className="w-full px-3 py-2 border-b border-dashed border-gray-300 focus:outline-none focus:border-gray-950"
-            required
-          />
-        </div>
-
-        {submitError && (
-          <div className="mb-4 p-3 bg-red-50 text-red-600">{submitError}</div>
-        )}
-
-        {!isAuthenticated ? (
-          <div className="mb-4 p-3 bg-gray-900 text-white">
-            برای ثبت نظر باید وارد حساب کاربری خود شوید.
-            <button
-              aria-label="login"
-              type="button"
-              onClick={() => {
-                // Store current page URL for redirect after login
-                const currentUrl =
-                  window.location.pathname + window.location.search;
-                localStorage.setItem("redirectAfterLogin", currentUrl);
-                router.push("/auth");
-              }}
-              className="mr-2 text-blue-400 hover:text-blue-600"
-            >
-              ورود به حساب کاربری
-            </button>
-          </div>
-        ) : (
-          <button
-            aria-label="submit"
-            type="submit"
-            disabled={submitting}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-              submitting
-                ? "bg-gray-400 text-white cursor-not-allowed"
-                : "bg-black text-white hover:bg-blue-600"
-            }`}
-          >
-            {submitting ? (
-              <>
-                <span className="inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                در حال ثبت...
-              </>
-            ) : (
-              <>
-                ثبت نظر
-                <Send size={18} />
-              </>
-            )}
-          </button>
-        )}
-      </form>
-
-      {/* Loading state */}
-      {loading && (
-        <div className="text-center py-10">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-blue-600"></div>
-          <p className="mt-2 text-gray-600">در حال بارگذاری نظرات...</p>
-        </div>
-      )}
-
-      {/* Error state */}
-      {error && (
-        <div className="text-center py-10 text-red-500">
-          <p>{error}</p>
-        </div>
-      )}
-
-      {/* Reviews list */}
-      {!loading && !error && (
-        <div className="space-y-6">
-          <AnimatePresence>
-            {comments.map((comment) => renderComment(comment))}
-          </AnimatePresence>
-
-          {comments.length === 0 && (
-            <div className="text-center py-10 text-gray-500">
-              هنوز نظری ثبت نشده است. اولین نفری باشید که نظر می‌دهید!
+    <>
+      <div className="my-16">
+        <h2 className="text-2xl font-bold border-b border-dashed w-fit pb-3 mb-6">
+          نظرات مشتریان
+        </h2>
+        <h3 className="text-lg font-medium mb-4">
+          {replyToId ? "پاسخ به نظر" : "نظرات خود را با ما به اشتراک بگذارید"}
+        </h3>
+        {/* Add a review form */}
+        <form
+          id="comment-form"
+          onSubmit={handleSubmitComment}
+          className="mb-10 p-6 rounded-lg"
+        >
+          {replyToId && (
+            <div className="mb-4 p-3 bg-gray-100 rounded-lg">
+              <p className="text-sm text-gray-600">
+                در حال پاسخ به نظر شماره {replyToId}
+                <button
+                  aria-label="reply"
+                  onClick={() => setReplyToId(null)}
+                  className="mr-2 text-red-500 hover:text-red-700"
+                >
+                  (انصراف)
+                </button>
+              </p>
             </div>
           )}
-        </div>
-      )}
-    </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">
+              امتیاز شما: {newRating} از 5
+            </label>
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((rating) => (
+                <button
+                  key={rating}
+                  type="button"
+                  aria-label="rate"
+                  onMouseEnter={() => setHoverRating(rating)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  onClick={() => setNewRating(rating)}
+                  className="p-1 transition-transform hover:scale-110"
+                >
+                  <Star
+                    size={24}
+                    className={`${
+                      (hoverRating || newRating) >= rating
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "text-gray-300"
+                    } transition-colors`}
+                  />
+                </button>
+              ))}
+              <span className="mr-2 text-sm text-gray-600">
+                {newRating === 1 && "خیلی بد"}
+                {newRating === 2 && "بد"}
+                {newRating === 3 && "متوسط"}
+                {newRating === 4 && "خوب"}
+                {newRating === 5 && "عالی"}
+              </span>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="title" className="block text-sm font-bold mb-2">
+              عنوان نظر
+            </label>
+            <input
+              id="title"
+              type="text"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              placeholder="عنوان نظر شما"
+              className="w-full px-3 py-2 border-b border-dashed border-gray-300 focus:outline-none focus:border-gray-950"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="comment" className="block text-sm font-bold mb-2">
+              متن نظر
+            </label>
+            <textarea
+              id="comment"
+              rows={4}
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="نظر شما در مورد این محصول"
+              className="w-full px-3 py-2 border-b border-dashed border-gray-300 focus:outline-none focus:border-gray-950"
+              required
+            />
+          </div>
+
+          {submitError && (
+            <div className="mb-4 p-3 bg-red-50 text-red-600">{submitError}</div>
+          )}
+
+          {!isAuthenticated ? (
+            <div className="mb-4 p-3 bg-gray-900 text-white">
+              برای ثبت نظر باید وارد حساب کاربری خود شوید.
+              <button
+                aria-label="login"
+                type="button"
+                onClick={() => {
+                  // Store current page URL for redirect after login
+                  const currentUrl =
+                    window.location.pathname + window.location.search;
+                  localStorage.setItem("redirectAfterLogin", currentUrl);
+                  router.push("/auth");
+                }}
+                className="mr-2 text-blue-400 hover:text-blue-600"
+              >
+                ورود به حساب کاربری
+              </button>
+            </div>
+          ) : (
+            <button
+              aria-label="submit"
+              type="submit"
+              disabled={submitting}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                submitting
+                  ? "bg-gray-400 text-white cursor-not-allowed"
+                  : "bg-black text-white hover:bg-blue-600"
+              }`}
+            >
+              {submitting ? (
+                <>
+                  <span className="inline-block h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  در حال ثبت...
+                </>
+              ) : (
+                <>
+                  ثبت نظر
+                  <Send size={18} />
+                </>
+              )}
+            </button>
+          )}
+        </form>
+
+        {/* Loading state */}
+        {loading && (
+          <div className="text-center py-10">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-gray-300 border-t-blue-600"></div>
+            <p className="mt-2 text-gray-600">در حال بارگذاری نظرات...</p>
+          </div>
+        )}
+
+        {/* Error state */}
+        {error && (
+          <div className="text-center py-10 text-red-500">
+            <p>{error}</p>
+          </div>
+        )}
+
+        {/* Reviews list */}
+        {!loading && !error && (
+          <div className="space-y-6">
+            <AnimatePresence>
+              {comments.map((comment) => renderComment(comment))}
+            </AnimatePresence>
+
+            {comments.length === 0 && (
+              <div className="text-center py-10 text-gray-500">
+                هنوز نظری ثبت نشده است. اولین نفری باشید که نظر می‌دهید!
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 }

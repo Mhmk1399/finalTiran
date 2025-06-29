@@ -41,7 +41,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                   <motion.div
                     layoutId="activeTab"
                     className="absolute bottom-0 left-0 right-0 h-px bg-black"
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    transition={{ type: "spring" as const, stiffness: 500, damping: 30 }}
                   />
                 )}
               </button>
