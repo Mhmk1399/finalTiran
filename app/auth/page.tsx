@@ -1,458 +1,71 @@
-"use client";
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { BiPhone, BiLock, BiLogIn } from "react-icons/bi";
-import Image from "next/image";
-import Link from "next/link";
+import AuthPage from "@/components/static/auth-container";
+import { Metadata } from "next";
 
-const AuthPage = () => {
-  // Add ref for SMS code input
-  const smsCodeInputRef = useRef<HTMLInputElement>(null);
-  const [step, setStep] = useState(1); // Step 1: Phone number, Step 2: SMS code
-  const [formData, setFormData] = useState({
-    phone: "",
-    smsCode: "",
-  });
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [redirectMessage, setRedirectMessage] = useState<string>(""); // for redirect to comment page after login
-  const [isRedirecting, setIsRedirecting] = useState<string>(""); // for redirect to cart page after login
-  const [isRedirectingDashboard, setIsRedirectingDashboard] =
-    useState<string>(""); // for redirect to cart page after login
-
-  // useEffect to show redirect messages
-  useEffect(() => {
-    const redirectUrl = localStorage.getItem("redirectAfterLogin");
-    const redirectUrlCart = localStorage.getItem("redirectAfterLoginToCart");
-    const redirectUrlDashboard = localStorage.getItem(
-      "redirectAfterLoginToDashboard"
-    );
-    if (redirectUrl) {
-      setRedirectMessage(
-        "پس از ورود به صفحه محصول برای کامنت بازگردانده خواهید شد"
-      );
-    } else if (redirectUrlCart) {
-      setIsRedirecting("پس از ورود به صفحه کارت منتقل میشوید");
-    } else if (redirectUrlDashboard) {
-      setIsRedirectingDashboard("پس از ورود به داشبورد منتقل میشوید");
-    }
-  }, []);
-
-  // Auto focus SMS code input when step changes to 2
-  useEffect(() => {
-    if (step === 2) {
-      // Longer delay to wait for animations to complete
-      const timer = setTimeout(() => {
-        if (smsCodeInputRef.current) {
-          smsCodeInputRef.current.focus();
-        }
-      }, 600); // Increased delay to match animation duration
-
-      return () => clearTimeout(timer);
-    }
-  }, [step]);
-
-  const validatePhoneForm = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (formData.phone.length !== 11) {
-      newErrors.phone = "شماره موبایل باید ۱۱ رقم باشد";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const validateSmsForm = () => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (formData.smsCode.length < 4) {
-      newErrors.smsCode = "کد تایید را به درستی وارد کنید";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSendPhoneNumber = async () => {
-    try {
-      setIsLoading(true);
-      const username = formData.phone;
-      const sent_sms = true;
-      const application = 0;
-
-      const response = await fetch("/api/auth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, sent_sms, application }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        toast.error(data.message || "خطا در ارسال کد تایید");
-        return false;
-      }
-
-      toast.success("کد تایید به شماره موبایل شما ارسال شد", {
-        style: {
-          background: "#333",
-          color: "#fff",
-        },
-      });
-
-      return true;
-    } catch (error) {
-      console.log(error);
-      toast.error("خطا در ارسال کد تایید");
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleVerifySmsCode = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/auth/verify", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: formData.phone,
-          sms_code: formData.smsCode,
-          application: 1,
-        }),
-      });
-
-      const data = await response.json();
-      console.log(data, "fronnnt");
-
-      if (!response.ok) {
-        toast.error(data.message || "کد تایید نامعتبر است");
-        return false;
-      }
-
-      // Save token to localStorage
-      if (data.data.token) {
-        localStorage.setItem("token", data.data.token);
-      }
-
-      toast.success("ورود با موفقیت انجام شد", {
-        style: {
-          background: "#333",
-          color: "#fff",
-        },
-      });
-
-      // Redirect to home page
-      // Check for redirect URL and navigate accordingly
-      setTimeout(() => {
-        const redirectUrl = localStorage.getItem("redirectAfterLogin");
-        const redirectUrlCart = localStorage.getItem(
-          "redirectAfterLoginToCart"
-        );
-        const redirectUrlDashboard = localStorage.getItem(
-          "redirectAfterLoginToDashboard"
-        );
-        if (redirectUrl) {
-          localStorage.removeItem("redirectAfterLogin"); // Clean up
-          window.location.href = redirectUrl;
-        } else if (redirectUrlCart) {
-          localStorage.removeItem("redirectAfterLoginToCart"); // Clean up
-          window.location.href = redirectUrlCart;
-        } else if (redirectUrlDashboard) {
-          localStorage.removeItem("redirectAfterLoginToDashboard"); // Clean up
-          window.location.href = redirectUrlDashboard;
-        } else {
-          window.location.href = "/dashboard";
-        }
-      }, 3000);
-
-      return true;
-    } catch (error) {
-      console.log(error);
-      toast.error("خطا در تایید کد");
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-
-    if (step === 1) {
-      if (validatePhoneForm()) {
-        const success = await handleSendPhoneNumber();
-        if (success) {
-          setStep(2);
-        }
-      }
-    } else {
-      if (validateSmsForm()) {
-        await handleVerifySmsCode();
-      }
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        when: "beforeChildren",
-        staggerChildren: 0.1,
+export const metadata: Metadata = {
+  title: "ورود به حساب کاربری | تیران",
+  description:
+    "برای ورود به سایت تیران، شماره موبایل خود را وارد کنید و کد تایید را دریافت نمایید. ورود سریع و ایمن به پنل کاربری.",
+  keywords: [
+    "ورود تیران",
+    "صفحه ورود تیران",
+    "تایید شماره موبایل",
+    "کد تایید پیامکی",
+    "ورود به حساب کاربری",
+    "تیران",
+    "پنل کاربری تیران",
+    "ورود آسان با موبایل",
+  ],
+  authors: [{ name: "Tiran Team", url: "https://www.tiranstyle.com/" }],
+  applicationName: "تیران",
+  generator: "Next.js",
+  referrer: "origin-when-cross-origin",
+  creator: "تیران",
+  publisher: "تیران",
+  robots: {
+    index: false, // چون صفحه ورود بهتر است توسط گوگل ایندکس نشود
+    follow: false,
+    nocache: true,
+  },
+  openGraph: {
+    title: "ورود به حساب کاربری | تیران",
+    description:
+      "برای ورود به حساب کاربری خود در تیران، شماره موبایل‌تان را وارد کرده و کد تایید دریافت کنید.",
+    url: "https://www.tiranstyle.com/auth",
+    siteName: "تیران",
+    locale: "fa_IR",
+    type: "website",
+    images: [
+      {
+        url: "https://www.tiranstyle.com/assets/images/og-login.jpg", // ← تصویر مناسب برای اشتراک در شبکه‌های اجتماعی
+        width: 1200,
+        height: 630,
+        alt: "صفحه ورود تیران",
       },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ورود به حساب کاربری | تیران",
+    description:
+      "برای ورود سریع و امن به حساب تیران، شماره موبایل خود را وارد کنید.",
+    images: ["https://www.tiranstyle.com/assets/images/og-login.jpg"],
+    site: "@tiran_site", // ← اگر دارید
+    creator: "@tiran_site",
+  },
+  alternates: {
+    canonical: "https://www.tiranstyle.com/auth",
+    languages: {
+      "fa-IR": "https://www.tiranstyle.com/auth",
     },
-    exit: {
-      opacity: 0,
-      transition: { duration: 0.3 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: "spring" as const, stiffness: 300, damping: 24 },
-    },
-  };
-
+  },
+  category: "authentication",
+};
+const Auth = () => {
   return (
-    <div
-      className="min-h-screen flex flex-col lg:flex-row pb-10 sm:pb-0 overflow-y-auto"
-      dir="rtl"
-    >
-      {/* Right side - Form */}
-
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white order-2 lg:order-1">
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6 }}
-          className="w-full max-w-md"
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={step}
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="space-y-8"
-            >
-              {/* Logo/Brand */}
-              <motion.div
-                variants={itemVariants}
-                className="text-center mb-8 border-b border-dashed border-gray-400 pb-2"
-              >
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">تیران</h1>
-                <p className="text-gray-600">به حساب کاربری خود وارد شوید</p>
-              </motion.div>
-              {redirectMessage && (
-                <motion.div
-                  variants={itemVariants}
-                  className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200"
-                >
-                  <p className="text-blue-700 text-sm">{redirectMessage}</p>
-                </motion.div>
-              )}
-              {isRedirecting && (
-                <motion.div
-                  variants={itemVariants}
-                  className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200"
-                >
-                  <p className="text-blue-700 text-sm">{isRedirecting}</p>
-                </motion.div>
-              )}
-              {isRedirectingDashboard && (
-                <motion.div
-                  variants={itemVariants}
-                  className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200"
-                >
-                  <p className="text-blue-700 text-sm">
-                    {isRedirectingDashboard}
-                  </p>
-                </motion.div>
-              )}
-
-              <motion.h2
-                variants={itemVariants}
-                className="text-2xl font-bold text-gray-800 text-center mb-8"
-              >
-                {step === 1 ? "ورود با شماره موبایل" : "تایید کد پیامک"}
-              </motion.h2>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {step === 1 ? (
-                  <motion.div variants={itemVariants}>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      شماره موبایل
-                    </label>
-                    <div className="relative">
-                      <BiPhone
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                        size={20}
-                      />
-                      <input
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="w-full px-4 py-4 pr-12 placeholder:text-gray-300 rounded-lg border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all"
-                        placeholder="09123456789"
-                        disabled={isLoading}
-                        type="tel"
-                      />
-                    </div>
-                    {errors.phone && (
-                      <span className="text-red-500 text-sm block mt-2">
-                        {errors.phone}
-                      </span>
-                    )}
-                  </motion.div>
-                ) : (
-                  <>
-                    <motion.div
-                      variants={itemVariants}
-                      className="text-center mb-6 p-4 bg-blue-50 rounded-lg"
-                    >
-                      <p className="text-gray-700">
-                        کد تایید به شماره{" "}
-                        <span className="font-semibold text-blue-600">
-                          {formData.phone}
-                        </span>{" "}
-                        ارسال شد
-                      </p>
-                    </motion.div>
-                    <motion.div variants={itemVariants}>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        کد تایید
-                      </label>
-                      <div className="relative">
-                        <BiLock
-                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                          size={20}
-                        />
-                        <input
-                          ref={smsCodeInputRef}
-                          name="smsCode"
-                          value={formData.smsCode}
-                          onChange={handleChange}
-                          className="w-full px-4 py-4 pr-12 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                          placeholder="کد 4 رقمی را وارد کنید"
-                          disabled={isLoading}
-                          type="text"
-                          maxLength={6}
-                          autoFocus={step === 2}
-                        />
-                      </div>
-                      {errors.smsCode && (
-                        <span className="text-red-500 text-sm block mt-2">
-                          {errors.smsCode}
-                        </span>
-                      )}
-                    </motion.div>
-                  </>
-                )}
-
-                <motion.button
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full py-4 mt-8 rounded-lg bg-black text-white font-semibold hover:bg-black/80 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg ${
-                    isLoading ? "opacity-70 cursor-not-allowed" : ""
-                  }`}
-                  type="submit"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  ) : (
-                    <BiLogIn size={20} />
-                  )}
-                  {isLoading
-                    ? "در حال پردازش..."
-                    : step === 1
-                    ? "دریافت کد تایید"
-                    : "ورود به حساب کاربری"}
-                </motion.button>
-              </form>
-
-              {step === 2 && (
-                <motion.div
-                  variants={itemVariants}
-                  className="text-center mt-6"
-                >
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    onClick={() => {
-                      setStep(1);
-                      setFormData((prev) => ({ ...prev, smsCode: "" }));
-                      setErrors({});
-                    }}
-                    className="text-blue-600 hover:text-blue-800 transition-colors font-medium underline"
-                    disabled={isLoading}
-                  >
-                    تغییر شماره موبایل
-                  </motion.button>
-                </motion.div>
-              )}
-
-              {/* Additional info */}
-              <motion.div variants={itemVariants} className="text-center mt-8">
-                <p className="text-sm text-gray-500">
-                  با ورود به سایت، شما{" "}
-                  <Link
-                    href="#"
-                    className="text-gray-900 font-bold hover:underline"
-                  >
-                    قوانین و مقررات
-                  </Link>{" "}
-                  را می‌پذیرید
-                </p>
-              </motion.div>
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-      </div>
-
-      {/* Left side - Image */}
-
-      <div className="w-full lg:w-1/2 h-82 lg:h-auto relative bg-gradient-to-br from-blue-600 to-purple-700 order-1 lg:order-2">
-        <motion.div
-          transition={{ duration: 0.8 }}
-          className="absolute inset-0 bg-black bg-opacity-20"
-        />
-
-        {/* Background Image */}
-        <Image
-          src="/assets/images/contact.jpg"
-          alt="Auth background"
-          fill
-          priority
-          className="object-cover"
-          style={{ objectFit: "cover" }}
-        />
-      </div>
-    </div>
+    <main>
+      <AuthPage />
+    </main>
   );
 };
 
-export default AuthPage;
+export default Auth;
