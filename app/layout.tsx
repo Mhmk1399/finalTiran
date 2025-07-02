@@ -8,8 +8,37 @@ import { CartProvider } from "@/context/cartContext";
 import CanonicalUrl from "@/components/global/CanonicalUrl";
 
 export const metadata: Metadata = {
-  title: "تیران - فروشگاه آنلاین پوشاک",
-  description: "فروشگاه آنلاین تیران، ارائه دهنده بهترین پوشاک با کیفیت",
+  title: "صفحه اصلی | تیران",
+  description: "آشنایی با فروشگاه تیران، ارزش‌ها و اهداف ما",
+  keywords: ["لباس", "فروشگاه تیران", "خرید آنلاین", "مد و پوشاک"],
+  authors: [{ name: "تیران", url: "https://www.tiranstyle.com/" }],
+  icons: {
+    icon: "/favicon.ico", // آیکون استاندارد مرورگر
+    shortcut: "/favicon.ico", // آیکون shortcut (برای تب‌ها)
+    apple: "/apple-icon.png", // آیکون مخصوص آیفون (اختیاری)
+  },
+  openGraph: {
+    title: "صفحه اصلی | تیران",
+    description: "آشنایی با فروشگاه تیران، ارزش‌ها و اهداف ما",
+    url: "https://www.tiranstyle.com/",
+    siteName: "تیران",
+    images: [
+      {
+        url: "https://www.tiranstyle.com/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "تیران - فروشگاه مد و پوشاک",
+      },
+    ],
+    locale: "fa_IR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "صفحه اصلی | تیران",
+    description: "آشنایی با فروشگاه تیران، ارزش‌ها و اهداف ما",
+    images: ["https://www.tiranstyle.com/og-image.jpg"],
+  },
 };
 
 export default function RootLayout({
