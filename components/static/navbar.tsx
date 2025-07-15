@@ -166,8 +166,14 @@ const Navbar = () => {
   return (
     <nav
       id="navbar"
-      className="fixed top-0 left-0 w-full z-50 bg-white/70 backdrop-blur-sm  transition-all duration-500"
+      className="fixed top-0 left-0 w-full z-50 transition-all duration-500 supports-[backdrop-filter]:bg-white/60"
       dir="rtl"
+      style={{
+        backdropFilter: "blur(12px) saturate(180%)",
+        opacity: 0.9,
+        WebkitBackdropFilter: "blur(12px) saturate(180%)",
+        background: `url('/assets/images/texture.png')`,
+      }}
     >
       <div className="max-w-screen">
         <div className="flex items-center justify-between h-20 px-4 sm:px-6 lg:px-2">

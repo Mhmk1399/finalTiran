@@ -113,8 +113,7 @@ const MixedGridCardMobile: React.FC<MixedGridCardProps> = ({
           }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          {/* Title */}
-          <motion.h3
+          {/* <motion.h3
             className="text-base font-bold mb-2"
             animate={{
               color:
@@ -125,7 +124,7 @@ const MixedGridCardMobile: React.FC<MixedGridCardProps> = ({
             transition={{ duration: 0.3 }}
           >
             {category.title}
-          </motion.h3>
+          </motion.h3> */}
 
           {/* Subtitle or description if available */}
           {category.description && (

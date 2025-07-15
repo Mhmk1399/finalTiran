@@ -27,8 +27,6 @@ function ShopPage() {
     setShowIntro(false);
   };
 
- 
-
   return (
     <>
       <AnimatePresence>
@@ -37,7 +35,12 @@ function ShopPage() {
         )}
       </AnimatePresence>
 
-      <main className="mb-12">
+      <main
+        className="mb-12"
+        style={{
+          background: `url('/assets/images/texture.png')`,
+        }}
+      >
         {/* <div className="mt-36 text-center">
           {(!showIntro || selectedCategory) && (
             <>
@@ -98,9 +101,7 @@ function ShopPage() {
         <VideoShowcase />
 
         <div className="md:px-20 px-4">
-          {" "}
           <div className="mt-12">
-            {" "}
             <ProductRow
               title=" شلوار"
               description="جدیدترین شلوارها را کشف کنید"
@@ -110,7 +111,6 @@ function ShopPage() {
             />
           </div>
           <div className="mt-12">
-            {" "}
             <ProductRow
               title=" کیف"
               description="جدیدترین کیف ها را کشف کنید"

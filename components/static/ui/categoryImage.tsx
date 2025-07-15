@@ -30,12 +30,18 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
 
   // Static positions for each image - Updated for smaller sizes
   const staticPositions = [
-    { x: 80, y: 80, width: 280, height: 260, zIndex: 80 },
-    { x: 320, y: 180, width: 240, height: 320, zIndex: 70 },
-    { x: 540, y: 200, width: 260, height: 360, zIndex: 80 },
-    { x: 720, y: 90, width: 320, height: 280, zIndex: 45 },
-    { x: 80, y: 360, width: 220, height: 240, zIndex: 35 },
-    { x: 720, y: 380, width: 300, height: 240, zIndex: 60 },
+    { x: 130, y: 160, width: 250, height: 260, zIndex: 80 },
+    // 1
+    { x: 320, y: 255, width: 240, height: 320, zIndex: 90 },
+    // 3
+    { x: 540, y: 155, width: 260, height: 300, zIndex: 100 },
+    // 4
+    { x: 720, y: 80, width: 320, height: 240, zIndex: 95 },
+    // 5
+    { x: 80, y: 420, width: 300, height: 240, zIndex: 35 },
+    // 2
+    { x: 720, y: 340, width: 350, height: 300, zIndex: 100 },
+    // 6
   ];
 
   const gridPatterns = [
@@ -122,13 +128,14 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   return (
     <motion.div
       ref={containerRef}
-      className="relative w-full min-h-screen pb-8 px-4 pt-10 md:-mt-8 flex flex-col items-center bg-gray-100"
+      className="relative w-full min-h-full px-4 py-25  md:-mt-43 flex flex-col items-center "
       variants={containerVariants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
+      style={{backgroundImage: "url('/assets/images/texture.png')", backgroundSize: 'cover'}}
     >
       {/* Desktop: Static positioned grid */}
-      <div className="hidden md:flex justify-center items-center w-full">
+      <div className="hidden md:flex justify-center items-center  w-full">
         <div className="relative w-full max-w-6xl h-[600px] md:h-[700px]">
           {" "}
           {/* Reduced height */}

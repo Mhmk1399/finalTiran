@@ -111,7 +111,7 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
       />
 
       {/* Content */}
-      <div
+      {/* <div
         className={`absolute bottom-0 left-0 right-0 p-3 md:p-4 text-white z-10`}
         dir="rtl"
       >
@@ -122,7 +122,6 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
           }}
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          {/* Title */}
           <motion.h3
             className={`text-sm md:text-base font-bold`}
             animate={{
@@ -133,7 +132,7 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
             {category.title}
           </motion.h3>
         </motion.div>
-      </div>
+      </div> */}
 
       {/* Hover Shine Effect */}
       <AnimatePresence>

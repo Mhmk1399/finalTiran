@@ -61,7 +61,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main>
+    <main className="overflow-x-hidden">
       <AboutContainer />
     </main>
   );
