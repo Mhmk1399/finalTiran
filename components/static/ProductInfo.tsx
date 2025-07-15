@@ -231,7 +231,7 @@ export default function ProductInfo({
         <div className="flex items-center justify-center md:justify-start">
           <h1
             className={`font-light tracking-wide text-gray-400 mb-3 ${
-              layout === "desktop" ? "text-sm lg:text-lg" : "text-2xl"
+              layout === "desktop" ? "text-base " : "text-sm text-center"
             }`}
           >
             {product.seo_description}

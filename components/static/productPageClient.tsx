@@ -110,7 +110,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
     productImages.length > 1 ? productImages[1].src : primaryImage;
   const additionalImages =
     productImages.length > 2
-      ? productImages.slice(2).map((img) => img.src)
+      ? productImages.map((img) => img.src)
       : [];
 
   // Desktop Layout
