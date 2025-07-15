@@ -96,11 +96,8 @@ export default function AboutContainer() {
               src="/assets/images/fashion/3.avif" // You can change this to your desired image
               alt="Tiran Style"
               fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 60vw"
+              className="object-cover -mt-4"
             />
-            {/* Optional overlay */}
-            <div className="absolute inset-0 bg-black/5"></div>
           </div>
 
           {/* Text Content - Right Side */}
@@ -183,7 +180,7 @@ export default function AboutContainer() {
                   key={member.id}
                   className="flex flex-col items-center group"
                 >
-                  <div className="w-full relative h-64  md:h-96 lg:h-auto">
+                  <div className="w-full relative h-64 mt-4 md:h-96 lg:h-auto">
                     <Image
                       src={member.image}
                       alt={member.alt}
