@@ -1,7 +1,7 @@
 export async function GET() {
   try {
     const response = await fetch(
-      "https://tiran.shop.hesabroclub.ir/api/web/shop-v1/v2/category/index?expand=children",
+      "https://tiran.shop.hesabroclub.ir/api/web/shop-v1/category/index",
       {
         method: "GET",
         headers: {

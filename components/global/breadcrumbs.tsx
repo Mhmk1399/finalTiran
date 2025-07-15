@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { HiChevronLeft, HiHome } from "react-icons/hi";
+import { HiChevronLeft } from "react-icons/hi";
 
 // Persian translations for common routes
 const routeTranslations: Record<string, string> = {
@@ -59,11 +59,11 @@ const Breadcrumbs = () => {
   }
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="">
       {" "}
       {/* Increased top margin to account for navbar height */}
       <motion.nav
-        className="bg-white py-3 px-6 relative overflow-hidden z-10"
+        className="bg-white py-3 relative overflow-hidden z-10"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -94,37 +94,31 @@ const Breadcrumbs = () => {
                       >
                         {item.isHome ? (
                           <motion.div
-                            whileHover={{ scale: 1.1, y: -2 }}
                             whileTap={{ scale: 0.95 }}
                             className="ml-1  p-1.5 transition-colors"
                           >
-                            <HiHome className="text-lg" />
+                            خانه
                           </motion.div>
                         ) : (
                           <motion.span
                             className="relative px-2 py-1 transition-colors"
-                            whileHover={{ y: -1 }}
                             whileTap={{ y: 0 }}
                           >
                             {item.label}
                             <motion.span
                               className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
                               initial={{ scaleX: 0, originX: 0 }}
-                              whileHover={{ scaleX: 1 }}
                               transition={{ duration: 0.3 }}
                             />
                           </motion.span>
                         )}
                       </Link>
-                      <motion.div className="mx-2 text-gray-300">
+                      <motion.div className=" text-gray-300">
                         <HiChevronLeft />
                       </motion.div>
                     </>
                   ) : (
-                    <motion.span
-                      className="font-medium text-black px-3 py-1"
-                      whileHover={{ scale: 1.03 }}
-                    >
+                    <motion.span className="font-medium text-black px-3 py-1">
                       {item.label}
                     </motion.span>
                   )}

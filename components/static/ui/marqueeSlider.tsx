@@ -1,5 +1,6 @@
 "use client";
 import { MarqueeSliderProps } from "@/types/type";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import React, {
   useState,
@@ -197,6 +198,33 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
           "linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%)",
       }}
     >
+      <div className="flex flex-col items-end justify-end px-4 md:px-20 mb-12">
+        {/* Title */}
+        <motion.h2
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-2xl md:text-3xl border-b border-dashed pb-4 font-light text-gray-800 tracking-wide"
+        >
+          دسته بندی محصولات
+        </motion.h2>
+
+        {/* Image */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="relative"
+        >
+          <div className="w-full h-full ">
+            <img
+              src="/assets/images/marquee.png" // Replace with your actual image path
+              alt="دسته بندی محصولات"
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+        </motion.div>
+      </div>
       <div className={`flex items-center gap-8 marquee-track-${animationName}`}>
         {infiniteItems.map((item, index) => {
           const setIndex = Math.floor(index / items.length);

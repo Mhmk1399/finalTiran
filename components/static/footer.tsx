@@ -1,12 +1,17 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Signature from "../global/signature";
 import { Category } from "@/types/type";
-import { contactInfo, MainLink, socialLinks } from "@/lib/footerData";
+import {
+  Accsses,
+  customersServices,
+  Help,
+  socialLinks,
+} from "@/lib/footerData";
 
 // Animation variants
 const containerVariants = {
@@ -38,7 +43,6 @@ const Footer = () => {
   const pathname = usePathname();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const footerEndRef = useRef(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -48,6 +52,7 @@ const Footer = () => {
           throw new Error("Failed to fetch categories");
         }
         const data = await response.json();
+        console.log(data);
 
         // Handle different possible data structures
         let categoriesArray: Category[] = [];
@@ -68,13 +73,13 @@ const Footer = () => {
           }
         }
 
-        // Filter categories that have children
-        const categoriesWithChildren = categoriesArray.filter(
-          (category: Category) =>
-            category.children && category.children.length > 0
+        // Since your categories don't have children property, show all categories
+        // Filter out categories that have parent (show only parent categories)
+        const parentCategories = categoriesArray.filter(
+          (category: Category) => category.parent === null
         );
 
-        setCategories(categoriesWithChildren);
+        setCategories(parentCategories);
       } catch (error) {
         console.error("Error fetching categories:", error);
         setCategories([]); // Set empty array on error
@@ -85,111 +90,195 @@ const Footer = () => {
 
     fetchCategories();
   }, []);
-  const { scrollYProgress } = useScroll({
-    target: footerEndRef,
-    offset: ["start end", "end end"],
-  });
 
   // Transform values for parallax effects
-  const logoScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 1.1]);
-  const logoOpacity = useTransform(scrollYProgress, [0, 0.3, 1], [0, 1, 1]);
 
   if (pathname === "/admin" || pathname === "/auth") {
     return null;
   }
 
   return (
-    <footer dir="rtl" className="bg-white text-white relative">
+    <footer dir="rtl" className="bg-white text-white min-h-full lg:mx-20  ">
       {/* Wave SVG Divider */}
       <motion.div
-        className="container mx-auto px-8 pt-20 pb-24"
+        className="container mx-auto px-8 pt-10 pb-12 border-t border-gray-400/80"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20">
-          {/* Brand Section - Takes more space */}
-          <motion.div
-            variants={itemVariants}
-            className="lg:col-span-5 space-y-8"
-          >
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring" as const, stiffness: 300 }}
-              className="inline-block"
-            >
-              <Link href="/" className="flex items-center group">
-                <Image
-                  src="/assets/images/logo.png"
-                  alt="Tiran Logo"
-                  width={160}
-                  height={60}
-                  className="h-10 w-auto transition-all duration-300 group-hover:brightness-110"
-                />
-              </Link>
-            </motion.div>
+        {/* Brand Section - Takes more space */}
 
-            <div className="max-w-md">
-              <p className="text-gray-600 text-base leading-relaxed font-light">
-                ارائه راهکارهای نوین فناوری برای کسب و کارها با هدف رشد و نوآوری
-                در دنیای دیجیتال
+        <motion.div
+          variants={itemVariants}
+          className="flex flex-col lg:flex-row items-center lg:items-start mb-12 justify-between gap-6 lg:gap-0"
+        >
+          <motion.div
+            transition={{ type: "spring" as const, stiffness: 300 }}
+            className="space-y-4 md:space-y-2 w-full lg:w-auto"
+          >
+            <Link
+              href="/"
+              className="flex items-center justify-center lg:justify-start group"
+            >
+              <Image
+                src="/assets/images/logohalf.png"
+                alt="Tiran Logo"
+                width={160}
+                height={60}
+                className="h-10 w-auto mb-4  transition-all duration-300 group-hover:brightness-110"
+              />
+            </Link>
+            <Image
+              src="/assets/images/dastkhat.png"
+              alt="Tiran Logo"
+              width={160}
+              height={60}
+              className="h-10 w-auto mx-auto md:mr-0 transition-all duration-300 group-hover:brightness-110"
+            />
+            <div className="max-w-5xl text-center lg:text-right mx-auto lg:mr-auto lg:ml-0">
+              <p className="text-gray-400 text-sm md:text-base lg:text-lg leading-relaxed font-light px-4 lg:px-0">
+                ماموریت ما در تیران استایل ارائه محصولاتی است که به مشتریانمان
+                کمک می‌کند تا سبک زندگی خود را با جسارت و اصالت تعریف کنند و از
+                دیگران متمایز شوند
               </p>
             </div>
-
-            {/* Social Links with better spacing */}
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-500 font-medium">
-                دنبال کنید:
-              </span>
-              <div className="flex gap-3">
-                {socialLinks.map((social, index) => {
-                  const IconComponent = social.icon;
-                  return (
-                    <motion.a
-                      key={index}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{
-                        y: -3,
-                        scale: 1.1,
-                      }}
-                      whileTap={{ scale: 0.95 }}
-                      className="w-10 h-10 bg-gray-50 hover:bg-gray-900 text-gray-600 hover:text-white rounded-full flex items-center justify-center transition-all duration-300 group"
-                      aria-label={social.name}
-                    >
-                      <IconComponent
-                        size={16}
-                        className="transition-transform duration-300 group-hover:scale-110"
-                      />
-                    </motion.a>
-                  );
-                })}
-              </div>
+            <div className="max-w-2xl flex flex-col sm:flex-row gap-2 items-center justify-center lg:justify-start mx-auto lg:mx-0">
+              <p className="text-gray-400 text-xs md:text-sm lg:text-base leading-relaxed font-light">
+                تلفن تماس :
+              </p>
+              <p
+                className="text-gray-600 text-xs md:text-sm lg:text-base leading-relaxed font-light"
+                dir="ltr"
+              >
+                <Link href="tel:02188965842">۰۲۱ - ۸۸۹۶۵۸۴۲-۴۸</Link>
+              </p>
             </div>
           </motion.div>
 
-          {/* Services Section */}
+          {/* Social Links with better spacing */}
+          <div className="flex items-center justify-center lg:justify-end gap-3 lg:gap-4 order-first lg:order-last">
+            {socialLinks.map((social, index) => {
+              const IconComponent = social.icon;
+              return (
+                <motion.a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{
+                    y: -3,
+                    scale: 1.1,
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-8 h-8 lg:w-10 lg:h-10 bg-gray-900 hover:bg-gray-900 text-gray-50 hover:text-white flex items-center justify-center transition-all duration-300 group"
+                  aria-label={social.name}
+                >
+                  <IconComponent
+                    size={16}
+                    className="lg:w-5 lg:h-5 transition-transform duration-300 group-hover:scale-110"
+                  />
+                </motion.a>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-2 lg:grid-cols-12 gap-16 lg:gap-20">
+          {/* accsess Section */}
           <motion.div
             variants={itemVariants}
             className="lg:col-span-2 space-y-6"
           >
             <div className="relative">
               <h3 className="text-lg text-gray-900 font-semibold mb-6 relative">
-                خدمات
-                <motion.div
-                  className="absolute -bottom-2 right-0 h-0.5 bg-black rounded-full"
-                  initial={{ width: 0 }}
-                  whileInView={{ width: 80 }}
-                  transition={{ delay: 0.5, duration: 0.6 }}
-                />
+                دسترسی سریع
               </h3>
             </div>
 
             <nav className="space-y-4">
-              {MainLink.map((link, index) => (
+              {Accsses.map((link, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ x: 4 }}
+                  transition={{
+                    type: "spring" as const,
+                    stiffness: 400,
+                    damping: 25,
+                  }}
+                >
+                  <Link
+                    href={link.href}
+                    className="group flex items-center text-gray-600 hover:text-gray-900 transition-all duration-300 text-sm"
+                  >
+                    <motion.div
+                      initial={{ width: 0, opacity: 0 }}
+                      whileHover={{ width: 12, opacity: 1 }}
+                      className="h-px bg-amber-500 mr-3 transition-all duration-300"
+                    />
+                    <span className="group-hover:font-medium transition-all duration-300">
+                      {link.name}
+                    </span>
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+          </motion.div>
+
+          {/* customersServices Section */}
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-2 space-y-6"
+          >
+            <div className="relative">
+              <h3 className="text-lg text-gray-900 font-semibold mb-6 relative">
+                خدمات مشتریان
+              </h3>
+            </div>
+
+            <nav className="space-y-4">
+              {customersServices.map((link, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ x: 4 }}
+                  transition={{
+                    type: "spring" as const,
+                    stiffness: 400,
+                    damping: 25,
+                  }}
+                >
+                  <Link
+                    href={link.href}
+                    className="group flex items-center text-gray-600 hover:text-gray-900 transition-all duration-300 text-sm"
+                  >
+                    <motion.div
+                      initial={{ width: 0, opacity: 0 }}
+                      whileHover={{ width: 12, opacity: 1 }}
+                      className="h-px bg-amber-500 mr-3 transition-all duration-300"
+                    />
+                    <span className="group-hover:font-medium transition-all duration-300">
+                      {link.name}
+                    </span>
+                  </Link>
+                </motion.div>
+              ))}
+            </nav>
+          </motion.div>
+
+          {/* Help Section */}
+          <motion.div
+            variants={itemVariants}
+            className="lg:col-span-2 space-y-6"
+          >
+            <div className="relative">
+              <h3 className="text-lg text-gray-900 font-semibold mb-6 relative">
+                راهنما
+              </h3>
+            </div>
+
+            <nav className="space-y-4">
+              {Help.map((link, index) => (
                 <motion.div
                   key={index}
                   whileHover={{ x: 4 }}
@@ -225,12 +314,6 @@ const Footer = () => {
             <div className="relative">
               <h3 className="text-lg text-gray-900 font-semibold mb-6 relative">
                 دسته‌بندی‌ها
-                <motion.div
-                  className="absolute -bottom-2 right-0 h-0.5 bg-black rounded-full"
-                  initial={{ width: 0 }}
-                  whileInView={{ width: 80 }}
-                  transition={{ delay: 0.5, duration: 0.6 }}
-                />
               </h3>
             </div>
 
@@ -262,7 +345,7 @@ const Footer = () => {
                       href={`/shop?category=${encodeURIComponent(
                         category.cat_name
                       )}`}
-                      className="group flex items-center justify-between text-gray-600 hover:text-gray-900 transition-all duration-300 text-sm"
+                      className="group flex items-center text-gray-600 hover:text-gray-900 transition-all duration-300 text-sm"
                     >
                       <div className="flex items-center">
                         <motion.div
@@ -274,11 +357,6 @@ const Footer = () => {
                           {category.cat_name}
                         </span>
                       </div>
-                      {category.children && category.children.length > 0 && (
-                        <span className="text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-full">
-                          {category.children.length}
-                        </span>
-                      )}
                     </Link>
                   </motion.div>
                 ))}
@@ -321,14 +399,42 @@ const Footer = () => {
                 )}
               </nav>
             ) : (
-              <p className="text-gray-500 text-sm bg-gray-50 p-4 rounded-lg text-center">
+              <p className="text-gray-500 text-sm p-4 rounded-lg text-center">
                 دسته‌بندی‌ای یافت نشد
               </p>
             )}
           </motion.div>
 
-          {/* Contact Section */}
+          {/* Image enamad and trust Section */}
           <motion.div
+            variants={itemVariants}
+            className="lg:col-span-4 col-span-1 space-y-6 mr-auto"
+          >
+            <div className="relative">
+              <h3 className="text-lg text-gray-900 text-nowrap font-semibold mb-6 relative">
+                نماد اعتماد و اطمینان
+              </h3>
+            </div>
+            <div className="flex flex-row lg:flex-row gap-4 items-center justify-center">
+              <Image
+                src="/assets/images/enemad.png"
+                alt="Enamad"
+                width={100}
+                height={100}
+                className="w-20 md:w-full h-auto object-contain"
+              />
+              <Image
+                src="/assets/images/meliNeshan.png"
+                alt="Enamad"
+                width={100}
+                height={100}
+                className="w-20 md:w-full h-auto object-contain"
+              />
+            </div>
+          </motion.div>
+
+          {/* Contact Section */}
+          {/* <motion.div
             variants={itemVariants}
             className="lg:col-span-3 space-y-6"
           >
@@ -378,7 +484,7 @@ const Footer = () => {
                 );
               })}
             </div>
-          </motion.div>
+          </motion.div> */}
         </div>
 
         {/* Bottom Section with better spacing */}
@@ -402,66 +508,13 @@ const Footer = () => {
         </motion.div>
       </motion.div>
       {/* Full-screen black section with centered logo - TiranStyle-like */}
-      <div
-        ref={footerEndRef}
-        className="relative z-99 h-screen bg-gradient-to-b from-black via-slate-900 to-black overflow-hidden"
-      >
-        {/* Main Content Container */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          {/* Logo Container with Multiple Animation Layers */}
-          <motion.div
-            className="relative flex flex-col items-center"
-            style={{
-              scale: logoScale,
-              opacity: logoOpacity,
-            }}
-          >
-            {/* Logo Image with Enhanced Effects */}
-            <motion.div className="relative z-10 mt-30">
-              <motion.div
-                className="relative"
-                whileHover={{
-                  scale: 1.05,
-                  rotateY: 10,
-                  transition: { duration: 0.3 },
-                }}
-              >
-                <Image
-                  src="/assets/images/whitelogo.png"
-                  alt="Tiran Logo"
-                  width={4000}
-                  height={4000}
-                  className="md:h-20 h-10 w-auto object-cover transition-all duration-700"
-                  priority
-                />
-              </motion.div>
-            </motion.div>
-
-            {/* Animated Text Below Logo */}
-            <motion.div className="mt-8 text-center">
-              <motion.h2
-                className="text-white text-xl md:text-2xl font-light tracking-wider mb-2"
-                animate={{
-                  opacity: [0.7, 1, 0.7],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                تیران
-              </motion.h2>
-            </motion.div>
-          </motion.div>
-        </div>
-      </div>
       <Signature
         spinDuration={5} // Faster spin (5 seconds per rotation)
         isSpinning={true} // Enable spinning
-        textColor="#0f172a"
+        textColor="#000"
         logoWidth={20}
         logoHeight={20}
+        className=""
       />{" "}
     </footer>
   );

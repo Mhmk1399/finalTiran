@@ -1,9 +1,10 @@
 "use client";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import ProductGrid from "@/components/static/ProductGrid";
 import { AnimatePresence } from "framer-motion";
 import ShopIntro from "@/components/static/shopIntro";
+import VideoShowcase from "@/components/static/ui/videoShowcase";
+import ProductRow from "@/components/global/ProductsRow";
 
 function ShopPage() {
   const [showIntro, setShowIntro] = useState(true);
@@ -26,11 +27,7 @@ function ShopPage() {
     setShowIntro(false);
   };
 
-  const clearFilter = () => {
-    setSelectedCategory(null);
-    // Update URL without filter parameters
-    window.history.pushState({}, "", "/shop");
-  };
+ 
 
   return (
     <>
@@ -40,8 +37,8 @@ function ShopPage() {
         )}
       </AnimatePresence>
 
-      <main className="container mx-auto px-4 pt-12 mb-12" dir="rtl">
-        <div className="mt-36 text-center">
+      <main className="mb-12">
+        {/* <div className="mt-36 text-center">
           {(!showIntro || selectedCategory) && (
             <>
               <h1 className="text-4xl font-bold mb-3">
@@ -53,7 +50,6 @@ function ShopPage() {
                   : "محصولات ما را که با دقت طراحی شده اند برای کیفیت و طراحی کشف کنید سبک ماوس را روی تصاویر نگه دارید تا محصولات را از زوایای مختلف ببینید."}
               </p>
 
-              {/* Filter indicator and clear button */}
               {selectedCategory && (
                 <div className="mt-6 flex justify-center items-center gap-4">
                   <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
@@ -97,9 +93,33 @@ function ShopPage() {
               )}
             </>
           )}
-        </div>
+        </div> */}
+        {/* <ProductGrid categoryFilter={selectedCategory} /> */}
+        <VideoShowcase />
 
-        <ProductGrid categoryFilter={selectedCategory} />
+        <div className="md:px-20 px-4">
+          {" "}
+          <div className="mt-12">
+            {" "}
+            <ProductRow
+              title=" شلوار"
+              description="جدیدترین شلوارها را کشف کنید"
+              endpoint="/api/shop"
+              className=""
+              category=""
+            />
+          </div>
+          <div className="mt-12">
+            {" "}
+            <ProductRow
+              title=" کیف"
+              description="جدیدترین کیف ها را کشف کنید"
+              endpoint="/api/shop"
+              className=""
+              category="شلوار"
+            />
+          </div>
+        </div>
       </main>
     </>
   );

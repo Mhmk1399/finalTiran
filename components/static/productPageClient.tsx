@@ -72,8 +72,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
     }
   }, [slug]);
 
-  // Rest of your component logic remains the same...
-  // (loading, error, desktop/mobile layouts)
+ 
 
   if (loading) {
     return (
@@ -117,7 +116,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
   // Desktop Layout
   if (isDesktop) {
     return (
-      <main className="min-h-screen bg-white py-10 mx-10" dir="rtl">
+      <main className="min-h-screen bg-white py-10 px-20" dir="rtl">
         {/* Your existing desktop layout */}
         <div className="min-h-screen mt-20">
           <div className="grid grid-cols-12 h-full gap-0">

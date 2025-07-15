@@ -1,11 +1,12 @@
 export const navItems = [
+  { name: "خانه", href: "/" },
   { name: "فروشگاه", href: "/shop" },
   { name: "راهنما", href: "/help" },
   { name: "بلاگ", href: "/blog" },
   { name: "درباره", href: "/about" },
   { name: "تماس با ما", href: "/contact" },
-  { name: "گیفت کارت", href: "/giftCart" },
-  { name: "هدایای سازمانی", href: "/corporateGifts" },
+  // { name: "گیفت کارت", href: "/giftCart" },
+  // { name: "هدایای سازمانی", href: "/corporateGifts" },
 ];
 
 // Categories with subcategories

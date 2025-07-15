@@ -9,8 +9,8 @@ import MixedGridCardMobile from "./mixedGridCardMobile";
 
 const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   categories,
-  title = "دسته‌بندی‌های ما",
-  subtitle = "کشف کنید، تجربه کنید، لذت ببرید",
+  // title = "دسته‌بندی‌های ما",
+  // subtitle = "کشف کنید، تجربه کنید، لذت ببرید",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -28,14 +28,14 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
     }
   }, [isInView]);
 
-  // Static positions for each image - customize these positions as needed
+  // Static positions for each image - Updated for smaller sizes
   const staticPositions = [
-    { x: 50, y: 50, width: 340, height: 320, zIndex: 80 },
-    { x: 300, y: 150, width: 300, height: 380, zIndex: 70 },
-    { x: 650, y: 170, width: 320, height: 420, zIndex: 80 },
-    { x: 750, y: 60, width: 400, height: 337, zIndex: 45 },
-    { x: 50, y: 380, width: 280, height: 300, zIndex: 35 },
-    { x: 750, y: 400, width: 375, height: 300, zIndex: 60 },
+    { x: 80, y: 80, width: 280, height: 260, zIndex: 80 },
+    { x: 320, y: 180, width: 240, height: 320, zIndex: 70 },
+    { x: 540, y: 200, width: 260, height: 360, zIndex: 80 },
+    { x: 720, y: 90, width: 320, height: 280, zIndex: 45 },
+    { x: 80, y: 360, width: 220, height: 240, zIndex: 35 },
+    { x: 720, y: 380, width: 300, height: 240, zIndex: 60 },
   ];
 
   const gridPatterns = [
@@ -93,6 +93,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
       },
     }),
   };
+
   // Mobile marquee variants
   const marqueeVariants = {
     hidden: { opacity: 0 },
@@ -121,34 +122,31 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   return (
     <motion.div
       ref={containerRef}
-      className="relative w-full min-h-screen py-8 px-4 flex flex-col items-center"
+      className="relative w-full min-h-screen pb-8 px-4 pt-10 md:-mt-8 flex flex-col items-center bg-gray-100"
       variants={containerVariants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
     >
-      {/* Header */}
-      <div className="text-center mb-12">
-        <motion.h2
-          className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
-          initial={{ opacity: 0, y: -20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
-          transition={{ duration: 0.6 }}
-        >
-          {title}
-        </motion.h2>
-        <motion.p
-          className="text-lg text-gray-600"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          {subtitle}
-        </motion.p>
-      </div>
-
       {/* Desktop: Static positioned grid */}
       <div className="hidden md:flex justify-center items-center w-full">
-        <div className="relative w-full max-w-6xl h-[600px] md:h-[800px]">
+        <div className="relative w-full max-w-6xl h-[600px] md:h-[700px]">
+          {" "}
+          {/* Reduced height */}
+          {/* Central Text Overlay */}
+          <div className="absolute inset-0 flex items-center justify-center z-90 pointer-events-none">
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={
+                isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }
+              }
+              transition={{ duration: 0.8, delay: 0.5 }}
+            >
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 tracking-wide">
+                سبک زندگی
+              </h2>
+            </motion.div>
+          </div>
           {categories.slice(0, 6).map((category, index) => {
             const pattern = gridPatterns[index % gridPatterns.length];
             const position = staticPositions[index % staticPositions.length];
@@ -177,6 +175,19 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
 
       {/* Mobile: Marquee with better UX */}
       <div className="md:hidden w-full overflow-hidden">
+        {/* Mobile Text Overlay */}
+        <div className="text-center mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <h2 className="text-3xl font-light text-gray-800 mb-2 tracking-wide">
+              سبک زندگی
+            </h2>
+          </motion.div>
+        </div>
+
         {/* First Row - Left to Right */}
         <motion.div
           className="flex gap-4 mb-6"
@@ -197,12 +208,11 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
                   key={`mobile-left-${category.id}-${index}`}
                   custom={index}
                   variants={mobileItemVariants}
-                  className="flex-shrink-0 w-64 h-80 overflow-hidden"
+                  className="flex-shrink-0 w-56 h-72 overflow-hidden" // Reduced from w-64 h-80
                   onTouchStart={() => setHoveredIndex(index)}
                   onTouchEnd={() => setHoveredIndex(null)}
                   whileTap={{ scale: 0.95 }}
                 >
-                  {" "}
                   <MixedGridCardMobile
                     category={category}
                     index={index}
@@ -234,7 +244,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
                   key={`mobile-right-${category.id}-${index}`}
                   custom={index + 4}
                   variants={mobileItemVariants}
-                  className="flex-shrink-0 w-56 h-72 overflow-hidden"
+                  className="flex-shrink-0 w-48 h-64 overflow-hidden" // Reduced from w-56 h-72
                   onTouchStart={() => setHoveredIndex(index + 10)}
                   onTouchEnd={() => setHoveredIndex(null)}
                   whileTap={{ scale: 0.95 }}

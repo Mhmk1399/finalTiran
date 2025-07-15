@@ -18,12 +18,11 @@ import {
   RiCloseLine,
   RiArrowRightSLine,
   RiDashboardLine,
-  RiLoginCircleLine,
+  RiUser3Line,
 } from "react-icons/ri";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/context/cartContext";
 import { Category, UserProfile } from "@/types/type";
-import Breadcrumbs from "../global/breadcrumbs";
 
 const Navbar = () => {
   const { totalItems } = useCart();
@@ -167,52 +166,14 @@ const Navbar = () => {
   return (
     <nav
       id="navbar"
-      className={`fixed w-full z-50 bg-white transition-all duration-500 flex flex-col  text-black`}
+      className="fixed top-0 left-0 w-full z-50 bg-white/70 backdrop-blur-sm  transition-all duration-500"
       dir="rtl"
     >
       <div className="max-w-screen">
         <div className="flex items-center justify-between h-20 px-4 sm:px-6 lg:px-2">
           {" "}
-          {/* Right side - Navigation Items (Desktop) */}
-          <div className="hidden md:flex items-center">
-            {navItems.map((item) => (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="relative px-1"
-              >
-                <Link href={item.href}>
-                  <motion.span
-                    className={`block px-3 py-2 text-base font-medium rounded-md transition-all duration-300 ${
-                      activeItem === item.href
-                        ? "text-black font-bold"
-                        : "text-gray-700 hover:text-black hover:bg-gray-100"
-                    }`}
-                    whileHover={{
-                      scale: 1.05,
-                      transition: { duration: 0.2 },
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {item.name}
-                    {activeItem === item.href && (
-                      <motion.div
-                        className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-gray-500 to-gray-600 rounded-full shadow-lg"
-                        layoutId="underline"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, ease: "easeInOut" }}
-                      />
-                    )}
-                  </motion.span>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
           {/* Center - Logo */}
-          <div className="absolute left-1/2 transform -translate-x-1/2">
+          <div className="flex items-center justify-start">
             <Link href="/">
               <motion.div
                 variants={logoVariants}
@@ -222,7 +183,7 @@ const Navbar = () => {
                 className="flex items-center justify-center"
               >
                 <Image
-                  src="/assets/images/logo.png"
+                  src="/assets/images/navlogo.png"
                   alt="Tiran Logo"
                   width={70}
                   height={70}
@@ -230,7 +191,41 @@ const Navbar = () => {
                 />
               </motion.div>
             </Link>
+            <div className="hidden md:flex items-center justify-end ">
+              {navItems.map((item) => (
+                <motion.div
+                  key={item.name}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative px-1"
+                >
+                  <Link href={item.href}>
+                    <motion.span
+                      className={`block px-3 py-2 text-base font-medium transition-all duration-300 ${
+                        activeItem === item.href
+                          ? "text-black font-bold"
+                          : "text-gray-700 hover:text-black "
+                      }`}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {item.name}
+                      {activeItem === item.href && (
+                        <motion.div
+                          className="absolute -bottom-1 left-0 right-0 h-1 bg-black rounded-full shadow-lg"
+                          layoutId="underline"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.5, ease: "easeInOut" }}
+                        />
+                      )}
+                    </motion.span>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
           </div>
+          {/* Right side - Navigation Items (Desktop) */}
           {/* Left side - Cart and Login */}
           <div className="flex gap-3 items-center">
             <motion.div
@@ -291,7 +286,7 @@ const Navbar = () => {
                     whileTap={{ scale: 0.95 }}
                     className="hidden  md:flex  items-center  text-gray-700 hover:text-gray-900"
                   >
-                    <RiLoginCircleLine className="ml-1" />
+                    <RiUser3Line className="ml-1" />
                     <span className="text-sm font-medium">ورود / ثبت‌نام</span>
                   </motion.button>
                 </Link>
@@ -392,7 +387,6 @@ const Navbar = () => {
           hoveredCategory={hoveredCategory}
           setHoveredCategory={setHoveredCategory}
         /> */}
-        <Breadcrumbs />
       </motion.div>
 
       {/* Mobile menu */}
@@ -566,7 +560,7 @@ const Navbar = () => {
                         onClick={() => setIsOpen(!isOpen)}
                         className="flex md:hidden items-center text-black hover:text-gray-900"
                       >
-                        <RiLoginCircleLine className="ml-1" />
+                        <RiUser3Line className="ml-1" />
                         <span
                           onClick={() => setIsOpen(!isOpen)}
                           className="text-sm font-medium"

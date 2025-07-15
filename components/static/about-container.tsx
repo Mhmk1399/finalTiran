@@ -7,204 +7,223 @@ export const metadata: Metadata = {
   description: "آشنایی با فروشگاه تیران، ارزش‌ها و اهداف ما",
 };
 
-const TeamSection = [
+const teamMembers = [
   {
-    name: "علی محمدی",
-    role: "بنیانگذار و مدیرعامل",
+    id: 1,
+    name: "علی احمدی",
+    position: "مدیر عامل",
     image: "/assets/images/fashion/1.avif",
+    alt: "علی احمدی - مدیر عامل",
   },
   {
-    name: "سارا رضایی",
-    role: "مدیر خلاقیت",
-    image: "/assets/images/fashion/3.avif",
-  },
-  {
-    name: "محمد کریمی",
-    role: "مدیر محصول",
+    id: 2,
+    name: "سارا محمدی",
+    position: "مدیر فروش",
     image: "/assets/images/fashion/2.avif",
+    alt: "سارا محمدی - مدیر فروش",
   },
   {
-    name: "نیلوفر احمدی",
-    role: "مدیر بازاریابی",
-    image: "/assets/images/fashion/6.avif",
+    id: 3,
+    name: "حسین رضایی",
+    position: "مدیر طراحی",
+    image: "/assets/images/fashion/4.avif",
+    alt: "حسین رضایی - مدیر طراحی",
+  },
+  {
+    id: 4,
+    name: "فاطمه کریمی",
+    position: "مدیر بازاریابی",
+    image: "/assets/images/fashion/5.avif",
+    alt: "فاطمه کریمی - مدیر بازاریابی",
   },
 ];
 
 export default function AboutContainer() {
   return (
-    <main dir="rtl">
+    <main>
       {/* Hero Section */}
-      <section className="mb-16">
-        <div className="relative h-[70vh] overflow-hidden">
-          <Image
-            src="/assets/images/fashion/2.avif"
-            alt="تیم تیران"
-            width={4000}
-            height={4000}
-            className="object-cover w-full h-full"
-          />
-          <div className="absolute inset-0  flex items-center justify-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-white text-center px-4">
-              داستان ما
+      <section className="min-h-screen pt-20 flex flex-col lg:flex-row">
+        {/* Text Content - Mobile: Top, Desktop: Left Side */}
+        <div className="w-full lg:w-3/5 flex flex-col justify-center lg:justify-end items-center lg:items-end px-4 sm:px-6 lg:px-8 xl:px-16 bg-white order-2 lg:order-1 py-8 lg:py-0">
+          <div className="max-w-2xl text-center lg:text-right">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              برای نسلی که <br className="hidden sm:block" />
+              <span className="relative inline-block">
+                <span className="relative z-10 text-white px-2 sm:px-3 lg:px-4 bg-green-800 shadow-lg transform hover:scale-105 transition-all duration-300 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-5xl">
+                  ایـــــــــران
+                </span>
+                {/* Decorative elements */}
+              </span>{" "}
+              را <br className="hidden md:block" />
+              سبز می‌بیند
             </h1>
           </div>
         </div>
-      </section>
 
-      {/* Our Story */}
-      <section className="max-w-4xl mx-auto mb-20">
-        <h2 className="text-3xl font-bold mb-8 text-center">درباره تیران</h2>
-        <div className="prose prose-lg max-w-none">
-          <p>
-            تیران در سال ۱۳۹۸ با هدف ارائه محصولات با کیفیت و طراحی منحصر به فرد
-            تاسیس شد. ما معتقدیم که هر محصول باید داستانی برای گفتن داشته باشد و
-            هر مشتری شایسته تجربه‌ای خاص است.
-          </p>
-          <p>
-            فلسفه ما ساده است: ترکیب هنر، طراحی و کاربرد در محصولاتی که زندگی
-            روزمره را غنی‌تر می‌کنند. ما با دقت تمام، محصولاتی را انتخاب می‌کنیم
-            که نه تنها زیبا هستند، بلکه کیفیت استثنایی و دوام بالایی نیز دارند.
-          </p>
+        {/* Image - Mobile: Top, Desktop: Right Side */}
+        <div className="w-full lg:w-2/5 relative h-110  md:h-96 lg:h-auto order-1 lg:order-2">
+          <Image
+            src="/assets/images/fashion/2.avif"
+            alt="تیم تیران"
+            fill
+            className="object-cover"
+            priority
+            sizes="(max-width: 1024px) 100vw, 40vw"
+          />
         </div>
       </section>
+      {/* New Section - Image Left, Text Right */}
+      <section className="min-h-screen flex flex-col lg:flex-row md:mt-20">
+        {/* Image - Left Side */}
+        <div className="w-full lg:w-3/5 relative h-64 sm:h-80 md:h-96 lg:h-auto order-1">
+          <Image
+            src="/assets/images/fashion/3.avif" // You can change this to your desired image
+            alt="Tiran Style"
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 60vw"
+          />
+          {/* Optional overlay */}
+          <div className="absolute inset-0 bg-black/5"></div>
+        </div>
 
-      {/* Values */}
-      <section className="py-16 px-4 rounded-xl mb-20">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-12 text-center">ارزش‌های ما</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-8 rounded-lg shadow-sm">
-              <div className="w-16 h-16  rounded-full flex items-center justify-center mb-6 mx-auto">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-gray-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-center">کیفیت</h3>
-              <p className="text-gray-600 text-center">
-                ما هرگز در کیفیت مصالحه نمی‌کنیم. هر محصول در فروشگاه ما با دقت
-                انتخاب شده و استانداردهای سختگیرانه ما را برآورده می‌کند.
+        {/* Text Content - Right Side */}
+        <div
+          className="w-full lg:w-2/5 flex flex-col justify-start items-start px-4 sm:px-6 lg:px-8 xl:px-16 bg-white order-2 py-8 lg:py-0"
+          dir="rtl"
+        >
+          <div className="max-w-xl">
+            {/* Text Box */}
+            <div className="my-8">
+              <h2 className="mb-4">
+                <span className="text-xl  md:text-2xl lg:text-3xl font-bold text-gray-900">
+                  درباره ما
+                </span>
+              </h2>
+              <p className="text-sm  md:text-base text-gray-700 leading-relaxed mb-6">
+                تیران استایل، با تکیه بر شعار الهام‌بخش استایل جور دیگر…،
+                برندی پیشرو در فشن، تکنولوژی و لایف‌استایل است که برای افراد خاص
+                و جسور طراحی شده است. ما با تمرکز بر ارائه محصولات منحصربه‌فرد،
+                سلیقه مشتریانمان را به بالاترین سطح ارتقا می‌دهیم.
+              </p>
+              <p className="text-sm  md:text-base text-gray-700 leading-relaxed">
+                طراحی تیران استایل از یک فلسفه طراحی خاص پیروی می کند:
+              </p>
+              <p className="text-sm  md:text-base text-gray-700 leading-relaxed">
+                در گام اول، تیران استایل یک هویت قوی و شناخته شده دارد و در گام
+                دوم، تیران استایل مخصوص افرادی است که از جلوتر بودن در مُد لذت
+                می‌برند و به دنبال درک مفهوم خاص‌تری از سبک زندگی هستند و
+                انتخاب‌های شجاعانه‌ای دارند. ماموریت ما در تیران استایل، ارائه
+                محصولاتی است که به مشتریانمان کمک می‌کند تا سبک زندگی خود را با
+                جسارت و اصالت تعریف کنند و از دیگران متمایز شوند.{" "}
               </p>
             </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-sm">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6 mx-auto">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-gray-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-center">نوآوری</h3>
-              <p className="text-gray-600 text-center">
-                ما همواره به دنبال محصولات نوآورانه و طراحی‌های خلاقانه هستیم که
-                زندگی مشتریان ما را بهبود بخشند.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-lg shadow-sm">
-              <div className="w-16 h-16  rounded-full flex items-center justify-center mb-6 mx-auto">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-gray-600"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-center">پایداری</h3>
-              <p className="text-gray-600 text-center">
-                ما متعهد به انتخاب محصولات و شرکایی هستیم که به محیط زیست احترام
-                می‌گذارند و شیوه‌های تولید پایدار را دنبال می‌کنند.
+            {/* TIRAN STYLE Heading */}
+            <Image
+              src={"/assets/images/TIRAN.png"}
+              alt="TIRAN STYLE"
+              width={300}
+              height={200}
+              className="mt-40 mx-auto"
+            />
+          </div>
+        </div>
+      </section>{" "}
+      {/* Our Team Section */}
+      <section className="min-h-screen py-16 lg:py-24" dir="rtl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Title and Description */}
+          <div className="text-center mb-16 lg:mb-20">
+            <h2 className="text-lg  md:text-2xl  font-bold text-gray-900 mb-20">
+              اعضای تیم ما{" "}
+            </h2>
+            <div className="max-w-3xl mx-auto">
+              <p className="text-sm  md:text-lg text-gray-600 leading-relaxed mb-4">
+                تیران استایل، با تکیه بر شعار الهام‌بخش استایل جور دیگر…،
+                برندی پیشرو در فشن، تکنولوژی و لایف‌استایل است که برای افراد خاص
+                و جسور طراحی شده است. ما با تمرکز بر ارائه محصولات منحصربه‌فرد،
+                سلیقه مشتریانمان را به بالاترین سطح ارتقا می‌دهیم
               </p>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Team */}
-      <section className="max-w-6xl mx-auto mb-20">
-        <h2 className="text-3xl font-bold mb-12 text-center">تیم ما</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {TeamSection.map((member, index) => (
-            <div key={index} className="text-center">
-              <div className="relative w-48 h-48 rounded-full overflow-hidden mx-auto mb-4">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  className="object-cover"
-                />
+          {/* Team Images Grid */}
+          <div className="grid grid-cols-1  gap-6 lg:gap-8">
+            {teamMembers.map((member) => (
+              <div
+                key={member.id}
+                className="group relative overflow-hidden  transition-all duration-300"
+              >
+                <div className="aspect-[8/4] relative">
+                  <Image
+                    src={member.image}
+                    alt={member.alt}
+                    fill
+                    className="object-cover  transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+                {/* Name/Role  */}
+                <h3 className="font-semibold text-lg">{member.name}</h3>
+                <p className="text-sm opacity-90">{member.position}</p>
               </div>
-              <h3 className="text-xl font-bold">{member.name}</h3>
-              <p className="text-gray-600">{member.role}</p>
+            ))}
+          </div>
+        </div>
+      </section>{" "}
+      {/* Contact Section - Text Left (Black BG), Image Right */}
+      <section className="min-h-screen flex flex-col lg:flex-row">
+        {/* Text Content with Black Background - Left Side */}
+        <div className="w-full lg:w-3/5 bg-black flex flex-col justify-center items-start px-4 sm:px-6 lg:px-8 xl:px-16 order-2 lg:order-1 py-16 lg:py-0">
+          <div className="w-full max-w-2xl">
+            {/* Top Text Box */}
+            <div className="mb-8 lg:mb-12 text-center">
+              <h2 className="text-xl  md:text-3xl  font-bold text-white mb-6 md:mb-30 leading-tight">
+                ماموریت ما
+              </h2>
+
+              <p className="text-base  md:text-lg text-gray-400 leading-relaxed mb-6 md:mb-30">
+                تیران استایل، با تکیه بر شعار الهام‌بخش استایل جور دیگر…،
+                برندی پیشرو در فشن، تکنولوژی و لایف‌استایل است که برای افراد خاص
+                و جسور طراحی شده است. ما با تمرکز بر ارائه محصولات منحصربه‌فرد،
+                سلیقه مشتریانمان را به بالاترین سطح ارتقا می‌دهیم.{" "}
+              </p>
+              {/* Contact Button */}
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white  transform hover:scale-105 transition-all duration-300 "
+              >
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+                تماس با ما
+              </Link>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Mission & Vision */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-        <div className="bg-gray-50 p-8 rounded-xl">
-          <h2 className="text-2xl font-bold mb-6">ماموریت ما</h2>
-          <p className="text-gray-700">
-            ماموریت ما ارائه محصولات منحصر به فرد و با کیفیت است که زندگی روزمره
-            را غنی‌تر می‌کنند. ما می‌خواهیم با هر محصولی که ارائه می‌دهیم،
-            تجربه‌ای لذت‌بخش و ماندگار برای مشتریان خود ایجاد کنیم.
-          </p>
+          </div>
         </div>
 
-        <div className="bg-gray-50 p-8 rounded-xl">
-          <h2 className="text-2xl font-bold mb-6">چشم‌انداز ما</h2>
-          <p className="text-gray-700">
-            چشم‌انداز ما تبدیل شدن به مرجعی معتبر برای محصولات طراحی شده با
-            کیفیت در ایران است. ما می‌خواهیم الهام‌بخش سبک زندگی‌ای باشیم که در
-            آن زیبایی، کاربرد و پایداری در کنار هم قرار دارند.
-          </p>
+        {/* Image - Right Side */}
+        <div className="w-full lg:w-2/5 relative h-64 sm:h-80 md:h-96 lg:h-auto order-1 lg:order-2">
+          <Image
+            src="/assets/images/fashion/4.avif" // You can change this to your desired image
+            alt="تماس با تیران"
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 40vw"
+          />
+          {/* Optional overlay */}
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
-      </section>
-
-      {/* Contact CTA */}
-      <section className="bg-black text-white py-16 px-4  text-center mb-12">
-        <h2 className="text-3xl font-bold mb-6">با ما در ارتباط باشید</h2>
-        <p className="max-w-2xl mx-auto mb-8">
-          ما مشتاق شنیدن نظرات، پیشنهادات و سوالات شما هستیم. تیم پشتیبانی ما
-          آماده کمک به شماست.
-        </p>
-        <Link
-          href="/contact"
-          className="bg-white text-black px-8 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-        >
-          تماس با ما
-        </Link>
       </section>
     </main>
   );

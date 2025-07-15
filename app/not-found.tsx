@@ -1,6 +1,6 @@
 import Link from "next/link";
-import {  GiHanger } from "react-icons/gi";
-import {  TbShirt } from "react-icons/tb";
+import { GiHanger } from "react-icons/gi";
+import { TbShirt } from "react-icons/tb";
 
 export default function NotFound() {
   return (
@@ -42,28 +42,10 @@ export default function NotFound() {
             </p>
             <div className="flex flex-wrap justify-center gap-3 mt-4">
               <Link
-                href="/shop/mens-shirts"
+                href="/shop"
                 className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-700 hover:bg-gray-50 font-vazir"
               >
-                پیراهن مردانه
-              </Link>
-              <Link
-                href="/shop/jeans"
-                className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-700 hover:bg-gray-50 font-vazir"
-              >
-                شلوار جین
-              </Link>
-              <Link
-                href="/shop/suits"
-                className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-700 hover:bg-gray-50 font-vazir"
-              >
-                کت و شلوار
-              </Link>
-              <Link
-                href="/shop/sportswear"
-                className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-700 hover:bg-gray-50 font-vazir"
-              >
-                لباس ورزشی
+                فروشگاه
               </Link>
             </div>
           </div>

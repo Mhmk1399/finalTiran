@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   category: "support, ارتباط با ما",
 };
 
-export default function AboutPage() {
+export default function ContactPage() {
   return (
     <main>
       <ContactContainer />

@@ -219,7 +219,7 @@ export default function ProductInfo({
       {/* Product Header */}
       <div className="space-y-2">
         {/* Header Section */}
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center md:justify-start">
           <h1
             className={`font-light tracking-wide text-gray-900 mb-3 ${
               layout === "desktop" ? "text-2xl lg:text-3xl" : "text-2xl"
@@ -228,56 +228,152 @@ export default function ProductInfo({
             {product.fa_name}
           </h1>
         </div>
-
-        {/* Price & Stock */}
-        <div className="flex items-center justify-center">
-          <div
-            className={`font-medium text-gray-900 ${
-              layout === "desktop" ? "text-lg" : "text-xl"
+        <div className="flex items-center justify-center md:justify-start">
+          <h1
+            className={`font-light tracking-wide text-gray-400 mb-3 ${
+              layout === "desktop" ? "text-sm lg:text-lg" : "text-2xl"
             }`}
           >
-            {formattedPrice}
+            {product.seo_description}
+          </h1>
+        </div>
+
+        {/* Color Selection Dropdown - First */}
+
+        {color && (
+          <div className="pt-4">
+            <div className="border-b border-gray-400 border-dashed pb-2 mb-1">
+              <details className="group">
+                <summary className="flex items-center justify-between cursor-pointer py-2">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-medium text-gray-900">
+                      رنگ: {selectedColor || "انتخاب کنید"}
+                    </h3>
+                  </div>
+                  <svg
+                    className="w-4 h-4 text-gray-500 transition-transform group-open:rotate-180"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </summary>
+                <div className="mt-3 p-3 bg-white  ">
+                  <div className="flex flex-wrap gap-3">
+                    {Array.from(
+                      new Set(
+                        product?.varieties
+                          ?.filter((v) => v.getColor)
+                          ?.map((v) => v.getColor!)
+                      )
+                    ).map((colorObj) => (
+                      <motion.button
+                        key={colorObj.id}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          setSelectedColor(colorObj.fa_name);
+                          const match = product?.varieties?.find(
+                            (v) => v.getColor?.id === colorObj.id
+                          );
+                          if (match) setSelectedVariety(match);
+                        }}
+                        className={`w-8 h-8 rounded-full  transition-all ${
+                          selectedColor === colorObj.fa_name
+                            ? "border-gray-900 shadow-lg"
+                            : "border-gray-300 hover:border-gray-400"
+                        }`}
+                        style={{ backgroundColor: colorObj.code }}
+                        title={`${colorObj.fa_name} (${colorObj.code})`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </details>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Add to Cart Button */}
-        <div className="pt-4">
-          <motion.button
-            disabled={!selectedVariety || selectedVariety.store_stock <= 0}
-            onClick={handleAddToCart}
-            whileHover={
-              (selectedVariety?.store_stock ?? 0) > 0 ? { scale: 1 } : {}
-            }
-            whileTap={
-              (selectedVariety?.store_stock ?? 0) > 0 ? { scale: 0.99 } : {}
-            }
-            className={`w-full py-3 flex items-center justify-center gap-3 border border-dashed cursor-pointer font-medium duration-300 transition-all ${
-              (selectedVariety?.store_stock ?? 0) > 0
-                ? " text-black hover:border-gray-300"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            } ${layout === "desktop" ? "text-sm" : "text-base"}`}
-          >
-            {isAddingToCart ? (
-              <>
-                <Check size={18} />
-                <span>اضافه شد</span>
-              </>
-            ) : (
-              <>
-                <ShoppingCart size={18} />
-                <span>افزودن به سبد خرید</span>
-              </>
-            )}
-          </motion.button>
-        </div>
+        {/* Properties Selection Dropdown - Second */}
+        {Object.keys(propertiesByType).length > 0 && (
+          <div className="pt-4">
+            <div className="border-b border-gray-400 border-dashed pb-2 mb-1">
+              <details className="group">
+                <summary className="flex items-center justify-between cursor-pointer py-2">
+                  <h3 className="text-sm font-medium text-gray-900">
+                    مشخصات محصول: {selectedSize || "انتخاب کنید"}
+                  </h3>
+                  <svg
+                    className="w-4 h-4 text-gray-500 transition-transform group-open:rotate-180"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </summary>
 
-        {/* Product Details with Options */}
+                <div className="mt-6 space-y-6">
+                  {/* All Properties in One Section */}
+                  <div className="space-y-4">
+                    {Object.entries(propertiesByType).map(
+                      ([propertyType, options]) =>
+                        options.length > 0 && (
+                          <div key={propertyType} className="space-y-3">
+                            <h4 className="font-medium text-gray-900 text-sm">
+                              {propertyType}
+                            </h4>
+                            <div className="grid grid-cols-12 gap-2">
+                              {options.map((option) => (
+                                <motion.button
+                                  key={option.id}
+                                  whileHover={{ scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  onClick={() => {
+                                    handlePropertyChange(
+                                      option.title,
+                                      option.id,
+                                      option.propertyId
+                                    );
+                                  }}
+                                  className={`py-2 px-3 text-sm  bg-gray-100 transition-all ${
+                                    selectedSize === option.title
+                                      ? " text-black"
+                                      : "  text-gray-700"
+                                  }`}
+                                >
+                                  {option.title}
+                                </motion.button>
+                              ))}
+                            </div>
+                          </div>
+                        )
+                    )}
+                  </div>
+                </div>
+              </details>
+            </div>
+          </div>
+        )}
+
+        {/* سایر مشخصات - Third */}
         <div className="pt-4">
-          <div className="border-b border-gray-200 border-dashed pb-2 mb-1">
+          <div className="border-b border-gray-400 border-dashed pb-2 mb-1">
             <details className="group">
               <summary className="flex items-center justify-between cursor-pointer py-2">
                 <h3 className="text-sm font-medium text-gray-900">
-                  جزئیات و تنظیمات محصول
+                  سایر مشخصات
                 </h3>
                 <svg
                   className="w-4 h-4 text-gray-500 transition-transform group-open:rotate-180"
@@ -295,137 +391,35 @@ export default function ProductInfo({
               </summary>
 
               <div className="mt-6 space-y-6">
-                {/* Product Options */}
-                <div className="space-y-5">
-                  {/* Size Selection Dropdown */}
-                  {Object.entries(propertiesByType).map(
-                    ([propertyType, options]) =>
-                      options.length > 0 && (
-                        <div key={propertyType} className="space-y-3">
-                          <details className="group/size">
-                            <summary className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-                              <span className="font-medium text-gray-900 text-sm">
-                                {propertyType}: {selectedSize || "انتخاب کنید"}
-                              </span>
-                              <svg
-                                className="w-4 h-4 text-gray-500 transition-transform group-open/size:rotate-180"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M19 9l-7 7-7-7"
-                                />
-                              </svg>
-                            </summary>
-                            <div className="mt-3 p-3 bg-white border border-gray-200 rounded-lg">
-                              <div className="grid grid-cols-3 gap-2">
-                                {options.map((option) => (
-                                  <motion.button
-                                    key={option.id}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    onClick={() => {
-                                      handlePropertyChange(
-                                        option.title,
-                                        option.id,
-                                        option.propertyId
-                                      );
-                                    }}
-                                    className={`py-2 px-3 text-sm border rounded-md transition-all ${
-                                      selectedSize === option.title
-                                        ? "border-gray-900 bg-gray-900 text-white"
-                                        : "border-gray-200 hover:border-gray-300 text-gray-700"
-                                    }`}
-                                  >
-                                    {option.title}
-                                  </motion.button>
-                                ))}
-                              </div>
-                            </div>
-                          </details>
-                        </div>
-                      )
-                  )}
-
-                  {/* Color Selection Dropdown */}
-                  {color && (
-                    <div className="space-y-3">
-                      <details className="group/color">
-                        <summary className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors">
-                          <span className="font-medium text-gray-900 text-sm">
-                            رنگ: {selectedColor || "انتخاب کنید"}
-                          </span>
-                          <svg
-                            className="w-4 h-4 text-gray-500 transition-transform group-open/color:rotate-180"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </summary>
-                        <div className="mt-3 p-3 bg-white border border-gray-200 rounded-lg">
-                          <div className="flex flex-wrap gap-2">
-                            {Array.from(
-                              new Set(
-                                product?.varieties
-                                  ?.filter((v) => v.getColor)
-                                  ?.map((v) => v.getColor!.fa_name)
-                              )
-                            ).map((colorName) => (
-                              <motion.button
-                                key={colorName}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() => {
-                                  setSelectedColor(colorName);
-                                  const match = product?.varieties?.find(
-                                    (v) => v.getColor?.fa_name === colorName
-                                  );
-                                  if (match) setSelectedVariety(match);
-                                }}
-                                className={`py-2 px-3 text-sm border rounded-md transition-all ${
-                                  selectedColor === colorName
-                                    ? "border-gray-900 bg-gray-900 text-white"
-                                    : "border-gray-200 hover:border-gray-300 text-gray-700"
-                                }`}
-                              >
-                                {colorName}
-                              </motion.button>
-                            ))}
-                          </div>
-                        </div>
-                      </details>
-                    </div>
-                  )}
-                </div>
-
                 {/* Product Information */}
-                <div className="pt-5 border-t border-gray-100 border-dashed">
-                  <div className="space-y-3 text-xs text-gray-600">
-                    <div className="flex justify-between py-2">
-                      <span>دسته‌بندی:</span>
-                      <span className="font-medium">
-                        {selectedVariety?.category?.cat_name || "نامشخص"}
+                <div className="space-y-3 text-xs text-gray-600">
+                  <div className="flex justify-start gap-2 py-2">
+                    <span>دسته‌بندی:</span>
+                    <span className="font-bold">
+                      {selectedVariety?.category?.cat_name || "نامشخص"}
+                    </span>
+                  </div>
+                  {selectedVariety?.show_unit && (
+                    <div className="flex justify-start gap-2 py-2">
+                      <span>واحد:</span>
+                      <span className="font-bold">
+                        {selectedVariety.show_unit}
                       </span>
                     </div>
-                    {selectedVariety?.show_unit && (
-                      <div className="flex justify-between py-2">
-                        <span>واحد:</span>
-                        <span className="font-medium">
-                          {selectedVariety.show_unit}
-                        </span>
-                      </div>
-                    )}
+                  )}
+                  <div className="flex justify-start gap-2 py-2">
+                    <span>موجودی:</span>
+                    <span
+                      className={`font-bold ${
+                        (selectedVariety?.store_stock ?? 0) > 0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {(selectedVariety?.store_stock ?? 0) > 0
+                        ? `${selectedVariety?.store_stock} عدد موجود`
+                        : "ناموجود"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -433,259 +427,104 @@ export default function ProductInfo({
           </div>
         </div>
 
-        {/* Integrated ProductTabs Section - Dropdown Style */}
-        <div className="">
-          {/* Description Tab */}
-          <div className="border-b border-gray-200 border-dashed pb-3 mb-1">
-            <details className="group">
-              <summary className="flex items-center justify-between cursor-pointer pt-2">
-                <h3 className="text-sm font-medium text-gray-900">
-                  توضیحات محصول
-                </h3>
-                <svg
-                  className="w-4 h-4 text-gray-500 transition-transform group-open:rotate-180"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </summary>
-
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-                className="mt-5"
+        {/* Price, Add to Cart Button, and Quantity in One Row - Last */}
+        <div className="pt-6 space-y-4">
+          {/* Price - Mobile: Full width, Desktop: In row */}
+          <div className="block md:hidden">
+            <div className="flex items-center justify-center">
+              <div
+                className={`font-medium text-gray-900 ${
+                  layout === "desktop" ? "text-lg" : "text-xl"
+                }`}
               >
-                <div className="prose max-w-none">
-                  <div className="text-gray-700 leading-relaxed text-sm font-light">
-                    {product.seo_description || "توضیحات محصول در دسترس نیست."}
-                  </div>
-                </div>
-              </motion.div>
-            </details>
-          </div>
-
-          {/* Details Tab */}
-          <div className="border-b border-gray-200 border-dashed pb-2 mb-1">
-            <details className="group">
-              <summary className="flex items-center justify-between cursor-pointer pt-2 pb-2">
-                <h3 className="text-sm font-medium text-gray-900">
-                  مشخصات تفصیلی
-                </h3>
-                <svg
-                  className="w-4 h-4 text-gray-500 transition-transform group-open:rotate-180"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </summary>
-
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-                className="mt-5"
-              >
-                <div className="space-y-6">
-                  {/* Product Specifications */}
-                  <div className="space-y-4">
-                    <h4 className="font-medium text-gray-900 text-sm">
-                      مشخصات محصول
-                    </h4>
-                    {selectedVariety && (
-                      <div className="space-y-3">
-                        <div className="flex justify-between py-2 text-xs text-gray-600">
-                          <span>دسته بندی:</span>
-                          <span className="font-medium">
-                            {selectedVariety.category.cat_name}
-                          </span>
-                        </div>
-
-                        {selectedVariety.getColor && (
-                          <div className="flex justify-between py-2 text-xs text-gray-600">
-                            <span>رنگ:</span>
-                            <span className="font-medium">
-                              {selectedVariety.getColor.fa_name}
-                            </span>
-                          </div>
-                        )}
-
-                        {selectedVariety.showProperties &&
-                          selectedVariety.showProperties.length > 0 && (
-                            <div className="flex justify-between py-2 text-xs text-gray-600">
-                              <span>سایز:</span>
-                              <span className="font-medium">
-                                {selectedVariety.showProperties[0].child.title}
-                              </span>
-                            </div>
-                          )}
-
-                        {selectedVariety.show_unit && (
-                          <div className="flex justify-between py-2 text-xs text-gray-600">
-                            <span>واحد:</span>
-                            <span className="font-medium">
-                              {selectedVariety.show_unit}
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="flex justify-between py-2 text-xs text-gray-600">
-                          <span>موجودی:</span>
-                          <span
-                            className={`font-medium ${
-                              selectedVariety.store_stock > 0
-                                ? "text-green-600"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {selectedVariety.store_stock > 0
-                              ? `${selectedVariety.store_stock} عدد موجود`
-                              : "ناموجود"}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Size Guide */}
-                  <div className="pt-5 border-t border-gray-100">
-                    <h4 className="font-medium text-gray-900 text-sm mb-4">
-                      راهنمای سایز
-                    </h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <div className="space-y-3 text-xs">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">سایز کوچک:</span>
-                          <span className="font-medium">36-38</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">سایز متوسط:</span>
-                          <span className="font-medium">40-42</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">سایز بزرگ:</span>
-                          <span className="font-medium">44-46</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </details>
-          </div>
-
-          {/* Shipping Tab */}
-          <div className="border-b border-gray-200 border-dashed pb-3 mb-1">
-            <details className="group">
-              <summary className="flex items-center justify-between cursor-pointer py-2">
-                <h3 className="text-sm font-medium text-gray-900">
-                  حمل و نقل و برگشت
-                </h3>
-                <svg
-                  className="w-4 h-4 text-gray-500 transition-transform group-open:rotate-180"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </summary>
-
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-                className="mt-5"
-              >
-                <div className="space-y-6">
-                  {/* Shipping Information */}
-                  <div className="space-y-4">
-                    <h4 className="font-medium text-gray-900 text-sm">
-                      اطلاعات ارسال
-                    </h4>
-                    <div className="space-y-4 text-xs text-gray-600 leading-relaxed">
-                      <p>
-                        ما به سراسر کشور از طریق شرکای مطمئن خود ارسال می‌کنیم.
-                        ارسال استاندارد بین ۳ تا ۷ روز کاری بسته به موقعیت شما
-                        طول می‌کشد.
-                      </p>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <h5 className="font-medium mb-3 text-gray-900">
-                          هزینه ارسال:
-                        </h5>
-                        <ul className="space-y-2">
-                          <li>
-                            • ارسال رایگان برای خریدهای بالای ۵۰۰,۰۰۰ تومان
-                          </li>
-                          <li>• ارسال عادی: ۳۰,۰۰۰ تومان</li>
-                          <li>• ارسال اکسپرس: ۵۰,۰۰۰ تومان</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </details>
-          </div>
-        </div>
-
-        {/* Quantity Selection */}
-        <div className="space-y-4 pt-6">
-          <h3 className="font-medium text-gray-900 text-sm">تعداد</h3>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
-              <motion.button
-                whileHover={{ backgroundColor: "#f9fafb" }}
-                whileTap={{ scale: 0.95 }}
-                onClick={decrementQuantity}
-                className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors"
-              >
-                <span className="text-lg font-light">−</span>
-              </motion.button>
-
-              <div className="w-12 h-10 flex items-center justify-center border-x border-gray-200 font-medium text-sm">
-                {quantity}
+                {formattedPrice}
               </div>
+            </div>
+          </div>
 
-              <motion.button
-                whileHover={{ backgroundColor: "#f9fafb" }}
-                whileTap={{ scale: 0.95 }}
-                onClick={incrementQuantity}
-                className="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors"
+          {/* Add to Cart Button and Quantity in One Row */}
+          <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4">
+            {/* Price - Desktop: In row */}
+            <div className="hidden md:flex items-center">
+              <div
+                className={`font-medium text-gray-900 ${
+                  layout === "desktop" ? "text-lg" : "text-xl"
+                } whitespace-nowrap`}
               >
-                <span className="text-lg font-light">+</span>
+                {formattedPrice}
+              </div>
+            </div>
+
+            {/* Add to Cart Button */}
+            <div className="flex-1 order-2 md:order-1">
+              <motion.button
+                disabled={!selectedVariety || selectedVariety.store_stock <= 0}
+                onClick={handleAddToCart}
+                whileHover={
+                  (selectedVariety?.store_stock ?? 0) > 0 ? { scale: 1 } : {}
+                }
+                whileTap={
+                  (selectedVariety?.store_stock ?? 0) > 0 ? { scale: 0.99 } : {}
+                }
+                className={`w-full py-3 md:py-3 flex items-center justify-center gap-3 border border-dashed cursor-pointer font-medium duration-300 transition-all ${
+                  (selectedVariety?.store_stock ?? 0) > 0
+                    ? " text-black hover:border-gray-300"
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                } ${layout === "desktop" ? "text-sm" : "text-sm md:text-base"}`}
+              >
+                {isAddingToCart ? (
+                  <>
+                    <Check size={18} />
+                    <span className="hidden sm:inline">اضافه شد</span>
+                    <span className="sm:hidden">✓</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart size={18} />
+                    <span className="hidden sm:inline">افزودن به سبد خرید</span>
+                    <span className="sm:hidden">افزودن</span>
+                  </>
+                )}
               </motion.button>
             </div>
 
-            <div className="text-right">
-              <span className="text-xs text-gray-500">
-                {(selectedVariety?.store_stock ?? 0) > 0
-                  ? `${selectedVariety?.store_stock} عدد موجود`
-                  : "ناموجود"}
-              </span>
+            {/* Quantity Selection */}
+            <div className="flex-shrink-0 order-1 md:order-2">
+              <div className="flex items-center justify-center md:justify-start">
+                <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                  <motion.button
+                    whileHover={{ backgroundColor: "#f9fafb" }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={decrementQuantity}
+                    className="w-10 h-12 md:w-10 md:h-12 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="text-lg font-light">−</span>
+                  </motion.button>
+
+                  <div className="w-12 h-12 md:w-12 md:h-12 flex items-center justify-center border-x border-gray-200 font-medium text-sm">
+                    {quantity}
+                  </div>
+
+                  <motion.button
+                    whileHover={{ backgroundColor: "#f9fafb" }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={incrementQuantity}
+                    className="w-10 h-12 md:w-10 md:h-12 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  >
+                    <span className="text-lg font-light">+</span>
+                  </motion.button>
+                </div>
+              </div>
             </div>
+          </div>
+
+          {/* Stock Info */}
+          <div className="text-center md:text-right">
+            <span className="text-xs md:text-sm text-gray-500">
+              {(selectedVariety?.store_stock ?? 0) > 0
+                ? `${selectedVariety?.store_stock} عدد موجود`
+                : "ناموجود"}
+            </span>
           </div>
         </div>
       </div>

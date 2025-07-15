@@ -1,11 +1,10 @@
 "use client";
 import CategoryShowcase from "@/components/static/ui/categoryImage";
 import DynamicFashionGrid from "@/components/static/ui/dynamicFashionGrid";
-import EnhancedLogoLoadingScreen from "@/components/static/ui/enhancedLogoLoadingScreen";
 import MarqueeSlider from "@/components/static/ui/marqueeSlider";
-import ScrollMediaShowcase from "@/components/static/ui/scrollMediaShowcase";
 import { useState, useEffect } from "react";
 import { slideItems, categories } from "@/lib/homePageData";
+import NewProductRow from "../global/newProducts";
 
 const Page = () => {
   const [currentComponent, setCurrentComponent] = useState<
@@ -99,7 +98,7 @@ const Page = () => {
           }`}
         >
           {/* ScrollMediaShowcase - IMMEDIATE rendering with minimal delay */}
-          <div
+          {/* <div
             className={`transition-all duration-600 ease-out ${
               showShowcase
                 ? "opacity-100 transform scale-100"
@@ -107,8 +106,8 @@ const Page = () => {
             }`}
           >
             <ScrollMediaShowcase />
-          </div>
-          <div className="min-h-screen">
+          </div> */}
+          <div className="min-h-screen pt-20">
             <CategoryShowcase
               categories={categories}
               title="دسته‌بندی‌های ما"
@@ -117,7 +116,7 @@ const Page = () => {
           </div>
 
           {/* Other components with faster staggered loading */}
-          <div
+          {/* <div
             className={`transition-all duration-500 ease-out ${
               showShowcase
                 ? "opacity-100 transform translate-y-0"
@@ -128,7 +127,7 @@ const Page = () => {
             }}
           >
             <EnhancedLogoLoadingScreen />
-          </div>
+          </div> */}
 
           <div
             className={`transition-all duration-500 ease-out ${
@@ -147,8 +146,18 @@ const Page = () => {
               pauseOnHover={true}
             />{" "}
           </div>
+          <div className="mt-12">
+            {" "}
+            <NewProductRow
+              title="محصولات جدید"
+              description="جدیدترین کیف ها را کشف کنید"
+              endpoint="/api/shop"
+              className=""
+              category=""
+            />
+          </div>
 
-          <div
+          {/* <div
             className={`transition-all duration-500 ease-out ${
               showShowcase
                 ? "opacity-100 transform translate-y-0"
@@ -159,10 +168,6 @@ const Page = () => {
             }}
           >
             <EnhancedLogoLoadingScreen />
-          </div>
-
-          {/* <div className="min-h-screen">
-            <VideoShowcase />
           </div> */}
         </div>
       )}

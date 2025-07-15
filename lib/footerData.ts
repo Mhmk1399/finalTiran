@@ -1,12 +1,11 @@
 import { ContactInfoItem } from "@/types/type";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import { FaInstagram, FaTwitter, FaLinkedin, FaTelegram } from "react-icons/fa";
+import { FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 export const socialLinks = [
   { name: "Instagram", href: "#", icon: FaInstagram },
   { name: "Twitter", href: "#", icon: FaTwitter },
   { name: "LinkedIn", href: "#", icon: FaLinkedin },
-  { name: "Telegram", href: "#", icon: FaTelegram },
 ];
 
 export const contactInfo: ContactInfoItem[] = [
@@ -39,4 +38,19 @@ export const MainLink = [
   { name: "درباره ما", href: "/about" },
   { name: "وبلاگ", href: "/blog" },
   { name: "تماس با ما", href: "/contact" },
+];
+export const Accsses = [
+  { name: "درباره ما", href: "/about" },
+  { name: "فرصت های شغلی", href: "/shop" },
+  { name: "تماس با ما", href: "/contact" },
+];
+export const customersServices = [
+  { name: "پرسش های متداول", href: "/" },
+  { name: "وبلاک خبرنامه", href: "/blogs" },
+  { name: "روش سرمایه گذاری", href: "/" },
+  { name: "حریم خصوصی", href: "/" },
+];
+export const Help = [
+  { name: "نحوه ثبت نام", href: "/" },
+  { name: "شیوه های پرداخت", href: "/" },
 ];

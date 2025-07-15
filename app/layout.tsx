@@ -6,6 +6,7 @@ import Footer from "@/components/static/footer";
 import { ToastContainer } from "react-toastify";
 import { CartProvider } from "@/context/cartContext";
 import CanonicalUrl from "@/components/global/CanonicalUrl";
+import TopFooterText from "@/components/static/ui/topFooterText";
 
 export const metadata: Metadata = {
   title: "صفحه اصلی | تیران",
@@ -62,7 +63,7 @@ export default function RootLayout({
           <Navbar />
 
           {children}
-
+<TopFooterText />
           <Footer />
         </CartProvider>
       </body>
