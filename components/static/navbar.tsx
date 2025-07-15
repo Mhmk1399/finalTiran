@@ -218,7 +218,7 @@ const Navbar = () => {
                       {item.name}
                       {activeItem === item.href && (
                         <motion.div
-                          className="absolute -bottom-1 left-0 right-0 h-1 bg-black rounded-full shadow-lg"
+                          className="absolute -bottom-[2px] left-0 right-0 h-0.5 bg-black "
                           layoutId="underline"
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}

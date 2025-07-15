@@ -71,7 +71,7 @@ export default function AboutContainer() {
                   {/* Decorative elements */}
                 </span>{" "}
                 را <br className="hidden md:block" />
-                سبز می‌بیند
+            <span className="hidden lg:inline"> ... </span>  سبز می‌بیند 
               </h1>
             </div>
           </div>
@@ -174,19 +174,19 @@ export default function AboutContainer() {
             </div>
 
             {/* Team Images Row */}
-            <div className="flex flex-row md:gap-10 gap-3">
+            <div className="flex flex-row md:gap-10 gap-3 -ml-5 md:ml-1">
               {teamMembers.map((member) => (
                 <div
                   key={member.id}
                   className="flex flex-col items-center group"
                 >
-                  <div className="w-full relative h-64 mt-4 md:h-96 lg:h-auto">
+                  <div className="w-full relative h-full mt-8">
                     <Image
                       src={member.image}
                       alt={member.alt}
                       width={4000}
                       height={4000}
-                      className=" object-cover "
+                      className=" object-cover h-120 "
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0  transition-opacity duration-300"></div>
                   </div>

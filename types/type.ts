@@ -475,8 +475,6 @@ export interface VideoItem {
   videoUrl: string;
   thumbnail: string;
   title: string;
-  description: string;
-  category?: string;
 }
 
 // ------------------------------------ Orders dashboard ------------------------------

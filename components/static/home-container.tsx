@@ -20,7 +20,7 @@ const Page = () => {
 
   // Check localStorage immediately on component mount
   useEffect(() => {
-    const hasSeenGrid = localStorage.getItem("tiran-fashion-grid-sen");
+    const hasSeenGrid = localStorage.getItem("tiran-fashion-grid-seen");
 
     if (hasSeenGrid !== "true") {
       // First time user, show the grid

@@ -240,7 +240,7 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
                 flexShrink: 0,
               }}
             >
-              <div className="relative h-full overflow-hidden shadow-lg bg-gray-900 cursor-pointer">
+              <div className="relative h-full overflow-hidden  bg-gray-900 cursor-pointer">
                 <Image
                   src={item.image}
                   alt={item.title}
@@ -253,7 +253,7 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
 
                 {/* Gradient Overlay */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-500 ${
+                  className={`absolute inset-0 bg-black/50 transition-opacity duration-500 ${
                     isMobile
                       ? "opacity-100"
                       : "opacity-0 group-hover:opacity-100"

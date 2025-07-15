@@ -9,7 +9,7 @@ import CanonicalUrl from "@/components/global/CanonicalUrl";
 import TopFooterText from "@/components/static/ui/topFooterText";
 
 export const metadata: Metadata = {
-  title: "صفحه اصلی | تیران",
+  title: "فروشگاه تیران | تجربه‌ای متفاوت از خرید آنلاین",
   description: "آشنایی با فروشگاه تیران، ارزش‌ها و اهداف ما",
   keywords: ["لباس", "فروشگاه تیران", "خرید آنلاین", "مد و پوشاک"],
   authors: [{ name: "تیران", url: "https://www.tiranstyle.com/" }],
