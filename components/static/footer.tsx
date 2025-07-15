@@ -93,7 +93,7 @@ const Footer = () => {
 
   // Transform values for parallax effects
 
-  if (pathname === "/admin" || pathname === "/auth") {
+  if (pathname === "/admin" || pathname === "/auth" || pathname === "/about") {
     return null;
   }
 

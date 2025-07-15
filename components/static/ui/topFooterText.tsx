@@ -3,8 +3,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDownIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 const TopFooterText: React.FC = () => {
+  const pathname = usePathname();
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [showToggle, setShowToggle] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
@@ -28,6 +31,10 @@ const TopFooterText: React.FC = () => {
       setShowToggle(fullHeight > maxCollapsedHeight);
     }
   }, [isExpanded]);
+
+  if (pathname === "/admin" || pathname === "/auth" || pathname === "/about") {
+    return null;
+  }
 
   return (
     <div className="w-full max-w-full mx-auto px-4 md:px-20 py-8" dir="rtl">
