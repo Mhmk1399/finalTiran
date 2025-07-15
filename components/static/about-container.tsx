@@ -58,7 +58,7 @@ export default function AboutContainer() {
         className="flex flex-row-reverse overflow-x-scroll overflow-y-hidden h-screen w-screen scroll-smooth "
       >
         {/* Hero Section */}
-        <section className="min-h-screen pt-20 flex flex-col lg:flex-row flex-shrink-0 w-screen h-screen snap-start">
+        <section className="min-h-screen ml-6 pt-20 flex flex-col lg:flex-row flex-shrink-0 w-screen h-screen snap-start">
           {/* Text Content - Mobile: Top, Desktop: Left Side */}
           <div className="w-full lg:w-3/5 flex flex-col justify-center lg:justify-end items-center lg:items-end px-4 sm:px-6 lg:px-8 xl:px-16 bg-white order-2 lg:order-1 py-8 lg:py-0">
             <div className="max-w-2xl text-center lg:text-right">
@@ -91,7 +91,7 @@ export default function AboutContainer() {
         {/* New Section - Image Left, Text Right */}
         <section className="min-h-screen flex-shrink-0 w-screen h-screen snap-start mt-30 flex flex-col md:flex-row justify-center md:mt-20">
           {/* Image - Left Side */}
-          <div className="w-full lg:w-3/5 relative h-64 sm:h-80 md:h-96 lg:h-auto pt-80 order-1">
+          <div className="w-full lg:w-3/5 relative h-64 md:h-96 lg:h-auto pt-80 lg:mt-4">
             <Image
               src="/assets/images/fashion/3.avif" // You can change this to your desired image
               alt="Tiran Style"
