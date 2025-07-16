@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/static/navbar";
-import { ray } from "@/next-persian-fonts/ray";
+import { AriaRegular } from "@/next-persian-fonts/woff2";
 import Footer from "@/components/static/footer";
 import { ToastContainer } from "react-toastify";
 import { CartProvider } from "@/context/cartContext";
@@ -49,21 +49,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa">
-      <body className={` ${ray.className} antialiased relative`}>
+      <body className={` ${AriaRegular.className} antialiased relative`}>
         <CanonicalUrl />
         <ToastContainer
           position="top-center"
           rtl
           draggable
           draggableDirection="x"
-          className={ray.className}
-          toastClassName={ray.className}
+          className={AriaRegular.className}
+          toastClassName={AriaRegular.className}
         />
         <CartProvider>
           <Navbar />
 
           {children}
-<TopFooterText />
+          <TopFooterText />
           <Footer />
         </CartProvider>
       </body>

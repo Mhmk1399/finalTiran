@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/types/type";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 interface RelatedProductsProps {
   products: Product[];
@@ -58,7 +59,7 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
               <div className="text-sm">
                 {firstVariety && firstVariety.store_stock > 0 ? (
                   <div className="flex items-center gap-2">
-                    <span className="font-bold">
+                    <span className={`${AriaBold.className} `}>
                       {firstVariety.price_main.toLocaleString()} تومان
                     </span>
                   </div>

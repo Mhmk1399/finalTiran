@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/types/type";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 interface ApiResponse {
   success: boolean;
@@ -295,7 +296,7 @@ const ProductRow: React.FC<ProductGridProps> = ({
           {/* Title and Description Section */}
           <div className="w-full flex flex-col justify-center mb-8">
             <div className="space-y-4">
-              <h2 className="text-2xl lg:text-3xl font-bold text-black leading-tight">
+              <h2 className={`text-2xl lg:text-3xl text-black leading-tight  ${AriaBold.className} `}>
                 ▐ {title}
               </h2>
               <p className="text-gray-600 text-base lg:text-lg leading-relaxed">

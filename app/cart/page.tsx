@@ -18,6 +18,7 @@ import PersianDatePicker from "@/components/static/jalaliDatePicker";
 import { getCheckoutInfo, completeCheckout } from "@/middleware/checkout";
 import { toast } from "react-toastify";
 import moment from "moment";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 // Initialize jMoment
 jMoment.loadPersian({ dialect: "persian-modern", usePersianDigits: true });
 
@@ -366,7 +367,7 @@ const CartPage = () => {
         className="max-w-4xl mx-auto"
       >
         <div className="flex items-center justify-center mb-8 gap-2">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className={`text-3xl text-gray-900 ${AriaBold.className} `}>
             سبد خرید {userAccount?.user?.first_name}
           </h1>
         </div>
@@ -500,7 +501,7 @@ const CartPage = () => {
                   <span className="text-lg font-semibold">
                     مبلغ قابل پرداخت:
                   </span>
-                  <span className="text-xl font-bold text-gray-900">
+                  <span className={`text-xl text-gray-900  ${AriaBold.className}`}>
                     {formatPrice(totalPrice)} تومان
                   </span>
                 </div>

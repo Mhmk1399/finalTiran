@@ -6,6 +6,7 @@ import LocationSelector from "../static/LocationSelector";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { AddressModalProps, ValidationError } from "@/types/type";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 export default function AddressModal({
   isOpen,
@@ -194,7 +195,9 @@ export default function AddressModal({
           dir="rtl"
         >
           <div className="flex justify-between items-center p-6 border-b border-gray-200">
-            <h2 className="text-xl font-bold text-gray-800">ثبت آدرس جدید</h2>
+            <h2 className={`text-xl  ${AriaBold.className} text-gray-800`}>
+              ثبت آدرس جدید
+            </h2>
             <button
               aria-label="close"
               onClick={onClose}

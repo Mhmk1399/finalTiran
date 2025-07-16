@@ -293,7 +293,7 @@ const Navbar = () => {
                     className="hidden  md:flex  items-center  text-gray-700 hover:text-gray-900"
                   >
                     <RiUser3Line className="ml-1" />
-                    <span className="text-sm font-medium">ورود / ثبت‌نام</span>
+                    <span className="text-sm font-medium">ورود | ثبت‌نام</span>
                   </motion.button>
                 </Link>
               )}
@@ -571,7 +571,7 @@ const Navbar = () => {
                           onClick={() => setIsOpen(!isOpen)}
                           className="text-sm font-medium"
                         >
-                          ورود / ثبت‌نام
+                          ورود |ثبت‌نام
                         </span>
                       </motion.button>
                     </Link>

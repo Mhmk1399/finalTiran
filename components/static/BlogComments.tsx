@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Send } from "lucide-react";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 interface Comment {
   id: string;
@@ -67,7 +68,9 @@ export default function BlogComments() {
 
   return (
     <div className="mb-16">
-      <h2 className="text-2xl font-bold mb-6">نظرات ({comments.length})</h2>
+      <h2 className={`text-2xl ${AriaBold.className} mb-6`}>
+        نظرات ({comments.length})
+      </h2>
 
       {/* Add comment form */}
       <form onSubmit={handleSubmitComment} className="mb-10">

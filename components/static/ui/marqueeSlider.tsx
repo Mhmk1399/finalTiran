@@ -1,4 +1,5 @@
 "use client";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 import { MarqueeSliderProps } from "@/types/type";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -167,7 +168,7 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
                   dir="rtl"
                 >
                   <div className="text-white">
-                    <h3 className="text-lg font-bold mb-2 leading-tight">
+                    <h3 className={`text-lg ${AriaBold.className} mb-2 leading-tight`}>
                       {item.title}
                     </h3>
 
@@ -204,7 +205,7 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-2xl md:text-3xl border-b border-dashed pb-4 font-light text-gray-800 tracking-wide"
+          className="text-2xl md:text-3xl border-b border-dashed pb-4  text-gray-800 tracking-wide"
         >
           دسته بندی محصولات
         </motion.h2>
@@ -272,7 +273,7 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
                         : "translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
                     }`}
                   >
-                    <h3 className="text-lg font-bold mb-2 leading-tight">
+                    <h3 className={`text-lg ${AriaBold.className} mb-2 leading-tight`}>
                       {item.title}
                     </h3>
 

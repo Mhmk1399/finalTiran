@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/types/type";
 import { ArrowLeft } from "lucide-react";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 interface ProductSliderProps {
   products: Product[];
@@ -28,7 +29,9 @@ const ProductCarousel = ({ products }: ProductSliderProps) => {
     <div className="my-8 relative mx-4 sm:mx-0" dir="rtl">
       <div className="flex flex-row justify-between items-center my-7">
         <div>
-          <h2 className="md:text-3xl font-bold">آخرین محصولات</h2>
+          <h2 className={`md:text-3xl  ${AriaBold.className} `}>
+            آخرین محصولات
+          </h2>
         </div>
 
         <div className="flex justify-center">
@@ -104,7 +107,9 @@ const ProductCarousel = ({ products }: ProductSliderProps) => {
                           <span className="text-red-600">ناموجود</span>
                         )}
                       </span>
-                      <span className="text-sm text-black font-bold">
+                      <span
+                        className={`text-sm text-black  ${AriaBold.className}`}
+                      >
                         {product.variety &&
                         typeof product.variety.price_main === "number"
                           ? product.variety.price_main.toLocaleString("fa-IR") +

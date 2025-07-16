@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 const teamMembers = [
   {
@@ -60,9 +61,11 @@ export default function AboutContainer() {
         {/* Hero Section */}
         <section className="min-h-screen ml-6 pt-20 flex flex-col lg:flex-row flex-shrink-0 w-screen h-screen snap-start">
           {/* Text Content - Mobile: Top, Desktop: Left Side */}
-          <div className="w-full lg:w-3/5 flex flex-col justify-center lg:justify-end items-center lg:items-end px-4 sm:px-6 lg:px-8 xl:px-16 bg-white order-2 lg:order-1 py-8 lg:py-0">
+          <div
+            className={`w-full ${AriaBold.className}  lg:w-3/5 flex flex-col justify-center lg:justify-end items-center lg:items-end px-4 sm:px-6 lg:px-8 xl:px-16 bg-white order-2 lg:order-1 py-8 lg:py-0`}
+          >
             <div className="max-w-2xl text-center lg:text-right">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl   text-gray-900 mb-6 leading-tight">
                 برای نسلی که <br className="hidden sm:block" />
                 <span className="relative inline-block">
                   <span className="relative z-10 text-white px-2 sm:px-3 lg:px-4 bg-green-800 shadow-lg transform hover:scale-105 transition-all duration-300 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-5xl">
@@ -71,7 +74,7 @@ export default function AboutContainer() {
                   {/* Decorative elements */}
                 </span>{" "}
                 را <br className="hidden md:block" />
-            <span className="hidden lg:inline"> ... </span>  سبز می‌بیند 
+                <span className="hidden lg:inline"> ... </span> سبز می‌بیند
               </h1>
             </div>
           </div>
@@ -109,7 +112,7 @@ export default function AboutContainer() {
               {/* Text Box */}
               <div className="">
                 <h2 className="mt-4">
-                  <span className="text-xl  md:text-2xl lg:text-3xl font-bold text-gray-900">
+                  <span className={`text-xl ${AriaBold.className}   md:text-2xl lg:text-3xl  text-gray-900`}>
                     درباره ما
                   </span>
                 </h2>
@@ -162,7 +165,7 @@ export default function AboutContainer() {
           >
             {/* Title and Description */}
             <div className="w-[400px] mt-40 md:mt-0 text-center flex-shrink-0">
-              <h2 className="md:text-3xl text-lg  font-bold text-gray-900 mb-8">
+              <h2 className={`md:text-3xl text-lg  ${AriaBold.className}   text-gray-900 mb-8`}>
                 اعضای تیم ما
               </h2>
               <p className="text-xs md:text-lg text-gray-600 leading-relaxed ">
@@ -190,7 +193,7 @@ export default function AboutContainer() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0  transition-opacity duration-300"></div>
                   </div>
-                  <h3 className="font-semibold text-xl mt-4">{member.name}</h3>
+                  <h3 className={` ${AriaBold.className} text-xl mt-4`}>{member.name}</h3>
                   <p className="text-base opacity-80">{member.position}</p>
                 </div>
               ))}
@@ -204,7 +207,7 @@ export default function AboutContainer() {
             <div className="w-full max-w-2xl">
               {/* Top Text Box */}
               <div className="mb-8 lg:mb-12 text-center">
-                <h2 className="text-xl  md:text-3xl  font-bold text-white mb-6 md:mb-30 leading-tight">
+                <h2 className={`text-xl  ${AriaBold.className}  md:text-2xl text-white mb-6 md:mb-30 leading-tight`}>
                   ماموریت ما
                 </h2>
 
@@ -218,7 +221,7 @@ export default function AboutContainer() {
                 {/* Contact Button */}
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white  transform hover:scale-105 transition-all duration-300 "
+                  className={`inline-flex items-center justify-center px-8 py-4  ${AriaBold.className} text-lg font-semibold text-white  transform hover:scale-105 transition-all duration-300`}
                 >
                   <svg
                     className="w-5 h-5 mr-2"

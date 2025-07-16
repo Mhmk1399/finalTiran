@@ -4,6 +4,7 @@ import { getProvincesForDropdown, getCitiesForDropdown } from "@/lib/dataCity";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Navigation, ChevronDown, Check, X } from "lucide-react";
 import { LocationSelectorProps } from "@/types/type";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 export default function LocationSelector({
   onProvinceChange,
@@ -125,7 +126,7 @@ export default function LocationSelector({
           className="flex items-center"
         >
           <MapPin className="h-6 w-6 text-purple-600 ml-2" />
-          <h2 className="text-xl font-bold text-right">انتخاب موقعیت مکانی</h2>
+          <h2 className={`text-xl ${AriaBold.className} text-right`}>انتخاب موقعیت مکانی</h2>
         </motion.div>
 
         {(selectedProvinceId || selectedCityId) && (

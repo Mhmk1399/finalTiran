@@ -1,12 +1,17 @@
+import { AriaBold } from "@/next-persian-fonts/woff2";
 import Link from "next/link";
 
 export default function HelpContainer() {
   return (
     <div className="container mx-auto max-w-5xl px-4 py-8">
-      <h1 className="text-3xl mt-36 font-bold text-center mb-8">راهنما</h1>
+      <h1 className={`text-3xl mt-36 ${AriaBold.className} text-center mb-8`}>
+        راهنما
+      </h1>
 
       <div className="bg-white rounded-lg shadow-md p-6 mb-6 rtl">
-        <h2 className="text-2xl font-bold mb-4 text-right">ثبت سفارش</h2>
+        <h2 className={`text-2xl ${AriaBold.className} mb-4 text-right`}>
+          ثبت سفارش
+        </h2>
         <p className="text-right mb-4">
           روند ثبت سفارش در این وب‌سایت بر پایه سادگی و راحتی برای شما ایجاد شده
           و شامل هیچ پیچیدگی خاصی نمی‌باشد. اما به طور خلاصه برای ثبت سفارش،
@@ -45,7 +50,9 @@ export default function HelpContainer() {
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-6 mb-6 rtl">
-        <h2 className="text-2xl font-bold mb-4 text-right">پیگیری سفارش</h2>
+        <h2 className={`text-2xl ${AriaBold.className} mb-4 text-right`}>
+          پیگیری سفارش
+        </h2>
         <p className="text-right">
           برای اطلاع از وضعیت سفارش‌های خود،{" "}
           <Link
@@ -61,7 +68,7 @@ export default function HelpContainer() {
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-6 rtl">
-        <h2 className="text-2xl font-bold mb-4 text-right">
+        <h2 className={`text-2xl ${AriaBold.className} mb-4 text-right`}>
           آیا امکان پرداخت از طریق کارت بانکی وجود دارد؟
         </h2>
         <p className="text-right">

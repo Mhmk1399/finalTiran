@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDownIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 const TopFooterText: React.FC = () => {
   const pathname = usePathname();
@@ -41,7 +42,7 @@ const TopFooterText: React.FC = () => {
       <div className="bg-white relative text-black overflow-hidden">
         {/* عنوان */}
         <span className="text-2xl font-bold mb-4 ml-2">■</span>
-        <h2 className="text-xl font-bold inline mb-4">تیران استایل </h2>
+        <h2 className={`text-xl ${AriaBold.className} inline mb-4`}>تیران استایل </h2>
 
         {/* متن کامل پنهان برای اندازه‌گیری ارتفاع */}
         <div

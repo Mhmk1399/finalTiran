@@ -5,6 +5,7 @@ import { MixedGridShowcaseProps } from "@/types/type";
 import MixedGridCardDesktop from "./mixedGridCardDesktop";
 import MixedGridCardMobile from "./mixedGridCardMobile";
 import Link from "next/link";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 // Mixed Grid Card Component (Updated for smaller size)
 
@@ -153,7 +154,9 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
               }
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 tracking-wide">
+              <h2
+                className={`text-4xl md:text-5xl lg:text-6xl  ${AriaBold.className} text-white mb-2 tracking-wide`}
+              >
                 <Link href="/shop">تیران</Link>
               </h2>
             </motion.div>
@@ -193,8 +196,10 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <h2 className="text-3xl font-light text-gray-800 mb-2 tracking-wide">
-              سبک زندگی
+            <h2
+              className={`text-4xl md:text-5xl   ${AriaBold.className} text-white mb-2 tracking-wide`}
+            >
+              <Link href="/shop">تیران</Link>
             </h2>
           </motion.div>
         </div>

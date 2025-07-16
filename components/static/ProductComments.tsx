@@ -11,6 +11,7 @@ import {
   CommentResponse,
 } from "@/types/type";
 import toast from "react-hot-toast";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 export default function ProductComments({
   productSlug,
@@ -269,7 +270,9 @@ export default function ProductComments({
   return (
     <>
       <div className="my-16">
-        <h2 className="text-2xl font-bold border-b border-dashed w-fit pb-3 mb-6">
+        <h2
+          className={`text-2xl ${AriaBold.className} border-b border-dashed w-fit pb-3 mb-6`}
+        >
           نظرات مشتریان
         </h2>
         <h3 className="text-lg font-medium mb-4">
@@ -332,7 +335,10 @@ export default function ProductComments({
           </div>
 
           <div className="mb-4">
-            <label htmlFor="title" className="block text-sm font-bold mb-2">
+            <label
+              htmlFor="title"
+              className={`block ${AriaBold.className} text-sm mb-2`}
+            >
               عنوان نظر
             </label>
             <input
@@ -346,7 +352,10 @@ export default function ProductComments({
           </div>
 
           <div className="mb-4">
-            <label htmlFor="comment" className="block text-sm font-bold mb-2">
+            <label
+              htmlFor="comment"
+              className={`block ${AriaBold.className} text-sm mb-2`}
+            >
               متن نظر
             </label>
             <textarea
@@ -365,7 +374,7 @@ export default function ProductComments({
           )}
 
           {!isAuthenticated ? (
-            <div className="mb-4 p-3 bg-gray-900 text-white">
+            <div className="mb-4 p-3  text-black bg-gray-100">
               برای ثبت نظر باید وارد حساب کاربری خود شوید.
               <button
                 aria-label="login"

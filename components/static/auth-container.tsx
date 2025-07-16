@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { BiPhone, BiLogIn } from "react-icons/bi";
 import Image from "next/image";
 import Link from "next/link";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 const AuthPage = () => {
   const phoneInputRef = useRef<HTMLInputElement>(null);
@@ -273,7 +274,7 @@ const AuthPage = () => {
                 variants={itemVariants}
                 className="text-center mb-8 border-b border-dashed border-gray-400 pb-2"
               >
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">تیران</h1>
+                <h1 className={`text-4xl  ${AriaBold.className} text-gray-900 mb-2`}>تیران</h1>
                 <p className="text-gray-600">به حساب کاربری خود وارد شوید</p>
               </motion.div>
 
@@ -292,7 +293,7 @@ const AuthPage = () => {
 
               <motion.h2
                 variants={itemVariants}
-                className="text-2xl font-bold text-gray-800 text-center mb-8"
+                className={`text-2xl text-gray-800 text-center mb-8" ${AriaBold.className}`}
               >
                 {step === 1 ? "ورود با شماره موبایل" : "تایید کد پیامک"}
               </motion.h2>
@@ -465,7 +466,7 @@ const AuthPage = () => {
                   با ورود به سایت، شما{" "}
                   <Link
                     href="#"
-                    className="text-gray-900 font-bold hover:underline"
+                    className={`text-gray-900  ${AriaBold.className}  hover:underline"`}
                   >
                     قوانین و مقررات
                   </Link>{" "}

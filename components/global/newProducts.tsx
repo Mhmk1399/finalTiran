@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Product } from "@/types/type";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 interface ApiResponse {
   success: boolean;
@@ -331,7 +332,9 @@ const NewProductRow: React.FC<ProductGridProps> = ({
         {/* Title and Description Section */}
         <div className="w-full flex flex-col items-center text-center justify-center mb-8">
           <div className="space-y-4">
-            <h2 className="text-2xl lg:text-3xl font-bold text-black leading-tight">
+            <h2
+              className={`text-xl md:text-3xl   ${AriaBold.className} text-black mb-2 tracking-wide`}
+            >
               {title}
             </h2>
             {/* Image */}
@@ -389,7 +392,9 @@ const NewProductRow: React.FC<ProductGridProps> = ({
 
                         {/* Product Info */}
                         <div className="space-y-3">
-                          <h3 className="text-black font-bold text-sm lg:text-base line-clamp-2 group-hover:text-gray-700 transition-colors duration-300">
+                          <h3
+                            className={`"text-black  ${AriaBold.className} text-sm lg:text-base line-clamp-2 group-hover:text-gray-700 transition-colors duration-300"`}
+                          >
                             {productTitle}
                           </h3>
                           <p

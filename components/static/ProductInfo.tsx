@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import AddressModal from "./addressModal";
 import { addToCart } from "@/middleware/checkout";
 import { useRouter } from "next/navigation";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 export default function ProductInfo({
   product,
@@ -395,14 +396,14 @@ export default function ProductInfo({
                 <div className="space-y-3 text-xs text-gray-600">
                   <div className="flex justify-start gap-2 py-2">
                     <span>دسته‌بندی:</span>
-                    <span className="font-bold">
+                    <span className={`${AriaBold.className} `}>
                       {selectedVariety?.category?.cat_name || "نامشخص"}
                     </span>
                   </div>
                   {selectedVariety?.show_unit && (
                     <div className="flex justify-start gap-2 py-2">
                       <span>واحد:</span>
-                      <span className="font-bold">
+                      <span className="">
                         {selectedVariety.show_unit}
                       </span>
                     </div>
@@ -410,7 +411,7 @@ export default function ProductInfo({
                   <div className="flex justify-start gap-2 py-2">
                     <span>موجودی:</span>
                     <span
-                      className={`font-bold ${
+                      className={`${AriaBold.className} ${
                         (selectedVariety?.store_stock ?? 0) > 0
                           ? "text-green-600"
                           : "text-red-600"
