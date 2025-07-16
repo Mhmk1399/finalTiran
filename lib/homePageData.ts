@@ -143,41 +143,41 @@ export const videoData = [
     id: "1",
     videoUrl:
       "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
-    thumbnail: "/assets/images/newImages/IMG_2654.webp",
+    thumbnail: "/assets/images/shop/shop2.jpg",
     title: "Spring Collection 2024",
   },
   {
     id: "2",
     videoUrl:
       "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
-    thumbnail: "/assets/images/newImages/IMG_2666.webp",
+    thumbnail: "/assets/images/shop/shop1.jpg",
     title: "Urban Essentials",
   },
   {
     id: "3",
     videoUrl:
       "https://file-examples.com/storage/fe68c1b7c1a9d6c2ccf1e5f/2017/10/file_example_MP4_1280_10MG.mp4",
-    thumbnail: "/assets/images/newImages/IMG_2653.webp",
+    thumbnail: "/assets/images/shop/shop3.jpg",
     title: "Sustainable Fashion",
   },
   {
     id: "4",
     videoUrl: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
-    thumbnail: "/assets/images/newImages/IMG_2652.webp",
+    thumbnail: "/assets/images/shop/shop4.jpg",
     title: "Minimalist Approach",
   },
   {
     id: "5",
     videoUrl:
       "https://www.html5rocks.com/en/tutorials/video/basics/devstories.mp4",
-    thumbnail: "/assets/images/newImages/IMG_2670.webp",
+    thumbnail: "/assets/images/shop/shop5.jpg",
     title: "Artisan Craftsmanship",
   },
   {
     id: "6",
     videoUrl:
       "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4",
-    thumbnail: "/assets/images/newImages/IMG_2664.webp",
+    thumbnail: "/assets/images/shop/shop6.jpg",
     title: "Future Forward",
   },
 ];

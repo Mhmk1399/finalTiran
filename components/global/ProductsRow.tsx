@@ -297,7 +297,7 @@ const ProductRow: React.FC<ProductGridProps> = ({
           <div className="w-full flex flex-col justify-center mb-8">
             <div className="space-y-4">
               <h2 className={`text-2xl lg:text-3xl text-black leading-tight  ${AriaBold.className} `}>
-                ▐ {title}
+                █ {title}
               </h2>
               <p className="text-gray-600 text-base lg:text-lg leading-relaxed">
                 {description}

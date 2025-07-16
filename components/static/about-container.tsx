@@ -203,7 +203,7 @@ export default function AboutContainer() {
         {/* Contact Section - Text Left (Black BG), Image Right */}
         <section className="min-h-screen flex-shrink-0 w-screen  snap-start  pt-20 flex flex-col lg:flex-row">
           {/* Text Content with Black Background - Left Side */}
-          <div className="w-full lg:w-3/5 bg-black flex flex-col justify-center items-start px-4 sm:px-6 lg:px-8 xl:px-16 order-2 lg:order-1 py-16 lg:py-0">
+          <div className="w-full lg:w-1/2 bg-black flex flex-col justify-center items-start px-4 sm:px-6 lg:px-8 xl:px-16 order-2 lg:order-1 py-16 lg:py-0">
             <div className="w-full max-w-2xl">
               {/* Top Text Box */}
               <div className="mb-8 lg:mb-12 text-center">
@@ -243,7 +243,7 @@ export default function AboutContainer() {
           </div>
 
           {/* Image - Right Side */}
-          <div className="w-full lg:w-2/5 relative h-64 sm:h-80 md:h-96 lg:h-auto order-1 lg:order-2">
+          <div className="w-full lg:w-1/2 relative h-64 sm:h-80 md:h-96 lg:h-auto order-1 lg:order-2">
             <Image
               src="/assets/images/fashion/4.avif" // You can change this to your desired image
               alt="تماس با تیران"
