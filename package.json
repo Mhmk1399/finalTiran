@@ -20,7 +20,7 @@
     "@tiptap/starter-kit": "^2.11.7",
     "@types/jsonwebtoken": "^9.0.9",
     "bcryptjs": "^3.0.2",
-    "framer-motion": "^12.7.4",
+    "framer-motion": "^12.23.6",
     "gsap": "^3.13.0",
     "jsonwebtoken": "^9.0.2",
     "locomotive-scroll": "^4.1.4",

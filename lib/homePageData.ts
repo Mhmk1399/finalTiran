@@ -42,48 +42,48 @@ export const slideItems = [
 export const categories = [
   {
     id: 1,
-    imageDefault: "/assets/images/newImages/IMG_2672.webp", // Black & white version
-    imageHover: "/assets/images/newImages/IMG_2665.webp", // Black & white version
+    imageDefault: "/assets/images/bluesky.jpg", // Black & white version
+    imageHover: "/assets/images/bluesky.jpg", // Black & white version
     title: "لوازم الکترونیکی",
 
     color: "#fff",
   },
   {
     id: 2,
-    imageDefault: "/assets/images/newImages/IMG_2664.webp", // Black & white version
-    imageHover: "/assets/images/newImages/IMG_2664.webp", // Black & white version
+    imageDefault: "/assets/images/ahoramazda.jpg", // Black & white version
+    imageHover: "/assets/images/ahoramazda.jpg", // Black & white version
     title: "مد و پوشاک",
 
     color: "#fff",
   },
   {
     id: 3,
-    imageDefault: "/assets/images/newImages/IMG_2658.webp", // Black & white version
-    imageHover: "/assets/images/newImages/IMG_2658.webp",
+    imageDefault: "/assets/images/lether.jpg", // Black & white version
+    imageHover: "/assets/images/lether.jpg",
     title: "خانه و آشپزخانه",
 
     color: "#fff",
   },
   {
     id: 4,
-    imageDefault: "/assets/images/newImages/IMG_2659.webp", // Black & white version
-    imageHover: "/assets/images/newImages/IMG_2659.webp",
+    imageDefault: "/assets/images/purpleroof.jpg", // Black & white version
+    imageHover: "/assets/images/purpleroof.jpg",
     title: "ورزش و سرگرمی",
 
     color: "#fff",
   },
   {
     id: 5,
-    imageDefault: "/assets/images/newImages/IMG_2666.webp", // Black & white version
-    imageHover: "/assets/images/newImages/IMG_2666.webp",
+    imageDefault: "/assets/images/unicorn.jpg", // Black & white version
+    imageHover: "/assets/images/unicorn.jpg",
     title: "کتاب و فرهنگ",
 
     color: "#fff",
   },
   {
     id: 6,
-    imageDefault: "/assets/images/newImages/IMG_2672.webp", // Black & white version
-    imageHover: "/assets/images/newImages/IMG_2672.webp",
+    imageDefault: "/assets/images/zaferon.jpg", // Black & white version
+    imageHover: "/assets/images/zaferon.jpg",
     title: "اسباب بازی",
 
     color: "#fff",
