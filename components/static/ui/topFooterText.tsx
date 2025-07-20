@@ -81,7 +81,7 @@ const TopFooterText: React.FC = () => {
           <div className="flex justify-start mt-4">
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="flex items-center gap-1 px-7  text-sm font-medium text-gray-700 hover:text-black transition"
+              className="flex items-center gap-1 px-7 cursor-pointer text-sm font-medium text-gray-700 hover:text-black transition"
             >
               <motion.span
                 animate={{ rotate: isExpanded ? 180 : 0 }}
