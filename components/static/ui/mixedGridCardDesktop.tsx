@@ -18,7 +18,7 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
   console.log(imageLoaded);
 
   const handleRoute = () => {
-    navigate.push("/video");
+    navigate.push("/about");
   };
 
   return (

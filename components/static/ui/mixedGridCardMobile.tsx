@@ -15,7 +15,7 @@ const MixedGridCardMobile: React.FC<MixedGridCardProps> = ({
   const [isTouched, setIsTouched] = useState(false);
 
   const handleRoute = () => {
-    navigate.push("/video");
+    navigate.push("/about");
   };
 
   return (

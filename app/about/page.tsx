@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: "درباره ما | فروشگاه لباس تیران",
     description:
       "آشنایی با اهداف، ارزش‌ها و داستان برند تیران. ما در مسیر پوشاک با کیفیت ایرانی همراه شما هستیم.",
-    images: ["https://www.tiranstyle.com/assets/images/og-about.jpg"],
+    images: ["https://www.tiranstyle.com/assets/images/.jpg"],
     site: "@tiran_site",
     creator: "@tiran_site",
   },

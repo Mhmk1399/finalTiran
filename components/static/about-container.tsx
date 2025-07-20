@@ -82,7 +82,7 @@ export default function AboutContainer() {
           {/* Image - Mobile: Top, Desktop: Right Side */}
           <div className="w-full lg:w-2/5 relative h-110  md:h-96 lg:h-auto order-1 lg:order-2">
             <Image
-              src="/assets/images/fashion/2.avif"
+              src="/assets/images/zaferon.jpg"
               alt="تیم تیران"
               fill
               className="object-cover"
