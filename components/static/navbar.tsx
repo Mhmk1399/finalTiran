@@ -290,7 +290,7 @@ const Navbar = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="hidden  md:flex  items-center  text-gray-700 hover:text-gray-900"
+                    className="hidden  md:flex cursor-pointer items-center  text-gray-700 hover:text-gray-900"
                   >
                     <RiUser3Line className="ml-1" />
                     <span className="text-sm font-medium">ورود | ثبت‌نام</span>
