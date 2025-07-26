@@ -41,92 +41,110 @@ export default function AboutContainer() {
     if (!container) return;
 
     const handleWheel = (e: WheelEvent) => {
-      container.scrollLeft += e.deltaY;
-      e.preventDefault();
+      // Only handle horizontal scroll on large screens
+      if (window.innerWidth >= 1024) {
+        container.scrollLeft += e.deltaY;
+        e.preventDefault();
+      }
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
-
-    return () => {
-      // موقع خروج از صفحه پاکش کن تا روی صفحات دیگه اثر نذاره
-      container.removeEventListener("wheel", handleWheel);
-    };
+    return () => container.removeEventListener("wheel", handleWheel);
   }, []);
   return (
-    <main className="scroll-x-hidden">
+    <main className="h-screen lg:overflow-y-hidden lg:overflow-x-hidden">
       <div
         id="horizontal-scroll-container"
-        className="flex flex-row-reverse overflow-x-scroll overflow-y-hidden h-screen w-screen scroll-smooth "
+        className="
+            flex flex-col 
+    lg:flex-row-reverse
+    lg:overflow-x-scroll
+    lg:overflow-y-hidden
+    overflow-y-auto
+    overflow-x-hidden
+    scroll-smooth
+    w-full
+    h-full
+    [&::-webkit-scrollbar]:hidden
+    lg:[&::-webkit-scrollbar]:hidden
+        "
       >
         {/* Hero Section */}
-        <section className="min-h-screen ml-6 pt-20 flex flex-col lg:flex-row flex-shrink-0 w-screen h-screen snap-start">
+        <section className="  lg:pt-20 flex flex-col lg:flex-row flex-shrink-0 w-screen h-screen snap-start">
           {/* Text Content - Mobile: Top, Desktop: Left Side */}
           <div
             className={`w-full ${AriaBold.className}  lg:w-3/5 flex flex-col justify-center lg:justify-end items-center lg:items-end px-4 sm:px-6 lg:px-8 xl:px-16 bg-white order-2 lg:order-1 py-8 lg:py-0`}
           >
             <div className="max-w-2xl text-center lg:text-right">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl   text-gray-900 mb-6 leading-tight">
+              <h1 className="text-[28px]  md:text-[40px] lg:text-5xl text-gray-900 mb-6 leading-tight">
                 برای نسلی که <br className="hidden sm:block" />
+                <br className="block md:hidden" />
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-white px-2 sm:px-3 lg:px-4 bg-green-800 shadow-lg transform hover:scale-105 transition-all duration-300 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-5xl">
+                  <span className="relative z-10 text-white px-2 sm:px-3 lg:px-4 bg-green-800 shadow-lg transform hover:scale-105 transition-all duration-300 text-[28px] md:text-[40px] lg:text-3xl xl:text-5xl">
                     ایـــــــــران
                   </span>
                   {/* Decorative elements */}
-                </span>{" "}
-                را <br className="hidden md:block" />
+                </span>
+                <br className="block lg:hidden" />
+                را
+                <br className="hidden lg:block" />
                 <span className="hidden lg:inline"> ... </span> سبز می‌بیند
               </h1>
             </div>
           </div>
 
           {/* Image - Mobile: Top, Desktop: Right Side */}
-          <div className="w-full lg:w-2/5 relative h-110  md:h-96 lg:h-auto order-1 lg:order-2">
+          <div className="w-full lg:w-2/5 relative h-110  md:h-96  lg:h-auto order-1 lg:order-2">
             <Image
-              src="/assets/images/zaferon.jpg"
+              src="/assets/images/aboutHero.png"
               alt="تیم تیران"
               fill
-              className="object-cover"
+              className="object-cover "
               priority
-              sizes="(max-width: 1024px) 100vw, 40vw"
+              dir="ltr"
             />
           </div>
         </section>
+
         {/* New Section - Image Left, Text Right */}
-        <section className="min-h-screen flex-shrink-0 w-screen h-screen snap-start mt-30 flex flex-col md:flex-row justify-center md:mt-20">
+        <section className="min-h-screen flex-shrink-0 w-screen lg:w-[120vw] h-screen snap-start mt-35 md:mt-40 lg:mt-20 flex flex-col-reverse lg:flex-row justify-center ">
           {/* Image - Left Side */}
-          <div className="w-full lg:w-3/5 relative h-64 md:h-96 lg:h-auto pt-80 lg:mt-4">
+          <div className="w-full lg:w-4/6 relative h-full md:h-96 lg:h-auto ">
             <Image
-              src="/assets/images/fashion/3.avif" // You can change this to your desired image
+              src="/assets/images/aboutsec2.png" // You can change this to your desired image
               alt="Tiran Style"
-              fill
-              className="object-cover -mt-4"
+              width={2000}
+              height={1200}
+              className="object-cover"
             />
           </div>
 
           {/* Text Content - Right Side */}
           <div
-            className="w-full lg:w-2/5 text-center md:text-right flex flex-col justify-start items-start px-4 sm:px-6 lg:px-8  bg-white order-2 md:py-8 lg:py-0"
+            className="w-full lg:w-2/6 md:text-right -mt-40 sm:-mt-0 flex flex-col justify-start items-start px-4 sm:px-6 lg:px-8  bg-white order-2 md:py-8 lg:py-0"
             dir="rtl"
           >
-            <div className="max-w-xl">
+            <div className=" border-t lg:border-t-0 lg:border-r border-dashed border-gray-400 pt-5 lg:pr-15 lg:pl-10 mt-12">
               {/* Text Box */}
               <div className="">
                 <h2 className="mt-4">
-                  <span className={`text-xl ${AriaBold.className}   md:text-2xl lg:text-3xl  text-gray-900`}>
+                  <span
+                    className={`text-[24px] ${AriaBold.className}   md:text-2xl lg:text-3xl  text-gray-900`}
+                  >
                     درباره ما
                   </span>
                 </h2>
-                <p className="text-xs  md:text-base text-gray-700 leading-relaxed md:mb-6">
+                <p className="text-[16px] mt-4 md:text-base text-gray-700 text-justify leading-relaxed ">
                   تیران استایل، با تکیه بر شعار الهام‌بخش استایل جور دیگر…،
                   برندی پیشرو در فشن، تکنولوژی و لایف‌استایل است که برای افراد
                   خاص و جسور طراحی شده است. ما با تمرکز بر ارائه محصولات
                   منحصربه‌فرد، سلیقه مشتریانمان را به بالاترین سطح ارتقا
                   می‌دهیم.
                 </p>
-                <p className="text-xs  md:text-base text-gray-700 leading-relaxed">
+                <p className="text-[16px]  md:text-base text-gray-700 text-justify leading-relaxed">
                   طراحی تیران استایل از یک فلسفه طراحی خاص پیروی می کند:
                 </p>
-                <p className="text-xs  md:text-base text-gray-700 leading-relaxed">
+                <p className="text-[16px]  md:text-base text-gray-700 text-justify leading-relaxed">
                   در گام اول، تیران استایل یک هویت قوی و شناخته شده دارد و در
                   گام دوم، تیران استایل مخصوص افرادی است که از جلوتر بودن در مُد
                   لذت می‌برند و به دنبال درک مفهوم خاص‌تری از سبک زندگی هستند و
@@ -141,34 +159,26 @@ export default function AboutContainer() {
                 alt="TIRAN STYLE"
                 width={300}
                 height={200}
-                className="mt-40 mx-auto"
+                className="lg:mt-20 mt-20 pb-20"
               />
             </div>
           </div>
-        </section>{" "}
+        </section>
+
         {/* Our Team Section */}
         <section
-          className="min-h-screen flex-shrink-0 h-screen py-16 lg:py-24"
+          className=" flex-shrink-0 min-h-full py-16 md:pt-85 lg:py-24"
           dir="rtl"
         >
-          <div
-            className="
-      flex 
-      flex-row  
-      justify-start 
-      items-center
-      gap-16
-      w-[2680px] 
-      mx-auto
-      px-8
-    "
-          >
+          <div className="flex flex-col lg:flex-row justify-center  lg:justify-start lg:items-center gap-16 w-screen lg:w-[2680px] mx-auto px-4 lg:px-8">
             {/* Title and Description */}
-            <div className="w-[400px] mt-40 md:mt-0 text-center flex-shrink-0">
-              <h2 className={`md:text-3xl text-lg  ${AriaBold.className}   text-gray-900 mb-8`}>
+            <div className="lg:w-[520px] w-full h-full mt-10 lg:mt-0 md:mt-0 text-center flex flex-col gap-28 lg:gap-60 flex-shrink-0">
+              <h2
+                className={`md:text-[24px] text-lg  ${AriaBold.className}   text-gray-900 `}
+              >
                 اعضای تیم ما
               </h2>
-              <p className="text-xs md:text-lg text-gray-600 leading-relaxed ">
+              <p className="text-xs md:text-[20px] text-gray-600 leading-relaxed -mt-10 ">
                 تیران استایل، با تکیه بر شعار الهام‌بخش استایل جور دیگر…، برندی
                 پیشرو در فشن، تکنولوژی و لایف‌استایل است که برای افراد خاص و
                 جسور طراحی شده است. ما با تمرکز بر ارائه محصولات منحصربه‌فرد،
@@ -177,11 +187,11 @@ export default function AboutContainer() {
             </div>
 
             {/* Team Images Row */}
-            <div className="flex flex-row md:gap-10 gap-3 -ml-5 md:ml-1">
+            <div className="flex flex-col lg:flex-row md:gap-5 gap-3">
               {teamMembers.map((member) => (
                 <div
                   key={member.id}
-                  className="flex flex-col items-center group"
+                  className="flex flex-col items-start group"
                 >
                   <div className="w-full relative h-full mt-8">
                     <Image
@@ -189,29 +199,35 @@ export default function AboutContainer() {
                       alt={member.alt}
                       width={4000}
                       height={4000}
-                      className=" object-cover h-120 "
+                      className=" object-cover h-120"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0  transition-opacity duration-300"></div>
                   </div>
-                  <h3 className={` ${AriaBold.className} text-xl mt-4`}>{member.name}</h3>
-                  <p className="text-base opacity-80">{member.position}</p>
+                  <h3 className={` ${AriaBold.className}  text-xl mt-4`}>
+                    {member.name}
+                  </h3>
+                  <p className="text-base opacity-80 text-gray-400 text-right">
+                    {member.position}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </section>
         {/* Contact Section - Text Left (Black BG), Image Right */}
-        <section className="min-h-screen flex-shrink-0 w-screen  snap-start  pt-20 flex flex-col lg:flex-row">
+        <section className="min-h-screen flex-shrink-0 w-screen snap-start lg:pt-20 flex flex-col-reverse lg:flex-row">
           {/* Text Content with Black Background - Left Side */}
-          <div className="w-full lg:w-1/2 bg-black flex flex-col justify-center items-start px-4 sm:px-6 lg:px-8 xl:px-16 order-2 lg:order-1 py-16 lg:py-0">
-            <div className="w-full max-w-2xl">
+          <div className="w-full lg:w-1/2 bg-slate-950/95 flex flex-col justify-center items-start px-4 sm:px-6 lg:px-8  order-2 lg:order-1 py-16 lg:py-0">
+            <div className="w-full">
               {/* Top Text Box */}
-              <div className="mb-8 lg:mb-12 text-center">
-                <h2 className={`text-xl  ${AriaBold.className}  md:text-2xl text-white mb-6 md:mb-30 leading-tight`}>
+              <div className=" lg:mb-12 text-center">
+                <h2
+                  className={`text-2xl  ${AriaBold.className}  md:text-2xl text-white mb-10 md:mb-30 leading-tight`}
+                >
                   ماموریت ما
                 </h2>
 
-                <p className="text-base  md:text-lg text-gray-400 leading-relaxed mb-6 md:mb-30">
+                <p className="text-xl  md:text-[20px] text-center text-gray-400 leading-relaxed mb-10 md:mb-30">
                   تیران استایل، با تکیه بر شعار الهام‌بخش استایل جور دیگر…،
                   برندی پیشرو در فشن، تکنولوژی و لایف‌استایل است که برای افراد
                   خاص و جسور طراحی شده است. ما با تمرکز بر ارائه محصولات
@@ -221,7 +237,7 @@ export default function AboutContainer() {
                 {/* Contact Button */}
                 <Link
                   href="/contact"
-                  className={`inline-flex items-center justify-center px-8 py-4  ${AriaBold.className} text-lg font-semibold text-white  transform hover:scale-105 transition-all duration-300`}
+                  className={`inline-flex items-center justify-center px-8   ${AriaBold.className} text-lg font-semibold text-white  transform hover:scale-105 transition-all duration-300`}
                 >
                   <svg
                     className="w-5 h-5 mr-2"
@@ -243,9 +259,9 @@ export default function AboutContainer() {
           </div>
 
           {/* Image - Right Side */}
-          <div className="w-full lg:w-1/2 relative h-64 sm:h-80 md:h-96 lg:h-auto order-1 lg:order-2">
+          <div className="w-full lg:w-1/2 relative h-[50vh] sm:h-80 md:h-96 lg:h-auto order-1 lg:order-2">
             <Image
-              src="/assets/images/fashion/4.avif" // You can change this to your desired image
+              src="/assets/images/tirancontact.png" // You can change this to your desired image
               alt="تماس با تیران"
               fill
               className="object-cover"

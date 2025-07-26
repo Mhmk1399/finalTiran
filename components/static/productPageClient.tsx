@@ -5,6 +5,7 @@ import ProductInfo from "@/components/static/ProductInfo";
 import ProductComments from "@/components/static/ProductComments";
 import RelatedProducts from "@/components/static/RelatedProducts";
 import { Product } from "@/types/type";
+import Breadcrumbs from "../global/breadcrumbs";
 
 interface ProductPageClientProps {
   slug: string;
@@ -72,8 +73,6 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
     }
   }, [slug]);
 
- 
-
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -109,14 +108,17 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
   const secondaryImage =
     productImages.length > 1 ? productImages[1].src : primaryImage;
   const additionalImages =
-    productImages.length > 2
-      ? productImages.map((img) => img.src)
-      : [];
+    productImages.length > 2 ? productImages.map((img) => img.src) : [];
 
   // Desktop Layout
   if (isDesktop) {
     return (
-      <main className="min-h-screen bg-white py-10 px-20" dir="rtl">
+      <main className="min-h-screen relative bg-white py-10 px-20" dir="rtl">
+        <div className="absolute top-20 right-20 z-20">
+          {" "}
+          <Breadcrumbs />
+        </div>
+
         {/* Your existing desktop layout */}
         <div className="min-h-screen mt-20">
           <div className="grid grid-cols-12 h-full gap-0">
@@ -170,8 +172,12 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
 
   // Mobile Layout
   return (
-    <main className="container mx-auto px-4 py-12" dir="rtl">
-      <div className="grid grid-cols-1 lg:grid-cols-2  sm:mt-36 mt-10">
+    <main className="container relative mx-auto px-4 md:px-15 py-12" dir="rtl">
+      <div className="absolute top-0 right-4 md:top-20 md:right-15 z-20">
+        {" "}
+        <Breadcrumbs />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2  sm:mt-36 mt-15">
         <ProductGallery
           primaryImage={primaryImage}
           secondaryImage={secondaryImage}

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
+import {  ZoomIn } from "lucide-react";
 import Image from "next/image";
 import { ProductGalleryProps } from "@/types/type";
 
@@ -16,16 +16,16 @@ export default function ProductGallery({
   onThumbnailClick,
 }: // onImageChange,
 ProductGalleryProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [dotsFixed, setDotsFixed] = useState(true);
+  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomedImageSrc, setZoomedImageSrc] = useState("");
-  const [touchStart, setTouchStart] = useState(0);
-  const [touchEnd, setTouchEnd] = useState(0);
   const [canScrollUp, setCanScrollUp] = useState(false);
   const [canScrollDown, setCanScrollDown] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const mainImagesRef = useRef<HTMLDivElement>(null);
-  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   console.log(canScrollDown, canScrollUp);
 
@@ -49,22 +49,72 @@ ProductGalleryProps) {
     }
   }, [activeImageIndex, layout]);
 
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // 📌 IntersectionObserver برای تشخیص عکس فعال
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const idx = Number(entry.target.getAttribute("data-index"));
+            setCurrentImageIndex(idx);
+          }
+        });
+      },
+
+      {
+        root: containerRef.current, // کانتینر اسکرول اصلی
+        threshold: 0.5, // حداقل ۵۰٪ تصویر تو دید باشه
+      }
+    );
+
+    imageRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      imageRefs.current.forEach((el) => {
+        if (el) observer.unobserve(el);
+      });
+    };
+  }, []);
+
+  // Effect: Scroll to active thumbnail when image changes or layout switches to thumbnails
+  useEffect(() => {
+    if (layout === "thumbnails") {
+      checkScrollPosition();
+      scrollToActiveThumbnail(currentImageIndex);
+    }
+  }, [currentImageIndex, layout]);
+
+  // Effect: Set up scroll event listener for thumbnail navigation buttons
+  useEffect(() => {
+    if (layout === "thumbnails") {
+      const container = scrollContainerRef.current;
+      if (container) {
+        container.addEventListener("scroll", checkScrollPosition);
+        checkScrollPosition();
+
+        // Cleanup: Remove scroll event listener on component unmount
+        return () =>
+          container.removeEventListener("scroll", checkScrollPosition);
+      }
+    }
+  }, [layout]);
+
   // click on Thumbnails to scroll to main images
   const handleThumbnailClick = (index: number) => {
     if (onThumbnailClick) {
       onThumbnailClick(index);
     }
-  };
-
-  // naviagtion buttons in mobile
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex(
-      (prev) => (prev - 1 + allImages.length) % allImages.length
-    );
   };
 
   // Check scroll position for thumbnail navigation
@@ -92,59 +142,27 @@ ProductGalleryProps) {
     }
   };
 
-  // Effect: Scroll to active thumbnail when image changes or layout switches to thumbnails
-  useEffect(() => {
-    if (layout === "thumbnails") {
-      checkScrollPosition();
-      scrollToActiveThumbnail(currentImageIndex);
-    }
-  }, [currentImageIndex, layout]);
-
-  // Effect: Set up scroll event listener for thumbnail navigation buttons
-  useEffect(() => {
-    if (layout === "thumbnails") {
-      const container = scrollContainerRef.current;
-      if (container) {
-        container.addEventListener("scroll", checkScrollPosition);
-        checkScrollPosition();
-
-        // Cleanup: Remove scroll event listener on component unmount
-        return () =>
-          container.removeEventListener("scroll", checkScrollPosition);
-      }
-    }
-  }, [layout]);
-
-  // Touch handler: Capture initial touch position for swipe gesture detection
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-  // Touch handler: Track finger movement during swipe gesture
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
-
-  // Touch handler: Process swipe gesture and navigate images based on swipe direction
-  const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > 50; // Swipe left: next image
-    const isRightSwipe = distance < -50; // Swipe right: previous image
-
-    if (isLeftSwipe) {
-      nextImage();
-    }
-    if (isRightSwipe) {
-      prevImage();
-    }
-  };
-
   // Function: Open zoom modal with selected image for detailed view
   const handleZoom = (imageSrc: string) => {
     setZoomedImageSrc(imageSrc);
     setIsZoomed(true);
+  };
+
+  // 📌 اسکرول به تصویر انتخابی
+  const handleDotClick = (index: number) => {
+    imageRefs.current[index]?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  // 📌 بررسی وضعیت اسکرول برای تغییر حالت فیکس دات‌ها
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+    const el = containerRef.current;
+    const scrollBottom = el.scrollTop + el.clientHeight;
+    const isAtBottom = scrollBottom >= el.scrollHeight - 5;
+    setDotsFixed(!isAtBottom);
   };
 
   // Desktop Layout - All Images in Column
@@ -317,80 +335,55 @@ ProductGalleryProps) {
     );
   }
 
-  // Mobile Layout - Swipeable Slider
+  // Mobile Layout - scrollbar Slider
   return (
-    <div className="relative h-full">
-      <div
-        className="h-full flex items-center justify-center"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
+    <div
+      ref={containerRef}
+      className="relative h-full overflow-y-auto p-4 space-y-4"
+      onScroll={handleScroll}
+    >
+      {allImages.map((image, index) => (
         <motion.div
-          key={currentImageIndex}
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3 }}
-          className="relative w-full h-80 flex items-center justify-center p-4"
+          data-index={index}
+          ref={(el) => {
+            imageRefs.current[index] = el;
+          }}
+          key={index}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.05 }}
+          className="relative group bg-white overflow-hidden"
         >
           <Image
-            src={allImages[currentImageIndex] || ""}
-            alt={`${productName} - تصویر ${currentImageIndex + 1}`}
-            width={400}
-            height={600}
-            className="w-full h-auto object-contain max-h-full"
-            priority={currentImageIndex === 0}
+            src={image || ""}
+            alt={`${productName} - تصویر ${index + 1}`}
+            width={800}
+            height={1200}
+            className="w-full h-auto object-contain"
+            onClick={() => image && handleZoom(image)}
           />
         </motion.div>
-      </div>
+      ))}
 
-      {/* Mobile Navigation Dots */}
-      <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-2">
+      {/* دات‌ها */}
+      <div
+        className={`${
+          dotsFixed ? "fixed top-1/2 -right-2" : "absolute right-2 bottom-4"
+        } flex flex-row-reverse rotate-90 gap-2 transition-all duration-300 z-50`}
+      >
         {allImages.map((_, index) => (
           <button
-            aria-label="toggle image"
             key={index}
-            onClick={() => setCurrentImageIndex(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
+            onClick={() => handleDotClick(index)}
+            className={`w-5 h-1 rounded-sm transition-all ${
               currentImageIndex === index ? "bg-black" : "bg-gray-300"
             }`}
+            aria-label={`رفتن به تصویر ${index + 1}`}
           />
         ))}
       </div>
 
-      {/* Mobile Navigation Arrows */}
-      {allImages.length > 1 && (
-        <>
-          <button
-            aria-label="prev"
-            onClick={prevImage}
-            className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 rounded-full shadow-md"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            aria-label="next"
-            onClick={nextImage}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/80 rounded-full shadow-md"
-          >
-            <ChevronRight size={20} />
-          </button>
-        </>
-      )}
-
-      {/* Zoom functionality for mobile */}
-      <button
-        aria-label="zoom"
-        onClick={() =>
-          allImages[currentImageIndex] &&
-          handleZoom(allImages[currentImageIndex])
-        }
-        className="absolute top-4 right-4 p-2 bg-white/80 rounded-full shadow-md"
-      >
-        <ZoomIn size={18} />
-      </button>
-
-      {/* Mobile Zoom Modal */}
+      {/* زوم مودال */}
       <AnimatePresence>
         {isZoomed && (
           <motion.div
@@ -404,34 +397,21 @@ ProductGalleryProps) {
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
-              className="relative w-full h-full flex items-center justify-center p-4"
+              className="relative max-w-full max-h-full"
               onClick={(e) => e.stopPropagation()}
             >
               <Image
                 src={zoomedImageSrc}
                 alt={`${productName} - تصویر بزرگ`}
-                width={800}
-                height={1200}
+                width={1200}
+                height={1600}
                 className="w-auto h-auto max-w-full max-h-full object-contain"
               />
-
-              {/* Close button for mobile zoom */}
               <button
-                aria-label="zoom"
                 onClick={() => setIsZoomed(false)}
-                className="absolute top-4 right-4 p-2 bg-white/80 text-black rounded-full hover:bg-white/30 transition-colors"
+                className="absolute top-4 right-4 p-2 lg:bg-white/80 text-black rounded-full hover:bg-white/30 transition-colors"
               >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
+                ✕
               </button>
             </motion.div>
           </motion.div>

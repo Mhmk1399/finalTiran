@@ -100,7 +100,7 @@ function ShopPage() {
         {/* <ProductGrid categoryFilter={selectedCategory} /> */}
         <VideoShowcase />
 
-        <div className="md:px-20 px-4">
+        <div className="md:px-8 lg:px-20 ">
           <div className="mt-12">
             <ProductRow
               title=" شلوار"

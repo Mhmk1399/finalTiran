@@ -3,11 +3,8 @@ import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { MixedGridShowcaseProps } from "@/types/type";
 import MixedGridCardDesktop from "./mixedGridCardDesktop";
-import MixedGridCardMobile from "./mixedGridCardMobile";
 import Link from "next/link";
 import { AriaBold } from "@/next-persian-fonts/woff2";
-
-// Mixed Grid Card Component (Updated for smaller size)
 
 const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   categories,
@@ -17,6 +14,19 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [animationKey, setAnimationKey] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    if (window.innerWidth <= 430) {
+      setIsMobile(true);
+    } else if (window.innerWidth <= 1054) {
+      setIsTablet(true);
+    } else {
+      setIsMobile(false);
+      setIsTablet(false);
+    }
+  }, []);
 
   const isInView = useInView(containerRef, {
     once: false,
@@ -31,7 +41,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   }, [isInView]);
 
   // Static positions for each image - Updated for smaller sizes
-  const staticPositions = [
+  const staticPositionsLg = [
     { x: 130, y: 160, width: 243, height: 304, zIndex: 80 },
     // 1
     { x: 320, y: 255, width: 301, height: 363, zIndex: 90 },
@@ -43,6 +53,36 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
     { x: 80, y: 420, width: 310, height: 372, zIndex: 35 },
     // 2
     { x: 720, y: 340, width: 379, height: 417, zIndex: 100 },
+    // 6
+  ];
+  const staticPositionsMd = [
+    { x: 50, y: 130, width: 218, height: 272, zIndex: 80 },
+    // 1
+    { x: 30, y: 500, width: 277, height: 332, zIndex: 35 },
+    // 2
+    { x: 150, y: 300, width: 255, height: 308, zIndex: 90 },
+    // 3
+    { x: 402, y: 180, width: 300, height: 360, zIndex: 100 },
+    // 4
+    { x: 600, y: 130, width: 225, height: 164, zIndex: 105 },
+    // 5
+    { x: 450, y: 440, width: 297, height: 331, zIndex: 100 },
+    // 6
+  ];
+
+  const staticPositionsSm = [
+    { x: 20, y: -70, width: 129, height: 169, zIndex: 80 },
+    // 1
+    { x: 30, y: 120, width: 151, height: 183, zIndex: 95 },
+    // 3
+    { x: 5, y: 260, width: 164, height: 197, zIndex: 90 },
+    // 2
+    { x: 130, y: 30, width: 157, height: 188, zIndex: 100 },
+    // 4
+    { x: 190, y: -50, width: 133, height: 97, zIndex: 105 },
+    // 5
+
+    { x: 150, y: 200, width: 176, height: 196, zIndex: 100 },
     // 6
   ];
 
@@ -102,31 +142,6 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
     }),
   };
 
-  // Mobile marquee variants
-  const marqueeVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const mobileItemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: (index: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        delay: index * 0.1,
-        ease: "easeOut" as const,
-      },
-    }),
-  };
-
   return (
     <motion.div
       ref={containerRef}
@@ -140,10 +155,9 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
       }}
     >
       {/* Desktop: Static positioned grid */}
-      <div className="hidden md:flex justify-center items-center  w-full">
-        <div className="relative w-full max-w-6xl h-[600px] md:h-[700px]">
+      <div className="flex justify-center items-center  w-full">
+        <div className="relative w-full max-w-6xl h-[400px] md:h-[700px]">
           {" "}
-          {/* Reduced height */}
           {/* Central Text Overlay */}
           <div className="absolute inset-0 flex items-center justify-center z-190 pointer-events-none">
             <motion.div
@@ -163,7 +177,15 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
           </div>
           {categories.slice(0, 6).map((category, index) => {
             const pattern = gridPatterns[index % gridPatterns.length];
-            const position = staticPositions[index % staticPositions.length];
+            let position;
+
+            if (isMobile) {
+              position = staticPositionsSm[index % staticPositionsSm.length];
+            } else if (isTablet) {
+              position = staticPositionsMd[index % staticPositionsMd.length];
+            } else {
+              position = staticPositionsLg[index % staticPositionsLg.length];
+            }
 
             return (
               <motion.div
@@ -203,78 +225,6 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
             </h2>
           </motion.div>
         </div>
-
-        {/* First Row - Left to Right */}
-        <motion.div
-          className="flex gap-4 mb-6"
-          variants={marqueeVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-        >
-          <motion.div
-            className="flex gap-4 animate-marquee-left"
-            style={{
-              animation: "marqueeLeft 20s linear infinite",
-            }}
-          >
-            {[...categories, ...categories]
-              .slice(0, 8)
-              .map((category, index) => (
-                <motion.div
-                  key={`mobile-left-${category.id}-${index}`}
-                  custom={index}
-                  variants={mobileItemVariants}
-                  className="flex-shrink-0 w-56 h-72 overflow-hidden" // Reduced from w-64 h-80
-                  onTouchStart={() => setHoveredIndex(index)}
-                  onTouchEnd={() => setHoveredIndex(null)}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <MixedGridCardMobile
-                    category={category}
-                    index={index}
-                    isHovered={hoveredIndex === index}
-                    size="medium"
-                  />
-                </motion.div>
-              ))}
-          </motion.div>
-        </motion.div>
-
-        {/* Second Row - Right to Left */}
-        <motion.div
-          className="flex gap-4"
-          variants={marqueeVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-        >
-          <motion.div
-            className="flex gap-4 animate-marquee-right"
-            style={{
-              animation: "marqueeRight 25s linear infinite",
-            }}
-          >
-            {[...categories.slice().reverse(), ...categories.slice().reverse()]
-              .slice(0, 8)
-              .map((category, index) => (
-                <motion.div
-                  key={`mobile-right-${category.id}-${index}`}
-                  custom={index + 4}
-                  variants={mobileItemVariants}
-                  className="flex-shrink-0 w-48 h-64 overflow-hidden" // Reduced from w-56 h-72
-                  onTouchStart={() => setHoveredIndex(index + 10)}
-                  onTouchEnd={() => setHoveredIndex(null)}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <MixedGridCardMobile
-                    category={category}
-                    index={index + 10}
-                    isHovered={hoveredIndex === index + 10}
-                    size="small"
-                  />
-                </motion.div>
-              ))}
-          </motion.div>
-        </motion.div>
       </div>
 
       {/* CSS Animations for Marquee */}

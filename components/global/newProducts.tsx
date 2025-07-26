@@ -292,7 +292,7 @@ const NewProductRow: React.FC<ProductGridProps> = ({
 
   return (
     <div
-      className={`w-full  py-12 relative ${className}`}
+      className={`w-full py-24 md:py-28 lg:py-32 relative ${className}`}
       dir="rtl"
       style={{
         background: `url('/assets/images/texture.png')`,
@@ -300,10 +300,7 @@ const NewProductRow: React.FC<ProductGridProps> = ({
     >
       {/* Top Vertical Line - Coming down 30px from top */}
       <motion.div
-        className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-10 bg-gradient-to-b from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: "2rem", opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
+        className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-[4rem] md:h-[5rem] lg:h-[6rem] bg-gradient-to-b from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
         style={{
           backgroundImage:
             "repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, #9ca3af 3px, #9ca3af 6px)",
@@ -315,10 +312,7 @@ const NewProductRow: React.FC<ProductGridProps> = ({
 
       {/* Bottom Vertical Line - Coming up 30px from bottom */}
       <motion.div
-        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-10 bg-gradient-to-t from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: "2rem", opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
+        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-[4rem] md:h-[5rem] lg:h-[6rem] bg-gradient-to-t from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
         style={{
           backgroundImage:
             "repeating-linear-gradient(to top, transparent 0px, transparent 3px, #9ca3af 3px, #9ca3af 6px)",
@@ -333,7 +327,7 @@ const NewProductRow: React.FC<ProductGridProps> = ({
         <div className="w-full flex flex-col items-center text-center justify-center mb-8">
           <div className="space-y-4">
             <h2
-              className={`text-xl md:text-3xl   ${AriaBold.className} text-black mb-2 tracking-wide`}
+              className={`text-2xl md:text-[32px]   ${AriaBold.className} text-black mb-2 tracking-wide`}
             >
               {title}
             </h2>

@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion, AnimatePresence, useScroll } from "framer-motion";
 import {
   navItems,
@@ -166,14 +165,14 @@ const Navbar = () => {
   return (
     <nav
       id="navbar"
-      className="fixed top-0 left-0 w-full z-50 transition-all duration-500 supports-[backdrop-filter]:bg-white/60"
+      className="fixed top-0 left-0 w-full z-50 px-1 md:px-10 lg:px-20 transition-all duration-500 bg-white/70"
       dir="rtl"
-      style={{
-        backdropFilter: "blur(12px) saturate(180%)",
-        opacity: 0.9,
-        WebkitBackdropFilter: "blur(12px) saturate(180%)",
-        background: `url('/assets/images/texture.png')`,
-      }}
+      // style={{
+      //   backdropFilter: "blur(12px) saturate(180%)",
+      //   opacity: 0.9,
+      //   WebkitBackdropFilter: "blur(12px) saturate(180%)",
+      //   background: `url('/assets/images/texture.png')`,
+      // }}
     >
       <div className="max-w-screen">
         <div className="flex items-center justify-between h-20 px-4 sm:px-6 lg:px-2">
@@ -188,16 +187,10 @@ const Navbar = () => {
                 whileHover="hover"
                 className="flex items-center justify-center"
               >
-                <Image
-                  src="/assets/images/navlogo.png"
-                  alt="Tiran Logo"
-                  width={70}
-                  height={70}
-                  className="h-8 w-auto"
-                />
+              تیران استایل
               </motion.div>
             </Link>
-            <div className="hidden md:flex items-center justify-end ">
+            <div className="hidden lg:flex items-center gap-2 justify-end ">
               {navItems.map((item) => (
                 <motion.div
                   key={item.name}
@@ -208,15 +201,15 @@ const Navbar = () => {
                 >
                   <Link href={item.href}>
                     <motion.span
-                      className={`block px-3 py-2 text-base font-medium transition-all duration-300 ${
+                      className={`block px-3 py-2 text-base transition-all duration-300 ${
                         activeItem === item.href
                           ? "text-black font-bold"
-                          : "text-gray-700 hover:text-black "
+                          : "text-gray-600 hover:text-black "
                       }`}
                       whileTap={{ scale: 0.95 }}
                     >
                       {item.name}
-                      {activeItem === item.href && (
+                      {/* {activeItem === item.href && (
                         <motion.div
                           className="absolute -bottom-[2px] left-0 right-0 h-0.5 bg-black "
                           layoutId="underline"
@@ -224,14 +217,13 @@ const Navbar = () => {
                           animate={{ opacity: 1 }}
                           transition={{ duration: 0.5, ease: "easeInOut" }}
                         />
-                      )}
+                      )} */}
                     </motion.span>
                   </Link>
                 </motion.div>
               ))}
             </div>
           </div>
-          {/* Right side - Navigation Items (Desktop) */}
           {/* Left side - Cart and Login */}
           <div className="flex gap-3 items-center">
             <motion.div
@@ -290,10 +282,12 @@ const Navbar = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="hidden  md:flex cursor-pointer items-center  text-gray-700 hover:text-gray-900"
+                    className="hidden md:flex cursor-pointer items-center  text-gray-700 hover:text-gray-900"
                   >
-                    <RiUser3Line className="ml-1" />
-                    <span className="text-sm font-medium">ورود | ثبت‌نام</span>
+                    <RiUser3Line className="h-6 w-6 ml-1" />
+                    <span className="text-base font-medium">
+                      ورود | ثبت‌نام
+                    </span>
                   </motion.button>
                 </Link>
               )}
@@ -308,10 +302,26 @@ const Navbar = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md hover:bg-gray-100 focus:outline-none transition-colors duration-300"
+                className="inline-flex items-center relative justify-center re p-2 gap-4 rounded-md hover:bg-gray-100 focus:outline-none transition-colors duration-300"
                 aria-expanded="false"
               >
                 <AnimatePresence mode="wait">
+                  <Link href="/cart">
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-300"
+                    >
+                      <RiShoppingBag3Line className="h-6 w-6" />
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute top-0 right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                      >
+                        {totalItems}
+                      </motion.span>
+                    </motion.div>
+                  </Link>
                   {isOpen ? (
                     <motion.div
                       key="close"

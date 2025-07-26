@@ -168,7 +168,9 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
                   dir="rtl"
                 >
                   <div className="text-white">
-                    <h3 className={`text-lg ${AriaBold.className} mb-2 leading-tight`}>
+                    <h3
+                      className={`text-lg ${AriaBold.className} mb-2 leading-tight`}
+                    >
                       {item.title}
                     </h3>
 
@@ -199,13 +201,13 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
           "linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%)",
       }}
     >
-      <div className="flex flex-col items-end justify-end px-4 md:px-20 mb-12">
+      <div className="flex flex-col items-center justify-center md:justify-end md:items-end px-4 md:px-20 mb-12">
         {/* Title */}
         <motion.h2
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-2xl md:text-3xl border-b border-dashed pb-4  text-gray-800 tracking-wide"
+          className={`text-xl md:text-2xl border-b border-dashed pb-4 ${AriaBold.className}  text-gray-800 tracking-wide `}
         >
           دسته بندی محصولات
         </motion.h2>
@@ -273,7 +275,9 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
                         : "translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
                     }`}
                   >
-                    <h3 className={`text-lg ${AriaBold.className} mb-2 leading-tight`}>
+                    <h3
+                      className={`text-lg ${AriaBold.className} mb-2 leading-tight`}
+                    >
                       {item.title}
                     </h3>
 

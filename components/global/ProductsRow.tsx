@@ -63,11 +63,11 @@ const ProductImageSlider: React.FC<{
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
-  const goToImage = (index: number, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndex(index);
-  };
+  // const goToImage = (index: number, e: React.MouseEvent) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   setCurrentImageIndex(index);
+  // };
 
   if (!images || images.length === 0) {
     return (
@@ -112,24 +112,6 @@ const ProductImageSlider: React.FC<{
         </>
       )}
 
-      {/* Image Indicators - Show only if more than 1 image */}
-      {images.length > 1 && (
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
-          {images.map((_, index) => (
-            <button
-              key={index}
-              onClick={(e) => goToImage(index, e)}
-              className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                index === currentImageIndex
-                  ? "bg-white shadow-md"
-                  : "bg-white/50 hover:bg-white/70"
-              }`}
-              aria-label={`رفتن به تصویر ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
-
       {/* Hover overlay */}
       <div className="absolute inset-0 bg-black/10 group-hover:bg-opacity-10 transition-all duration-300" />
     </div>
@@ -143,6 +125,7 @@ const ProductRow: React.FC<ProductGridProps> = ({
   category,
   className = "",
 }) => {
+  // 定义产品数组、加载状态和错误状态
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -290,88 +273,89 @@ const ProductRow: React.FC<ProductGridProps> = ({
   }
 
   return (
-   
-      <div className={`w-full py-5 ${className}`} dir="rtl">
-        <div className="px-4">
-          {/* Title and Description Section */}
-          <div className="w-full flex flex-col justify-center mb-8">
-            <div className="space-y-4">
-              <h2 className={`text-2xl lg:text-3xl text-black leading-tight  ${AriaBold.className} `}>
-                █ {title}
-              </h2>
-              <p className="text-gray-600 text-base lg:text-lg leading-relaxed">
-                {description}
-              </p>
-            </div>
+    <div className={`w-full py-5 ${className}`} dir="rtl">
+      <div className="px-4">
+        {/* Title and Description Section */}
+        <div className="w-full flex flex-col justify-center mb-8">
+          <div className="space-y-2">
+            <h2
+              className={`text-2xl lg:text-[32px] text-black leading-tight  ${AriaBold.className} `}
+            >
+              █ {title}
+            </h2>
+            <p className="text-gray-400 text-base lg:text-base leading-relaxed">
+              {description}
+            </p>
           </div>
-          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            {/* Products Grid Section */}
-            <div className="w-full">
-              {loading ? (
-                // Loading skeleton
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {[...Array(4)].map((_, index) => (
-                    <div key={index} className="space-y-3">
-                      <div className="w-full aspect-square bg-gray-100 animate-pulse" />
-                      <div className="space-y-2">
-                        <div className="h-4 bg-gray-100 animate-pulse" />
-                        <div className="h-4 bg-gray-100 animate-pulse w-1/2" />
-                      </div>
+        </div>
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+          {/* Products Grid Section */}
+          <div className="w-full">
+            {loading ? (
+              // Loading skeleton
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[...Array(4)].map((_, index) => (
+                  <div key={index} className="space-y-3">
+                    <div className="w-full aspect-square bg-gray-100 animate-pulse" />
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-100 animate-pulse" />
+                      <div className="h-4 bg-gray-100 animate-pulse w-1/2" />
                     </div>
-                  ))}
-                </div>
-              ) : products.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {products.map((product) => {
-                    const productPrice = getProductPrice(product);
-                    const productTitle = getProductTitle(product);
+                  </div>
+                ))}
+              </div>
+            ) : products.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {products.map((product) => {
+                  const productPrice = getProductPrice(product);
+                  const productTitle = getProductTitle(product);
 
-                    return (
-                      <Link
-                        key={product.id}
-                        href={`/shop/${product.slug}`}
-                        className="group block transition-all duration-300 hover:transform"
-                      >
+                  return (
+                    <Link
+                      key={product.id}
+                      href={`/shop/${product.slug}`}
+                      className="group block transition-all duration-300 hover:transform"
+                    >
+                      <div className="space-y-3">
+                        {/* Product Image Slider */}
+                        <ProductImageSlider
+                          images={product.images}
+                          productTitle={productTitle}
+                          mainImageId={product.main_image_id ?? undefined}
+                        />
+
+                        {/* Product Info */}
                         <div className="space-y-3">
-                          {/* Product Image Slider */}
-                          <ProductImageSlider
-                            images={product.images}
-                            productTitle={productTitle}
-                            mainImageId={product.main_image_id ?? undefined}
-                          />
-
-                          {/* Product Info */}
-                          <div className="space-y-3">
-                            <h3 className="text-black font-bold text-sm lg:text-base line-clamp-2 group-hover:text-gray-700 transition-colors duration-300">
-                              {productTitle}
-                            </h3>
-                            <p
-                              className="text-black font-semibold text-sm lg:text-base"
-                              dir="rtl"
-                            >
-                              {productPrice === "0" || productPrice === 0 ? (
-                                <span className="text-gray-500" dir="rtl">
-                                  تماس بگیرید
-                                </span>
-                              ) : (
-                                `${formatPrice(productPrice)} تومان`
-                              )}
-                            </p>
-                          </div>
+                          <h3 className="text-black font-bold text-sm lg:text-base line-clamp-2 group-hover:text-gray-700 transition-colors duration-300">
+                            {productTitle}
+                          </h3>
+                          <p
+                            className="text-black font-semibold text-sm lg:text-base"
+                            dir="rtl"
+                          >
+                            {productPrice === "0" || productPrice === 0 ? (
+                              <span className="text-gray-500" dir="rtl">
+                                تماس بگیرید
+                              </span>
+                            ) : (
+                              `${formatPrice(productPrice)} تومان`
+                            )}
+                          </p>
                         </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">محصولی یافت نشد</p>
-                </div>
-              )}
-            </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-500">محصولی یافت نشد</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
+    </div>
   );
 };
 
