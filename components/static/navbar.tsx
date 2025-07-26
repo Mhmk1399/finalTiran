@@ -225,7 +225,7 @@ const Navbar = () => {
             </div>
           </div>
           {/* Left side - Cart and Login */}
-          <div className="flex gap-3 items-center">
+          <div className="flex gap-4 items-center">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -234,7 +234,7 @@ const Navbar = () => {
             >
               <Link href="/cart">
                 <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className="p-2 hidden md:block rounded-full hover:bg-gray-100 transition-colors duration-300"
                 >
@@ -284,7 +284,7 @@ const Navbar = () => {
                     whileTap={{ scale: 0.95 }}
                     className="hidden md:flex cursor-pointer items-center  text-gray-700 hover:text-gray-900"
                   >
-                    <RiUser3Line className="h-6 w-6 ml-1" />
+                    <RiUser3Line className="h-6 w-6 ml-2" />
                     <span className="text-base font-medium">
                       ورود | ثبت‌نام
                     </span>
