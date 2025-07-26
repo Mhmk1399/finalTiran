@@ -76,7 +76,7 @@ export default function AboutContainer() {
             className={`w-full ${AriaBold.className}  lg:w-3/5 flex flex-col justify-center lg:justify-end items-center lg:items-end px-4 sm:px-6 lg:px-8 xl:px-16 bg-white order-2 lg:order-1 py-8 lg:py-0`}
           >
             <div className="max-w-2xl text-center lg:text-right">
-              <h1 className="text-[28px]  md:text-[40px] lg:text-5xl text-gray-900 mb-6 leading-tight">
+              <h1 className="text-[28px]  md:text-[40px] lg:text-5xl text-gray-900 mb-6 leading-normal">
                 برای نسلی که <br className="hidden sm:block" />
                 <br className="block md:hidden" />
                 <span className="relative inline-block">
@@ -94,7 +94,7 @@ export default function AboutContainer() {
           </div>
 
           {/* Image - Mobile: Top, Desktop: Right Side */}
-          <div className="w-full lg:w-2/5 relative h-110  md:h-96  lg:h-auto order-1 lg:order-2">
+          <div className="w-full lg:w-2/5 relative h-100  md:h-96  lg:h-auto order-1 lg:order-2">
             <Image
               src="/assets/images/aboutHero.png"
               alt="تیم تیران"
@@ -203,10 +203,10 @@ export default function AboutContainer() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0  transition-opacity duration-300"></div>
                   </div>
-                  <h3 className={` ${AriaBold.className}  text-xl mt-4`}>
+                  <h3 className={` ${AriaBold.className}  text-xl mt-4 mb-2`}>
                     {member.name}
                   </h3>
-                  <p className="text-base opacity-80 text-gray-400 text-right">
+                  <p className="text-sm opacity-80 text-gray-400 text-right">
                     {member.position}
                   </p>
                 </div>
@@ -237,7 +237,7 @@ export default function AboutContainer() {
                 {/* Contact Button */}
                 <Link
                   href="/contact"
-                  className={`inline-flex items-center justify-center px-8   ${AriaBold.className} text-lg font-semibold text-white  transform hover:scale-105 transition-all duration-300`}
+                  className={`inline-flex items-center justify-center px-8   text-lg  text-white  transform hover:scale-105 transition-all duration-300`}
                 >
                   <svg
                     className="w-5 h-5 mr-2"

@@ -88,12 +88,12 @@ const VideoShowcase = () => {
       <div className="hidden lg:block relative w-[35%] bg-white/90 md:w-1/5 overflow-y-auto max-h-full py-4">
         <div
           ref={marqueeRef}
-          className="relative z-10 flex flex-col gap-2 overflow-y-auto h-full pr-1 scrollbar-thin scrollbar-thumb-white/20"
+          className="relative z-10 flex flex-col gap-3 overflow-y-auto h-full  lg:-ml-1.5 scrollbar-thin scrollbar-thumb-white/20"
         >
           {infiniteVideos.map((video, index) => (
             <div
               key={`marquee-${index}`}
-              className={`flex-shrink-0 pr-1 cursor-pointer transition-all duration-300 ${
+              className={`flex-shrink-0 pr-3 cursor-pointer transition-all duration-300 ${
                 activeVideo.id === video.id
                   ? "opacity-100  transform"
                   : "opacity-90 hover:opacity-100 hover:scale-102"

@@ -7,7 +7,7 @@ import { socialLinks } from "@/lib/footerData";
 
 const ContactContainer = () => {
   return (
-    <section className="bg-white min-h-screen mt-20 px-5 md:px-15 lg:px-20">
+    <section className="bg-white min-h-screen mt-20 px-5 md:px-15 lg:pl-0 lg:pr-20">
       {/* Hero Section */}
 
       <div className="flex flex-col-reverse lg:flex-row lg:items-end lg:gap-12">

@@ -38,7 +38,7 @@ const TopFooterText: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-full mx-auto px-4 md:px-20 py-8" dir="rtl">
+    <div className="w-full max-w-full mx-auto px-4 md:pl-20 md:pr-28 py-8" dir="rtl">
       <div className="bg-white relative text-black overflow-hidden">
         {/* عنوان */}
         <span className="text-2xl font-bold mb-4 ml-2">■</span>

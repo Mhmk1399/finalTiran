@@ -22,6 +22,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useCart } from "@/context/cartContext";
 import { Category, UserProfile } from "@/types/type";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 
 const Navbar = () => {
   const { totalItems } = useCart();
@@ -185,7 +186,7 @@ const Navbar = () => {
                 initial="initial"
                 animate="animate"
                 whileHover="hover"
-                className="flex items-center justify-center"
+                className={`flex ${AriaBold.className} items-center justify-center`}
               >
               تیران استایل
               </motion.div>

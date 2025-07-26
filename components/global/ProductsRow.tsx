@@ -277,11 +277,12 @@ const ProductRow: React.FC<ProductGridProps> = ({
       <div className="px-4">
         {/* Title and Description Section */}
         <div className="w-full flex flex-col justify-center mb-8">
-          <div className="space-y-2">
+          <div className="space-y-4">
             <h2
-              className={`text-2xl lg:text-[32px] text-black leading-tight  ${AriaBold.className} `}
+              className={`text-2xl flex gap-2 lg:text-[32px] text-black leading-tight  ${AriaBold.className} `}
             >
-              █ {title}
+              <span>█ </span>
+              {title}
             </h2>
             <p className="text-gray-400 text-base lg:text-base leading-relaxed">
               {description}
@@ -325,22 +326,36 @@ const ProductRow: React.FC<ProductGridProps> = ({
                         />
 
                         {/* Product Info */}
-                        <div className="space-y-3">
-                          <h3 className="text-black font-bold text-sm lg:text-base line-clamp-2 group-hover:text-gray-700 transition-colors duration-300">
-                            {productTitle}
-                          </h3>
-                          <p
-                            className="text-black font-semibold text-sm lg:text-base"
-                            dir="rtl"
-                          >
-                            {productPrice === "0" || productPrice === 0 ? (
-                              <span className="text-gray-500" dir="rtl">
-                                تماس بگیرید
-                              </span>
-                            ) : (
-                              `${formatPrice(productPrice)} تومان`
-                            )}
-                          </p>
+                        <div className="space-y-3 flex items-center justify-between">
+                          <div className="">
+                            {" "}
+                            <h3
+                              className={`"text-black mb-5  ${AriaBold.className} text-sm lg:text-base line-clamp-2 group-hover:text-gray-700 transition-colors duration-300"`}
+                            >
+                              {productTitle}
+                            </h3>
+                            <p
+                              className="text-black mb-5 font-semibold text-sm lg:text-base"
+                              dir="rtl"
+                            >
+                              {productPrice === "0" || productPrice === 0 ? (
+                                <span className="text-gray-500" dir="rtl">
+                                  تماس بگیرید
+                                </span>
+                              ) : (
+                                `${formatPrice(productPrice)} تومان`
+                              )}
+                            </p>
+                          </div>
+                          {/* <div >
+                            <Image
+                              src="/assets/images/Arrow.png"
+                              alt="Arrow Icon"
+                              width={400}
+                              height={400}
+                              className="w-10 h-2.5  transition-colors duration-300"
+                            />
+                          </div> */}
                         </div>
                       </div>
                     </Link>

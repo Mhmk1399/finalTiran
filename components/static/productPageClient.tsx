@@ -114,7 +114,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
   if (isDesktop) {
     return (
       <main className="min-h-screen relative bg-white py-10 px-20" dir="rtl">
-        <div className="absolute top-20 right-20 z-20">
+        <div className="absolute top-25 right-20 z-20">
           {" "}
           <Breadcrumbs />
         </div>
@@ -146,7 +146,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
               />
             </div>
 
-            <div className="col-span-6 max-w-4xl mr-8 bg-white">
+            <div className="col-span-6 max-w-4xl mr-4 bg-white">
               <div className="h-full overflow-y-auto scrollbar-hide">
                 <ProductInfo product={product} layout="desktop" />
               </div>

@@ -219,11 +219,13 @@ export default function ProductInfo({
         } ${layout === "desktop" ? "" : "mt-20 sm:pb-8"}`}
       >
         {/* Product Header */}
-        <div className="space-y-2">
+        <div className="space-y-6">
           {/* Header Section */}
           <div className="flex items-center justify-center md:justify-start">
             <h1
-              className={`font-light tracking-wide text-gray-900 mb-1 ${
+              className={` ${
+                AriaBold.className
+              } tracking-wide text-gray-900 mb-1 ${
                 layout === "desktop" ? "text-2xl " : "text-2xl"
               }`}
             >
@@ -244,12 +246,13 @@ export default function ProductInfo({
 
           {color && (
             <div className="pt-4">
-              <div className="border-b border-gray-400 border-dashed pb-2 mb-1">
+              <div className="border-b border-gray-400 border-dashed">
                 <details className="group">
                   <summary className="flex items-center justify-between cursor-pointer py-2">
                     <div className="flex items-center gap-2">
+                      <span className="text-xs">انتخاب رنگ : </span>
                       <h3 className="text-sm font-medium text-gray-900">
-                        رنگ: {selectedColor || "انتخاب کنید"}
+                        {selectedColor || "انتخاب کنید"}
                       </h3>
                     </div>
                     <svg
@@ -266,7 +269,7 @@ export default function ProductInfo({
                       />
                     </svg>
                   </summary>
-                  <div className="mt-3 p-3 bg-white  ">
+                  <div className=" bg-white pb-2 my-2">
                     <div className="flex flex-wrap gap-3">
                       {Array.from(
                         new Set(
@@ -304,13 +307,16 @@ export default function ProductInfo({
 
           {/* Properties Selection Dropdown - Second */}
           {Object.keys(propertiesByType).length > 0 && (
-            <div className="pt-4">
+            <div className="">
               <div className="border-b border-gray-400 border-dashed pb-2 mb-1">
                 <details className="group">
                   <summary className="flex items-center justify-between cursor-pointer py-2">
-                    <h3 className="text-sm font-medium text-gray-900">
-                      مشخصات محصول: {selectedSize || "انتخاب کنید"}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs">مشخصات محصول:</span>
+                      <h3 className="text-sm font-medium text-gray-900">
+                        {selectedSize || "انتخاب کنید"}
+                      </h3>
+                    </div>
                     <svg
                       className="w-4 h-4 text-gray-500 transition-transform group-open:rotate-180"
                       fill="none"
@@ -326,7 +332,7 @@ export default function ProductInfo({
                     </svg>
                   </summary>
 
-                  <div className="mt-6 space-y-6">
+                  <div className=" space-y-6">
                     {/* All Properties in One Section */}
                     <div className="space-y-4">
                       {Object.entries(propertiesByType).map(
@@ -349,7 +355,7 @@ export default function ProductInfo({
                                         option.propertyId
                                       );
                                     }}
-                                    className={`py-2 px-3 text-sm  bg-gray-100 transition-all ${
+                                    className={`py-1 px-5 text-sm text-center  bg-gray-100 transition-all ${
                                       selectedSize === option.title
                                         ? " text-black"
                                         : "  text-gray-700"
@@ -370,7 +376,7 @@ export default function ProductInfo({
           )}
 
           {/* سایر مشخصات - Third */}
-          <div className="pt-4">
+          <div className="">
             <div className="border-b border-gray-400 border-dashed pb-2 mb-1">
               <details className="group">
                 <summary className="flex items-center justify-between cursor-pointer py-2">
@@ -392,25 +398,25 @@ export default function ProductInfo({
                   </svg>
                 </summary>
 
-                <div className="mt-6 space-y-6">
+                <div className=" ">
                   {/* Product Information */}
-                  <div className="space-y-3 text-xs text-gray-600">
-                    <div className="flex justify-start gap-2 py-2">
+                  <div className=" text-xs text-gray-600 w-1/6 ">
+                    <div className="flex justify-between gap-2 py-2">
                       <span>دسته‌بندی:</span>
                       <span className={`${AriaBold.className} `}>
                         {selectedVariety?.category?.cat_name || "نامشخص"}
                       </span>
                     </div>
                     {selectedVariety?.show_unit && (
-                      <div className="flex justify-start gap-2 py-2">
+                      <div className="flex justify-between gap-2 py-2">
                         <span>واحد:</span>
                         <span className="">{selectedVariety.show_unit}</span>
                       </div>
                     )}
-                    <div className="flex justify-start gap-2 py-2">
+                    <div className="flex justify-between gap-2 py-2">
                       <span>موجودی:</span>
                       <span
-                        className={`${AriaBold.className} ${
+                        className={`${AriaBold.className} mr-8 text-nowrap ${
                           (selectedVariety?.store_stock ?? 0) > 0
                             ? "text-green-600"
                             : "text-red-600"
@@ -433,7 +439,7 @@ export default function ProductInfo({
             <div className="block md:hidden">
               <div className="flex items-center justify-center">
                 <div
-                  className={`font-medium text-gray-900 ${
+                  className={` ${AriaBold.className} text-black ${
                     layout === "desktop" ? "text-lg" : "text-xl"
                   }`}
                 >
@@ -443,84 +449,87 @@ export default function ProductInfo({
             </div>
 
             {/* Add to Cart Button and Quantity in One Row */}
-            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center md:justify-between gap-3 md:gap-0">
               {/* Price - Desktop: In row */}
               <div className="hidden md:flex items-center">
                 <div
-                  className={`font-medium text-gray-900 ${
-                    layout === "desktop" ? "text-lg" : "text-xl"
+                  className={`${AriaBold.className} text-black ${
+                    layout === "desktop" ? "text-3xl" : "text-xl"
                   } whitespace-nowrap`}
                 >
                   {formattedPrice}
                 </div>
               </div>
-              {/* Quantity Selection */}
-              <div className="flex-shrink-0 order-2 md:order-1">
-                <div className="flex items-center justify-center md:justify-start">
-                  <div className="flex items-center border border-gray-200 overflow-hidden">
-                    <motion.button
-                      whileHover={{ backgroundColor: "#f9fafb" }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={decrementQuantity}
-                      className="w-10 h-12 md:w-10 md:h-12 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                    >
-                      <span className="text-lg font-light">−</span>
-                    </motion.button>
+              <div className="flex items-center justify-between order-2 md:order-1">
+                {" "}
+                {/* Quantity Selection */}
+                <div className=" flex justify-between order-2 md:order-1">
+                  <div className="flex items-center justify-center md:justify-start">
+                    <div className="flex items-center border border-gray-900 overflow-hidden">
+                      <motion.button
+                        whileHover={{ backgroundColor: "#f9fafb" }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={decrementQuantity}
+                        className="w-10 h-12 md:w-10 md:h-12 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                      >
+                        <span className="text-lg font-light">−</span>
+                      </motion.button>
 
-                    <div className="w-12 h-12 md:w-12 md:h-12 flex items-center justify-center border-x border-gray-200 font-medium text-sm">
-                      {quantity}
+                      <div className="w-12 h-12 md:w-12 md:h-12 flex items-center justify-center border-x border-gray-200 font-medium text-sm">
+                        {quantity}
+                      </div>
+
+                      <motion.button
+                        whileHover={{ backgroundColor: "#f9fafb" }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={incrementQuantity}
+                        className="w-10 h-12 md:w-10 md:h-12 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                      >
+                        <span className="text-lg font-light">+</span>
+                      </motion.button>
                     </div>
-
-                    <motion.button
-                      whileHover={{ backgroundColor: "#f9fafb" }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={incrementQuantity}
-                      className="w-10 h-12 md:w-10 md:h-12 flex items-center justify-center hover:bg-gray-50 transition-colors"
-                    >
-                      <span className="text-lg font-light">+</span>
-                    </motion.button>
                   </div>
                 </div>
-              </div>
-              {/* Add to Cart Button */}
-              <div className="flex-1 order-1 md:order-2">
-                <motion.button
-                  disabled={
-                    !selectedVariety || selectedVariety.store_stock <= 0
-                  }
-                  onClick={handleAddToCart}
-                  whileHover={
-                    (selectedVariety?.store_stock ?? 0) > 0 ? { scale: 1 } : {}
-                  }
-                  whileTap={
-                    (selectedVariety?.store_stock ?? 0) > 0
-                      ? { scale: 0.99 }
-                      : {}
-                  }
-                  className={`w-full py-3 md:py-3 flex items-center bg-black text-white justify-center gap-3 border  cursor-pointer font-medium duration-300 transition-all ${
-                    (selectedVariety?.store_stock ?? 0) > 0
-                      ? " text-black hover:border-gray-300"
-                      : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  } ${
-                    layout === "desktop" ? "text-sm" : "text-sm md:text-base"
-                  }`}
-                >
-                  {isAddingToCart ? (
-                    <>
-                      <Check size={18} />
-                      <span className="hidden sm:inline">اضافه شد</span>
-                      <span className="sm:hidden">✓</span>
-                    </>
-                  ) : (
-                    <>
-                      <ShoppingCart size={18} />
-                      <span className="hidden sm:inline">
-                        افزودن به سبد خرید
-                      </span>
-                      <span className="sm:hidden">افزودن</span>
-                    </>
-                  )}
-                </motion.button>
+                {/* Add to Cart Button */}
+                <div className="order-1 md:order-2">
+                  <motion.button
+                    disabled={
+                      !selectedVariety || selectedVariety.store_stock <= 0
+                    }
+                    onClick={handleAddToCart}
+                    whileHover={
+                      (selectedVariety?.store_stock ?? 0) > 0
+                        ? { scale: 1 }
+                        : {}
+                    }
+                    whileTap={
+                      (selectedVariety?.store_stock ?? 0) > 0
+                        ? { scale: 0.99 }
+                        : {}
+                    }
+                    className={`w-full py-3 md:py-4 flex items-center bg-black text-white justify-center px-6 border  cursor-pointer font-medium duration-300 transition-all ${
+                      (selectedVariety?.store_stock ?? 0) > 0
+                        ? " text-black hover:border-gray-300"
+                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    } ${
+                      layout === "desktop" ? "text-sm" : "text-sm md:text-base"
+                    }`}
+                  >
+                    {isAddingToCart ? (
+                      <>
+                        <Check size={18} />
+                        <span className="hidden sm:inline">اضافه شد</span>
+                        <span className="sm:hidden">✓</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingCart size={18} />
+                        <span className="hidden sm:inline"></span>
+                        <span className="sm:hidden">افزودن</span>
+                      </>
+                    )}
+                  </motion.button>
+                </div>
               </div>
             </div>
 

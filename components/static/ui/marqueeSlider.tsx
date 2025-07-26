@@ -217,7 +217,7 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="relative"
+          className="relative mt-1"
         >
           <div className="w-full h-full ">
             <img
