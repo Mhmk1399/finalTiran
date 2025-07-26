@@ -113,23 +113,7 @@ const ProductImageSlider: React.FC<{
         </>
       )}
 
-      {/* Image Indicators - Show only if more than 1 image */}
-      {images.length > 1 && (
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
-          {images.map((_, index) => (
-            <button
-              key={index}
-              onClick={(e) => goToImage(index, e)}
-              className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                index === currentImageIndex
-                  ? "bg-white shadow-md"
-                  : "bg-white/50 hover:bg-white/70"
-              }`}
-              aria-label={`رفتن به تصویر ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
+   
 
       {/* Hover overlay */}
       <div className="absolute inset-0 bg-black/10 group-hover:bg-opacity-10 transition-all duration-300" />
