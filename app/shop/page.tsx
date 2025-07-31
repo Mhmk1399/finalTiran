@@ -17,6 +17,7 @@ function ShopPage() {
     colors: [] as string[],
     available: false,
   });
+  console.log(filters)
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -85,7 +86,7 @@ function ShopPage() {
           </div>
 
           {/* Dynamic Product Rows */}
-          {categories.map((category, index) => (
+          {categories.map((category) => (
             <div key={category.id} className="mt-12">
               <ProductRow
                 title={category.cat_name}

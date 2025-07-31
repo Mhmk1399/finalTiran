@@ -13,7 +13,7 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
   zIndex, // Add zIndex prop
 }) => {
   const navigate = useRouter();
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageLoaded] = useState(false);
   const [showColorImage, setShowColorImage] = useState(false);
   console.log(imageLoaded);
 

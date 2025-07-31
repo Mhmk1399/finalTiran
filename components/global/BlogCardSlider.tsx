@@ -14,7 +14,7 @@ interface BlogCardSliderProps {
   title?: string;
 }
 
-const BlogCardSlider: React.FC<BlogCardSliderProps> = ({ title }) => {
+const BlogCardSlider: React.FC<BlogCardSliderProps> = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const blogCards: BlogCard[] = [

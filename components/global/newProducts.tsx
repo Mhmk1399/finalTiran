@@ -65,7 +65,6 @@ const ProductImageSlider: React.FC<{
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
-
   if (!images || images.length === 0) {
     return (
       <div className="w-full aspect-square bg-gray-200 flex items-center justify-center">
@@ -274,7 +273,7 @@ const NewProductRow: React.FC<ProductGridProps> = ({
       dir="rtl"
       style={{
         background: `url('/assets/images/texture.png')`,
-      }} 
+      }}
     >
       {/* Top Vertical Line - Coming down 30px from top */}
       <motion.div
@@ -318,7 +317,7 @@ const NewProductRow: React.FC<ProductGridProps> = ({
             >
               <div className=" h-full">
                 <p className={` ${maneli.className} text-gray-500 `}>
-            جور دیگر باید دید ...
+                  جور دیگر باید دید ...
                 </p>
               </div>
             </motion.div>
