@@ -16,7 +16,7 @@ const videoSlides: VideoSlide[] = [
   {
     id: 1,
     src: "/assets/video/videoslide2.mp4",
-    title: "مجموعه چرم فرش",
+    title: "مجموعه ی چرم فرش",
     description: "استایل جور دیگر",
   },
   {
@@ -25,12 +25,6 @@ const videoSlides: VideoSlide[] = [
     title: "Product Demo",
     description: "استایل جور دیگر",
   },
-  // {
-  //   id: 3,
-  //   src: "/assets/videos/testimonial.mp4",
-  //   title: "Customer Stories",
-  //   description: "Real stories from our satisfied customers",
-  // },
 ];
 
 export default function VideoScrollScale() {

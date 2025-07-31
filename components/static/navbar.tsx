@@ -25,7 +25,6 @@ import {
 import { usePathname } from "next/navigation";
 import { useCart } from "@/context/cartContext";
 import { Category, UserProfile } from "@/types/type";
-import Breadcrumbs from "../global/breadcrumbs";
 import MegaMenu from "./megaMenu";
 
 const Navbar = () => {
@@ -111,10 +110,10 @@ const Navbar = () => {
             left: 0,
             right: 0,
             zIndex: 60,
-            backgroundColor: "rgba(255, 255, 255, 0.98)",
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
             backdropFilter: "blur(20px)",
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-            padding: "12px 0",
+            padding: "8px 0",
             duration: 0.4,
             ease: "power2.inOut",
           });
@@ -412,13 +411,11 @@ const Navbar = () => {
       <motion.div
         ref={categoriesRef}
         className="hidden md:block relative w-full transition-all duration-300"
-        style={{
-          borderTop: showCategoriesOnly ? "1px solid rgba(0,0,0,0.1)" : "none",
-        }}
+     
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl  mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="flex items-center justify-center gap-2 py-3"
+            className="flex items-center justify-center gap-2"
             initial="hidden"
             animate="visible"
           >
@@ -470,7 +467,6 @@ const Navbar = () => {
               hoveredCategory={hoveredCategory}
               setHoveredCategory={setHoveredCategory}
             />
-            <Breadcrumbs />
           </>
         )}
       </motion.div>

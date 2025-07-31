@@ -113,8 +113,8 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
   // Desktop Layout
   if (isDesktop) {
     return (
-      <main className="min-h-screen relative bg-white py-10 px-20" dir="rtl">
-        <div className="absolute top-25 right-20 z-20">
+      <main className="min-h-screen relative bg-white py-20 px-20" dir="rtl">
+        <div className="absolute top-30 right-20 z-20">
           {" "}
           <Breadcrumbs />
         </div>

@@ -1,13 +1,12 @@
 "use client";
 import CategoryShowcase from "@/components/static/ui/categoryImage";
 import DynamicFashionGrid from "@/components/static/ui/dynamicFashionGrid";
-import MarqueeSlider from "@/components/static/ui/marqueeSlider";
 import { useState, useEffect } from "react";
 import { slideItems, categories } from "@/lib/homePageData";
 import NewProductRow from "../global/newProducts";
 import VideoRevealCurtain from "./ui/videoScrollScale";
-import ProductSlideshow from "../global/productSlideshow";
 import ProductSlideFendi from "../global/productSlideFendi";
+import VideoSection from "./ui/VideoSection";
 
 const Page = () => {
   const [currentComponent, setCurrentComponent] = useState<
@@ -111,36 +110,22 @@ const Page = () => {
             />
           </div>
 
-          <div
-            className={`transition-all duration-500 ease-out ${
-              showShowcase
-                ? "opacity-100 transform translate-y-0"
-                : "opacity-0 transform translate-y-4"
-            }`}
-            style={{
-              transitionDelay: "400ms", // Reduced from 1200ms
-            }}
-          >
-            <MarqueeSlider
-              items={slideItems}
-              speed={20}
-              direction="left"
-              pauseOnHover={true}
-            />{" "}
-          </div>
           <div className="mt-12">
             {" "}
+            <ProductSlideFendi
+              title="محصولات ویژه"
+              // className="my-8"
+              // endpoint="/api/shop"
+              // category=""
+            />
+            <div className="min-h-screen mt-20">
+              <VideoSection />
+            </div>
             <NewProductRow
-              title="محصولات جدید"
+              title="مجموعه تابلوها"
               description="جدیدترین کیف ها را کشف کنید"
               endpoint="/api/shop"
               className=""
-              category=""
-            />
-            <ProductSlideFendi
-              title="محصولات ویژه"
-              className="my-8"
-              endpoint="/api/shop"
               category=""
             />
           </div>
