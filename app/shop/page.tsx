@@ -5,19 +5,41 @@ import { AnimatePresence } from "framer-motion";
 import ShopIntro from "@/components/static/shopIntro";
 import VideoShowcase from "@/components/static/ui/videoShowcase";
 import ProductRow from "@/components/global/ProductsRow";
+import FilterCard from "@/components/static/ui/FilterCard";
+import { Category } from "@/types/type";
 
 function ShopPage() {
   const [showIntro, setShowIntro] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [filters, setFilters] = useState({
+    categories: [] as string[],
+    colors: [] as string[],
+    available: false,
+  });
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    // Fetch categories
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/category");
+        const data = await response.json();
+        if (data.success && data.data) {
+          setCategories(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+
     // Get category parameter from URL
     const categoryParam = searchParams.get("category");
-
     if (categoryParam) {
       setSelectedCategory(categoryParam);
-      setShowIntro(false); // Skip intro if coming from category filter
+      setShowIntro(false);
     } else {
       setSelectedCategory(null);
     }
@@ -41,84 +63,39 @@ function ShopPage() {
           background: `url('/assets/images/texture.png')`,
         }}
       >
-        {/* <div className="mt-36 text-center">
-          {(!showIntro || selectedCategory) && (
-            <>
-              <h1 className="text-4xl font-bold mb-3">
-                {selectedCategory ? `فروشگاه - ${selectedCategory}` : "فروشگاه"}
-              </h1>
-              <p className="text-gray-600 max-w-4xl mx-auto">
-                {selectedCategory
-                  ? `محصولات دسته‌بندی ${selectedCategory} را مشاهده کنید`
-                  : "محصولات ما را که با دقت طراحی شده اند برای کیفیت و طراحی کشف کنید سبک ماوس را روی تصاویر نگه دارید تا محصولات را از زوایای مختلف ببینید."}
-              </p>
-
-              {selectedCategory && (
-                <div className="mt-6 flex justify-center items-center gap-4">
-                  <div className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                      />
-                    </svg>
-                    فیلتر: {selectedCategory}
-                  </div>
-                  <button
-                  title="حذف فیلتر"
-                    aria-label="clear filter"
-                    onClick={clearFilter}
-                    className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                    حذف فیلتر
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-        </div> */}
-        {/* <ProductGrid categoryFilter={selectedCategory} /> */}
+       
         <VideoShowcase />
+        
+        <div className="md:px-8 lg:px-20">
+          {/* Filter Card */}
+          <div className="mt-8 mb-12">
+            <FilterCard
+              onFilterChange={setFilters}
+              categories={categories.map(cat => ({
+                id: cat.id.toString(),
+                label: cat.cat_name,
+              }))}
+              colors={[
+                { id: "red", label: "قرمز" },
+                { id: "blue", label: "آبی" },
+                { id: "black", label: "مشکی" },
+                { id: "white", label: "سفید" },
+              ]}
+            />
+          </div>
 
-        <div className="md:px-8 lg:px-20 ">
-          <div className="mt-12">
-            <ProductRow
-              title=" شلوار"
-              description="جدیدترین شلوارها را کشف کنید"
-              endpoint="/api/shop"
-              className=""
-              category=""
-            />
-          </div>
-          <div className="mt-12">
-            <ProductRow
-              title=" کیف"
-              description="جدیدترین کیف ها را کشف کنید"
-              endpoint="/api/shop"
-              className=""
-              category="شلوار"
-            />
-          </div>
+          {/* Dynamic Product Rows */}
+          {categories.map((category, index) => (
+            <div key={category.id} className="mt-12">
+              <ProductRow
+                title={category.cat_name}
+                description={`جدیدترین ${category.cat_name} را کشف کنید`}
+                endpoint="/api/shop"
+                className=""
+                category={category.cat_name}
+              />
+            </div>
+          ))}
         </div>
       </main>
     </>
