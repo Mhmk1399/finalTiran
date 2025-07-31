@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { MixedGridShowcaseProps } from "@/types/type";
 import MixedGridCardDesktop from "./mixedGridCardDesktop";
-import Link from "next/link";
 import { AriaBold } from "@/next-persian-fonts/woff2";
 
 const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
@@ -39,20 +38,70 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
       setAnimationKey((prev) => prev + 1);
     }
   }, [isInView]);
+  const staticTextPositionsLg = [
+    {
+      dotPosition: { top: -25, right: 6 },
+      lineDirection: "horizontal-left",
+      lineLength: 70,
+      text: "گیفت کارت ",
+      textAlign: "left",
+      textOrientation: "horizontal",
+    },
+    {
+      dotPosition: { bottom: -20, right: 8 },
+      lineDirection: "horizontal-left",
+      lineLength: 70,
+      text: "خانه و سبک زندگی",
+      textAlign: "left",
+      textOrientation: "horizontal",
+    },
+    {
+      dotPosition: { top: -25, right: 60 },
+      lineDirection: "horizontal-left",
+      lineLength: 60,
+      text: "چرم ترکیبی",
+      textAlign: "left",
+      textOrientation: "horizontal",
+    },
+    {
+      dotPosition: { top: -25, right: 8 },
+      lineDirection: "horizontal-left",
+      lineLength: 80,
+      text: "اکسسوری",
+      textAlign: "right",
+      textOrientation: "horizontal",
+    },
+    {
+      dotPosition: { top: 0, left: -25 },
+      lineDirection: "vertical-down",
+      lineLength: 80,
+      text: "تابلوها",
+      textAlign: "left",
+      textOrientation: "vertical",
+    },
+    {
+      dotPosition: { top: 0, right: -20 },
+      lineDirection: "vertical-down",
+      lineLength: 100,
+      text: "کیف",
+      textAlign: "left",
+      textOrientation: "vertical",
+    },
+  ];
 
   // Static positions for each image - Updated for smaller sizes
   const staticPositionsLg = [
-    { x: 130, y: 160, width: 243, height: 304, zIndex: 80 },
+    { x: 100, y: 160, width: 243, height: 304, zIndex: 80 },
     // 1
-    { x: 320, y: 255, width: 301, height: 363, zIndex: 90 },
+    { x: 290, y: 255, width: 301, height: 363, zIndex: 115 },
     // 3
-    { x: 540, y: 155, width: 300, height: 360, zIndex: 100 },
+    { x: 530, y: 160, width: 300, height: 360, zIndex: 110 },
     // 4
-    { x: 720, y: 80, width: 307, height: 225, zIndex: 105 },
+    { x: 800, y: 100, width: 307, height: 230, zIndex: 105 },
     // 5
-    { x: 80, y: 420, width: 310, height: 372, zIndex: 35 },
+    { x: 30, y: 465, width: 307, height: 300, zIndex: 35 },
     // 2
-    { x: 720, y: 340, width: 379, height: 417, zIndex: 100 },
+    { x: 800, y: 390, width: 379, height: 417, zIndex: 100 },
     // 6
   ];
   const staticPositionsMd = [
@@ -154,38 +203,37 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
         backgroundSize: "cover",
       }}
     >
+      <h2 className={`text-xl md:text-4xl border-b border-dashed pb-4 ${AriaBold.className} `}>
+        دسته بندی محصولات
+      </h2>
+      {/* Image */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="relative mt-1"
+      >
+        <div className="w-full h-full ">
+          <img
+            src="/assets/images/marquee.png" // Replace with your actual image path
+            alt="دسته بندی محصولات"
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+      </motion.div>
       {/* Desktop: Static positioned grid */}
       <div className="flex justify-center items-center  w-full">
         <div className="relative w-full max-w-6xl h-[400px] md:h-[700px]">
           {" "}
-          {/* Central Text Overlay */}
-          <div className="absolute inset-0 flex items-center justify-center z-190 pointer-events-none">
-            <motion.div
-              className="text-center"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={
-                isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }
-              }
-              transition={{ duration: 0.8, delay: 0.5 }}
-            >
-              <h2
-                className={`text-4xl md:text-5xl lg:text-6xl  ${AriaBold.className} text-white mb-2 tracking-wide`}
-              >
-                <Link href="/shop">تیران</Link>
-              </h2>
-            </motion.div>
-          </div>
           {categories.slice(0, 6).map((category, index) => {
             const pattern = gridPatterns[index % gridPatterns.length];
-            let position;
+            const position = isMobile
+              ? staticPositionsSm[index % staticPositionsSm.length]
+              : isTablet
+              ? staticPositionsMd[index % staticPositionsMd.length]
+              : staticPositionsLg[index % staticPositionsLg.length];
 
-            if (isMobile) {
-              position = staticPositionsSm[index % staticPositionsSm.length];
-            } else if (isTablet) {
-              position = staticPositionsMd[index % staticPositionsMd.length];
-            } else {
-              position = staticPositionsLg[index % staticPositionsLg.length];
-            }
+            const textMeta = staticTextPositionsLg[index];
 
             return (
               <motion.div
@@ -194,15 +242,96 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
                 variants={itemVariants}
                 onHoverStart={() => setHoveredIndex(index)}
                 onHoverEnd={() => setHoveredIndex(null)}
+                className="absolute"
+                style={{
+                  left: position.x,
+                  top: position.y,
+                  width: position.width,
+                  height: position.height,
+                  zIndex: hoveredIndex === index ? 999 : position.zIndex,
+                }}
               >
                 <MixedGridCardDesktop
                   category={category}
                   index={index}
                   isHovered={hoveredIndex === index}
                   size={pattern.size}
-                  position={position}
-                  zIndex={position.zIndex}
+                  position={{ width: position.width, height: position.height }}
+                  zIndex={hoveredIndex === index ? 999 : position.zIndex}
                 />
+
+                {/* TEXT POINTER WITH LINE */}
+                {!isMobile && !isTablet && textMeta && (
+                  <div
+                    className="absolute"
+                    style={{
+                      top: textMeta.dotPosition?.top,
+                      left: textMeta.dotPosition?.left,
+                      right: textMeta.dotPosition?.right,
+                      bottom: textMeta.dotPosition?.bottom,
+                    }}
+                  >
+                    {/* Dot */}
+                    <div className="absolute w-2 h-2 bg-black rounded-full z-10" />
+
+                    {/* Line */}
+                    {textMeta.lineDirection === "horizontal-left" && (
+                      <div
+                        className="absolute top-1 bg-black h-[0.5px]"
+                        style={{ width: textMeta.lineLength, right: 0 }}
+                      />
+                    )}
+                    {textMeta.lineDirection === "horizontal-right" && (
+                      <div
+                        className="absolute top-1 bg-black h-0.5"
+                        style={{ width: textMeta.lineLength, left: 8 }}
+                      />
+                    )}
+                    {textMeta.lineDirection === "vertical-down" && (
+                      <div
+                        className="absolute left-[3px] bg-black w-[1px]"
+                        style={{ height: textMeta.lineLength, top: 8 }}
+                      />
+                    )}
+
+                    {/* Text */}
+                    <div
+                      className={`absolute text-sm ${
+                        AriaBold.className
+                      }  whitespace-nowrap ${
+                        textMeta.textOrientation === "vertical"
+                          ? textMeta.textAlign === "right"
+                            ? "transform rotate-90"
+                            : "transform -rotate-90"
+                          : ""
+                      }`}
+                      style={{
+                        ...(textMeta.lineDirection === "horizontal-left" && {
+                          right: textMeta.lineLength + 8,
+                          top: -5,
+                        }),
+                        ...(textMeta.lineDirection === "horizontal-right" && {
+                          left: textMeta.lineLength + 16,
+                          top: -8,
+                        }),
+                        ...(textMeta.lineDirection === "vertical-down" &&
+                          textMeta.textAlign === "left" && {
+                            left: -10,
+                            top: textMeta.lineLength + 20,
+                            transformOrigin: "center center",
+                          }),
+                        ...(textMeta.lineDirection === "vertical-down" &&
+                          textMeta.textAlign === "right" && {
+                            left: -18,
+                            top: textMeta.lineLength + 26,
+                            transformOrigin: "center center",
+                          }),
+                      }}
+                    >
+                      {textMeta.text}
+                    </div>
+                  </div>
+                )}
               </motion.div>
             );
           })}
@@ -210,22 +339,6 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
       </div>
 
       {/* Mobile: Marquee with better UX */}
-      <div className="md:hidden w-full overflow-hidden">
-        {/* Mobile Text Overlay */}
-        <div className="text-center mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <h2
-              className={`text-4xl md:text-5xl   ${AriaBold.className} text-white mb-2 tracking-wide`}
-            >
-              <Link href="/shop">تیران</Link>
-            </h2>
-          </motion.div>
-        </div>
-      </div>
 
       {/* CSS Animations for Marquee */}
       <style jsx global>{`

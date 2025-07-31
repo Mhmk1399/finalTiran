@@ -1,7 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence, useScroll } from "framer-motion";
+import { gsap } from "gsap";
 import {
   navItems,
   categoryItemVariants,
@@ -13,16 +15,18 @@ import {
 
 import {
   RiShoppingBag3Line,
+  RiUser3Line,
   RiMenuLine,
   RiCloseLine,
   RiArrowRightSLine,
   RiDashboardLine,
-  RiUser3Line,
+  RiLoginCircleLine,
 } from "react-icons/ri";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/context/cartContext";
 import { Category, UserProfile } from "@/types/type";
-import { AriaBold } from "@/next-persian-fonts/woff2";
+import Breadcrumbs from "../global/breadcrumbs";
+import MegaMenu from "./megaMenu";
 
 const Navbar = () => {
   const { totalItems } = useCart();
@@ -37,9 +41,13 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userProfile, setUserProfile] = useState<UserProfile>();
+  const [showCategoriesOnly, setShowCategoriesOnly] = useState(false);
   const prevScrollY = useRef(0);
   const pathname = usePathname();
   const { scrollYProgress } = useScroll();
+  const navItemsRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
 
   // Set isMounted to true after component mounts to ensure client-side rendering
   useEffect(() => {
@@ -84,19 +92,57 @@ const Navbar = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Show navbar when scrolling up or at the top
-      if (
-        (prevScrollY.current > currentScrollY || currentScrollY < 100,
-        isNavbarVisible)
-      ) {
-        setIsNavbarVisible(true);
-      }
-      // Hide navbar when scrolling down significantly
-      else if (
-        currentScrollY > 100 &&
-        currentScrollY - prevScrollY.current > 10
-      ) {
-        setIsNavbarVisible(false);
+      if (currentScrollY > 150) {
+        if (!showCategoriesOnly) {
+          setShowCategoriesOnly(true);
+
+          // Hide entire navbar except categories
+          gsap.to("#navbar > div:first-child", {
+            height: 0,
+            opacity: 0,
+            duration: 0.4,
+            ease: "power2.inOut",
+          });
+
+          // Transform categories to fixed position
+          gsap.to(categoriesRef.current, {
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 60,
+            backgroundColor: "rgba(255, 255, 255, 0.98)",
+            backdropFilter: "blur(20px)",
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+            padding: "12px 0",
+            duration: 0.4,
+            ease: "power2.inOut",
+          });
+        }
+      } else {
+        if (showCategoriesOnly) {
+          setShowCategoriesOnly(false);
+
+          // Show navbar
+          gsap.to("#navbar > div:first-child", {
+            height: "auto",
+            opacity: 1,
+            duration: 0.4,
+            ease: "power2.inOut",
+          });
+
+          // Reset categories position
+          gsap.to(categoriesRef.current, {
+            position: "relative",
+            top: "auto",
+            backgroundColor: "transparent",
+            backdropFilter: "none",
+            boxShadow: "none",
+            padding: "8px 0",
+            duration: 0.4,
+            ease: "power2.inOut",
+          });
+        }
       }
 
       prevScrollY.current = currentScrollY;
@@ -104,7 +150,7 @@ const Navbar = () => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [showCategoriesOnly]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -166,67 +212,75 @@ const Navbar = () => {
   return (
     <nav
       id="navbar"
-      className="fixed top-0 left-0 w-full z-50 px-1 md:px-10 lg:px-20 transition-all duration-500 bg-white/70"
+      className={`fixed w-full z-50 bg-[#fcf7f1]/50 hover:bg-[#fcf7f1] backdrop-blur-md transition-all duration-300 flex flex-col text-black`}
       dir="rtl"
-      // style={{
-      //   backdropFilter: "blur(12px) saturate(180%)",
-      //   opacity: 0.9,
-      //   WebkitBackdropFilter: "blur(12px) saturate(180%)",
-      //   background: `url('/assets/images/texture.png')`,
-      // }}
     >
       <div className="max-w-screen">
         <div className="flex items-center justify-between h-20 px-4 sm:px-6 lg:px-2">
           {" "}
+          {/* Right side - Navigation Items (Desktop) */}
+          <div ref={navItemsRef} className="hidden md:flex items-center">
+            {navItems.map((item) => (
+              <motion.div
+                key={item.name}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="relative px-1"
+              >
+                <Link href={item.href}>
+                  <motion.span
+                    className={`block px-3 py-2 text-base font-medium rounded-md transition-all duration-300 ${
+                      activeItem === item.href
+                        ? "text-black font-bold"
+                        : "text-gray-700 hover:text-black hover:bg-gray-100"
+                    }`}
+                    whileHover={{
+                      scale: 1.05,
+                      transition: { duration: 0.2 },
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {item.name}
+                    {activeItem === item.href && (
+                      <motion.div
+                        className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-gray-500 to-gray-600 rounded-full shadow-lg"
+                        layoutId="underline"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, ease: "easeInOut" }}
+                      />
+                    )}
+                  </motion.span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
           {/* Center - Logo */}
-          <div className="flex items-center justify-start">
+          <div
+            ref={logoRef}
+            className="absolute left-1/2 transform -translate-x-1/2"
+          >
             <Link href="/">
               <motion.div
                 variants={logoVariants}
                 initial="initial"
                 animate="animate"
                 whileHover="hover"
-                className={`flex ${AriaBold.className} items-center justify-center`}
+                className="flex items-center justify-center"
               >
-              تیران استایل
+                <Image
+                  src="/assets/images/logo.png"
+                  alt="Tiran Logo"
+                  width={70}
+                  height={70}
+                  className="h-8 w-auto"
+                />
               </motion.div>
             </Link>
-            <div className="hidden lg:flex items-center gap-2 justify-end ">
-              {navItems.map((item) => (
-                <motion.div
-                  key={item.name}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative px-1"
-                >
-                  <Link href={item.href}>
-                    <motion.span
-                      className={`block px-3 py-2 text-base transition-all duration-300 ${
-                        activeItem === item.href
-                          ? "text-black font-bold"
-                          : "text-gray-600 hover:text-black "
-                      }`}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      {item.name}
-                      {/* {activeItem === item.href && (
-                        <motion.div
-                          className="absolute -bottom-[2px] left-0 right-0 h-0.5 bg-black "
-                          layoutId="underline"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 0.5, ease: "easeInOut" }}
-                        />
-                      )} */}
-                    </motion.span>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
           </div>
           {/* Left side - Cart and Login */}
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-3 items-center">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -235,7 +289,7 @@ const Navbar = () => {
             >
               <Link href="/cart">
                 <motion.div
-                  whileHover={{ scale: 1.1 }}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
                   whileTap={{ scale: 0.9 }}
                   className="p-2 hidden md:block rounded-full hover:bg-gray-100 transition-colors duration-300"
                 >
@@ -251,6 +305,21 @@ const Navbar = () => {
               </Link>
             </motion.div>
 
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <Link href="/auth">
+                <motion.div
+                  whileHover={{ scale: 1.1, rotate: -5 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-2 rounded-full hidden md:block hover:bg-gray-100 transition-colors duration-300"
+                >
+                  <RiUser3Line className="h-6 w-6" />
+                </motion.div>
+              </Link>
+            </motion.div>
             <div className="relative group">
               {isLoggedIn ? (
                 <>
@@ -265,7 +334,7 @@ const Navbar = () => {
                   </motion.button>
 
                   {/* Dropdown menu */}
-                  <div className="absolute left-0 w-48 bg-white rounded-md shadow-lg py-1 z-70 hidden group-hover:block">
+                  <div className="absolute left-0 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
                     <Link href="/dashboard">
                       <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -283,12 +352,10 @@ const Navbar = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="hidden md:flex cursor-pointer items-center  text-gray-700 hover:text-gray-900"
+                    className="hidden  md:flex  items-center  text-gray-700 hover:text-gray-900"
                   >
-                    <RiUser3Line className="h-6 w-6 ml-2" />
-                    <span className="text-base font-medium">
-                      ورود | ثبت‌نام
-                    </span>
+                    <RiLoginCircleLine className="ml-1" />
+                    <span className="text-sm font-medium">ورود / ثبت‌نام</span>
                   </motion.button>
                 </Link>
               )}
@@ -303,26 +370,10 @@ const Navbar = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="inline-flex items-center relative justify-center re p-2 gap-4 rounded-md hover:bg-gray-100 focus:outline-none transition-colors duration-300"
+                className="inline-flex items-center justify-center  p-2 rounded-md hover:bg-gray-100 focus:outline-none transition-colors duration-300"
                 aria-expanded="false"
               >
                 <AnimatePresence mode="wait">
-                  <Link href="/cart">
-                    <motion.div
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-300"
-                    >
-                      <RiShoppingBag3Line className="h-6 w-6" />
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute top-0 right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
-                      >
-                        {totalItems}
-                      </motion.span>
-                    </motion.div>
-                  </Link>
                   {isOpen ? (
                     <motion.div
                       key="close"
@@ -357,24 +408,26 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* BreadCrumbs - Desktop */}
+      {/* Categories Row - Desktop */}
       <motion.div
-        className="hidden md:block relative"
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+        ref={categoriesRef}
+        className="hidden md:block relative w-full transition-all duration-300"
+        style={{
+          borderTop: showCategoriesOnly ? "1px solid rgba(0,0,0,0.1)" : "none",
+        }}
       >
-        {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            className="flex items-center justify-center space-x-1 space-x-reverse py-2"
-            variants={desktopCategoryRowVariants}
+            className="flex items-center justify-center gap-2 py-3"
             initial="hidden"
             animate="visible"
           >
             {categories.map((category, index: number) => (
               <motion.div
                 key={category.id}
-                variants={desktopCategoryItemVariants}
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-1 flex-shrink-0 relative group"
+                className="px-2 flex-shrink-0 relative group"
                 onMouseEnter={() => setHoveredCategory(index)}
                 onMouseLeave={() => setHoveredCategory(null)}
               >
@@ -383,27 +436,43 @@ const Navbar = () => {
                     category.cat_name
                   )}`}
                 >
-                  <span
-                    className={`block px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-black transition-all duration-300 border-b-2 ${
+                  <motion.span
+                    className={`block px-4 py-2 text-sm font-medium relative transition-all duration-300 ${
                       hoveredCategory === index
-                        ? "border-black"
-                        : "border-transparent"
+                        ? " text-black"
+                        : "text-gray-700 hover:text-black hover:bg-gray-100"
                     }`}
+                    layout
                   >
                     {category.cat_name}
-                  </span>
+                    <motion.div
+                      className="absolute bottom-0 right-0 h-0.5 bg-black"
+                      initial={{ width: 0 }}
+                      animate={{
+                        width: hoveredCategory === index ? "100%" : 0,
+                      }}
+                      transition={{
+                        duration: 0.3,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  </motion.span>
                 </Link>
               </motion.div>
             ))}
           </motion.div>
-        </div> */}
+        </div>
 
-        {/* Mega Menu Component */}
-        {/* <MegaMenu
-          categories={categories}
-          hoveredCategory={hoveredCategory}
-          setHoveredCategory={setHoveredCategory}
-        /> */}
+        {!showCategoriesOnly && (
+          <>
+            <MegaMenu
+              categories={categories}
+              hoveredCategory={hoveredCategory}
+              setHoveredCategory={setHoveredCategory}
+            />
+            <Breadcrumbs />
+          </>
+        )}
       </motion.div>
 
       {/* Mobile menu */}
@@ -553,41 +622,19 @@ const Navbar = () => {
                 variants={itemVariants}
                 className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200"
               >
-                <div className="relative group">
-                  {isLoggedIn ? (
-                    <>
-                      <motion.button
-                        onClick={() => setIsOpen(!isOpen)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className=" flex md:hidden items-center text-gray-700 hover:text-gray-900"
-                      >
-                        <Link href="/dashboard">
-                          <span className="ml-1 text-sm font-medium">
-                            {userProfile?.user.username}
-                          </span>
-                        </Link>
-                      </motion.button>
-                    </>
-                  ) : (
-                    <Link href="/auth">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setIsOpen(!isOpen)}
-                        className="flex md:hidden items-center text-black hover:text-gray-900"
-                      >
-                        <RiUser3Line className="ml-1" />
-                        <span
-                          onClick={() => setIsOpen(!isOpen)}
-                          className="text-sm font-medium"
-                        >
-                          ورود |ثبت‌نام
-                        </span>
-                      </motion.button>
-                    </Link>
-                  )}
-                </div>
+                <Link href="/auth" onClick={() => setIsOpen(!isOpen)}>
+                  <motion.div
+                    whileHover={{
+                      scale: 1.05,
+                      backgroundColor: "rgba(0,0,0,0.05)",
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center px-4 py-3 rounded-lg text-base font-medium text-black"
+                  >
+                    <RiUser3Line className="ml-2 h-5 w-5" />
+                    {/* ورود / ثبت نام */}
+                  </motion.div>
+                </Link>
 
                 <Link href="/cart" onClick={() => setIsOpen(!isOpen)}>
                   <motion.div

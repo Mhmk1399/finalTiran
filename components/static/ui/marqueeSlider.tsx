@@ -201,7 +201,7 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
           "linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%)",
       }}
     >
-      <div className="flex flex-col items-center justify-center md:justify-end md:items-end px-4 md:px-20 mb-12">
+      <div className="flex flex-col items-center justify-center md:justify-center md:items-center px-4 md:px-20 mb-12">
         {/* Title */}
         <motion.h2
           initial={{ opacity: 0, x: -20 }}
@@ -209,21 +209,20 @@ const MarqueeSlider: React.FC<MarqueeSliderProps> = ({
           transition={{ duration: 0.6 }}
           className={`text-xl md:text-2xl border-b border-dashed pb-4 ${AriaBold.className}  text-gray-800 tracking-wide `}
         >
-          دسته بندی محصولات
+          جدیدترین محصولات
         </motion.h2>
-
         {/* Image */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="relative mt-1"
+          className="relative"
         >
-          <div className="w-full h-full ">
+          <div className="w-fit h-full">
             <img
-              src="/assets/images/marquee.png" // Replace with your actual image path
+              src="/assets/images/newProductrow.png" // Replace with your actual image path
               alt="دسته بندی محصولات"
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover transition-transform duration-300"
             />
           </div>
         </motion.div>

@@ -113,8 +113,6 @@ const ProductImageSlider: React.FC<{
         </>
       )}
 
-   
-
       {/* Hover overlay */}
       <div className="absolute inset-0 bg-black/10 group-hover:bg-opacity-10 transition-all duration-300" />
     </div>

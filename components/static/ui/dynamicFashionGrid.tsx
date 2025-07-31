@@ -9,15 +9,18 @@ interface DynamicFashionGridProps {
 const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
   // Sample fashion images
   const fashionImages = [
-    "/assets/images/newImages/IMG_2652.webp",
-    "/assets/images/newImages/IMG_2653.webp",
-    "/assets/images/newImages/IMG_2654.webp",
-    "/assets/images/newImages/IMG_2669.webp",
-    "/assets/images/newImages/IMG_2658.webp",
-    "/assets/images/newImages/IMG_2662.webp",
-    "/assets/images/newImages/IMG_2663.webp",
-    "/assets/images/newImages/IMG_2664.webp",
-    "/assets/images/newImages/IMG_2665.webp",
+    "/assets/images/bluesky.jpg",
+    "/assets/images/ahoramazda.jpg",
+    "/assets/images/lether.jpg",
+    "/assets/images/purpleroof.jpg",
+    "/assets/images/unicorn.jpg",
+    "/assets/images/zaferon.jpg",
+    "/assets/images/shop/shop2.jpg",
+    "/assets/images/shop/shop1.jpg",
+    "/assets/images/shop/shop3.jpg",
+    "/assets/images/shop/shop4.jpg",
+     "/assets/images/shop/shop5.jpg",
+     "/assets/images/shop/shop6.jpg",
   ];
 
   const [currentImages, setCurrentImages] = useState<string[]>([]);
@@ -33,11 +36,8 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
   const [finalCenterImage, setFinalCenterImage] = useState("");
   const [isTransitioning, setIsTransitioning] = useState(false);
   // Slide variants for video transition
- 
 
   console.log(onComplete);
-
-
 
   // Generate random images for each block
   const generateBlockImages = () => {

@@ -5,6 +5,9 @@ import MarqueeSlider from "@/components/static/ui/marqueeSlider";
 import { useState, useEffect } from "react";
 import { slideItems, categories } from "@/lib/homePageData";
 import NewProductRow from "../global/newProducts";
+import VideoRevealCurtain from "./ui/videoScrollScale";
+import ProductSlideshow from "../global/productSlideshow";
+import ProductSlideFendi from "../global/productSlideFendi";
 
 const Page = () => {
   const [currentComponent, setCurrentComponent] = useState<
@@ -76,7 +79,7 @@ const Page = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative w-full min-h-screen overflow-hidden">
       {/* DynamicFashionGrid - shows for exactly 5 seconds on first visit */}
       {currentComponent === "grid" && (
         <div
@@ -97,16 +100,9 @@ const Page = () => {
               : "opacity-0 transform translate-y-2"
           }`}
         >
-          {/* ScrollMediaShowcase - IMMEDIATE rendering with minimal delay */}
-          {/* <div
-            className={`transition-all duration-600 ease-out ${
-              showShowcase
-                ? "opacity-100 transform scale-100"
-                : "opacity-0 transform scale-98"
-            }`}
-          >
-            <ScrollMediaShowcase />
-          </div> */}
+          <div className="min-h-screen mt-20">
+            <VideoRevealCurtain />
+          </div>
           <div className="min-h-screen pt-20">
             <CategoryShowcase
               categories={categories}
@@ -114,20 +110,6 @@ const Page = () => {
               subtitle="کشف کنید، تجربه کنید، لذت ببرید"
             />
           </div>
-
-          {/* Other components with faster staggered loading */}
-          {/* <div
-            className={`transition-all duration-500 ease-out ${
-              showShowcase
-                ? "opacity-100 transform translate-y-0"
-                : "opacity-0 transform translate-y-4"
-            }`}
-            style={{
-              transitionDelay: "200ms", // Reduced from 800ms
-            }}
-          >
-            <EnhancedLogoLoadingScreen />
-          </div> */}
 
           <div
             className={`transition-all duration-500 ease-out ${
@@ -155,20 +137,13 @@ const Page = () => {
               className=""
               category=""
             />
+            <ProductSlideFendi
+              title="محصولات ویژه"
+              className="my-8"
+              endpoint="/api/shop"
+              category=""
+            />
           </div>
-
-          {/* <div
-            className={`transition-all duration-500 ease-out ${
-              showShowcase
-                ? "opacity-100 transform translate-y-0"
-                : "opacity-0 transform translate-y-4"
-            }`}
-            style={{
-              transitionDelay: "600ms", // Reduced from 1600ms
-            }}
-          >
-            <EnhancedLogoLoadingScreen />
-          </div> */}
         </div>
       )}
 

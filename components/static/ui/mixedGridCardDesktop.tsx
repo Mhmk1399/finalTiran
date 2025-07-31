@@ -59,14 +59,12 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
             alt={category.title}
             fill
             className="object-cover"
-            style={{
-              filter: "grayscale(100%) contrast(1.1) brightness(0.9)",
-            }}
+        
             onClick={handleRoute}
-            onLoad={() => setImageLoaded(true)}
-            sizes={`(max-width: 768px) 50vw, ${
-              size === "medium" ? "25vw" : size === "wide" ? "50vw" : "12.5vw"
-            }`}
+            // onLoad={() => setImageLoaded(true)}
+            // sizes={`(max-width: 768px) 50vw, ${
+            //   size === "medium" ? "25vw" : size === "wide" ? "50vw" : "12.5vw"
+            // }`}
           />
         </motion.div>
 
@@ -74,7 +72,7 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
         <AnimatePresence>
           {isHovered && (
             <motion.div
-              className="absolute inset-0"
+              className="absolute inset-0 "
               initial={{ opacity: 0, scale: 1.1 }}
               animate={{
                 opacity: 1,
@@ -109,30 +107,6 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
         }}
         transition={{ duration: 0.6 }}
       />
-
-      {/* Content */}
-      {/* <div
-        className={`absolute bottom-0 left-0 right-0 p-3 md:p-4 text-white z-10`}
-        dir="rtl"
-      >
-        <motion.div
-          animate={{
-            y: isHovered ? -5 : 0,
-            scale: isHovered ? 1.05 : 1,
-          }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-        >
-          <motion.h3
-            className={`text-sm md:text-base font-bold`}
-            animate={{
-              color: isHovered ? category.color || "#8B5CF6" : "#ffffff",
-            }}
-            transition={{ duration: 0.3 }}
-          >
-            {category.title}
-          </motion.h3>
-        </motion.div>
-      </div> */}
 
       {/* Hover Shine Effect */}
       <AnimatePresence>

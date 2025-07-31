@@ -82,7 +82,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
     <AnimatePresence>
       {hoveredCategory !== null && (
         <motion.div
-          className="absolute left-0 right-0 w-screen bg-white shadow-lg z-9999"
+          className="fixed right-0 w-screen bg-[#fcf7f1] shadow-lg z-9999"
           initial="hidden"
           animate="visible"
           exit="exit"

@@ -1,5 +1,4 @@
 export const navItems = [
-  { name: "خانه", href: "/" },
   { name: "فروشگاه", href: "/shop" },
   { name: "راهنما", href: "/help" },
   { name: "بلاگ", href: "/blog" },
