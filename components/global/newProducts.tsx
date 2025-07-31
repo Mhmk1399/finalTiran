@@ -64,11 +64,6 @@ const ProductImageSlider: React.FC<{
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
-  const goToImage = (index: number, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndex(index);
-  };
 
   if (!images || images.length === 0) {
     return (
