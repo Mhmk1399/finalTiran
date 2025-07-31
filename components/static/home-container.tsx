@@ -7,6 +7,7 @@ import NewProductRow from "../global/newProducts";
 import VideoRevealCurtain from "./ui/videoScrollScale";
 import ProductSlideFendi from "../global/productSlideFendi";
 import VideoSection from "./ui/VideoSection";
+import BlogCardSlider from "../global/BlogCardSlider";
 
 const Page = () => {
   const [currentComponent, setCurrentComponent] = useState<
@@ -110,7 +111,7 @@ const Page = () => {
             />
           </div>
 
-          <div className="mt-12">
+          <div className="">
             {" "}
             <ProductSlideFendi
               title="محصولات جدید"
@@ -118,7 +119,7 @@ const Page = () => {
               // endpoint="/api/shop"
               // category=""
             />
-            <div className="min-h-screen mt-20">
+            <div className="min-h-screen">
               <VideoSection />
             </div>
             <NewProductRow
@@ -128,6 +129,8 @@ const Page = () => {
               className=""
               category=""
             />
+
+            <BlogCardSlider />
           </div>
         </div>
       )}
