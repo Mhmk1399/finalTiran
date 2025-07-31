@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { AriaBold } from "@/next-persian-fonts/woff2";
 import gsap from "gsap";
+import { maneli } from "@/next-persian-fonts/maneli";
 
 interface ProductSlideshowProps {
   title: string;
@@ -19,7 +20,6 @@ interface FakeProduct {
 
 const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
   const [startIndex, setStartIndex] = useState(0);
-  const [direction, setDirection] = useState<"next" | "prev">("next");
 
   const fakeProducts: FakeProduct[] = [
     {
@@ -129,12 +129,10 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
   }, [startIndex]);
 
   const nextSlide = () => {
-    setDirection("next");
     setStartIndex((prev) => (prev + 1) % fakeProducts.length);
   };
 
   const prevSlide = () => {
-    setDirection("prev");
     setStartIndex(
       (prev) => (prev - 1 + fakeProducts.length) % fakeProducts.length
     );
@@ -145,17 +143,24 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2
-            className={`text-3xl md:text-4xl ${AriaBold.className} text-black`}
+            className={`text-3xl md:text-4xl mb-4 ${AriaBold.className} text-black`}
           >
             {title}
           </h2>
+          <div className=" h-full">
+            <p className={` ${maneli.className} text-gray-500 `}>
+              جایی که در آن زیبایی ، کاربرد و پایداری در کنار هم قرار گرفته اند
+            </p>
+          </div>
         </div>
 
         <div className="relative h-[350px] flex justify-center items-center overflow-hidden">
           {getVisibleProducts().map((product, i) => (
             <div
               key={`${product.id}-${startIndex}`}
-              ref={(el) => (slidesRef.current[i] = el)}
+              ref={(el) => {
+                slidesRef.current[i] = el;
+              }}
               className="absolute top-0 w-[300px] h-[350px] rounded-xl shadow-lg cursor-pointer bg-white"
             >
               <Link

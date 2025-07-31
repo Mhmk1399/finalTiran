@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
   category,
   isHovered,
-  size,
+  // size,
   position, // Add position prop
   zIndex, // Add zIndex prop
 }) => {

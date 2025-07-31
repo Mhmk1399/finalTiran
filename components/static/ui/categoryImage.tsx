@@ -4,6 +4,7 @@ import { motion, useInView } from "framer-motion";
 import { MixedGridShowcaseProps } from "@/types/type";
 import MixedGridCardDesktop from "./mixedGridCardDesktop";
 import { AriaBold } from "@/next-persian-fonts/woff2";
+import { maneli } from "@/next-persian-fonts/maneli";
 
 const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   categories,
@@ -203,24 +204,14 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
         backgroundSize: "cover",
       }}
     >
-      <h2 className={`text-xl md:text-4xl border-b border-dashed pb-4 ${AriaBold.className} `}>
+      <h2 className={`text-xl md:text-4xl  mb-4 ${AriaBold.className} `}>
         دسته بندی محصولات
       </h2>
-      {/* Image */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="relative mt-1"
-      >
-        <div className="w-full h-full ">
-          <img
-            src="/assets/images/marquee.png" // Replace with your actual image path
-            alt="دسته بندی محصولات"
-            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-          />
-        </div>
-      </motion.div>
+      <div className=" h-full">
+        <p className={` ${maneli.className} text-gray-500 `}>
+          کشف کنید ، تجربه کنید و لذت ببرید{" "}
+        </p>
+      </div>
       {/* Desktop: Static positioned grid */}
       <div className="flex justify-center items-center  w-full">
         <div className="relative w-full max-w-6xl h-[400px] md:h-[700px]">
@@ -256,7 +247,12 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
                   index={index}
                   isHovered={hoveredIndex === index}
                   size={pattern.size}
-                  position={{ width: position.width, height: position.height }}
+                  position={{
+                    width: position.width,
+                    height: position.height,
+                    x: 0,
+                    y: 0,
+                  }}
                   zIndex={hoveredIndex === index ? 999 : position.zIndex}
                 />
 

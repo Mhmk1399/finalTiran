@@ -6,6 +6,7 @@ import { Product } from "@/types/type";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { AriaBold } from "@/next-persian-fonts/woff2";
+import { maneli } from "@/next-persian-fonts/maneli";
 
 interface ApiResponse {
   success: boolean;
@@ -302,9 +303,9 @@ const NewProductRow: React.FC<ProductGridProps> = ({
       <div className="px-4 relative z-20">
         {/* Title and Description Section */}
         <div className="w-full flex flex-col items-center text-center justify-center mb-8">
-          <div className="space-y-4">
+          <div className="">
             <h2
-              className={`text-2xl md:text-[32px]   ${AriaBold.className} text-black mb-2 tracking-wide`}
+              className={`text-2xl md:text-[32px]   ${AriaBold.className} text-black mb-4 tracking-wide`}
             >
               {title}
             </h2>
@@ -313,14 +314,12 @@ const NewProductRow: React.FC<ProductGridProps> = ({
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative"
+              className=" text-center"
             >
-              <div className="w-fit h-full">
-                <img
-                  src="/assets/images/newProductrow.png" // Replace with your actual image path
-                  alt="دسته بندی محصولات"
-                  className="w-full h-full object-cover transition-transform duration-300"
-                />
+              <div className=" h-full">
+                <p className={` ${maneli.className} text-gray-500 `}>
+            جور دیگر باید دید ...
+                </p>
               </div>
             </motion.div>
           </div>

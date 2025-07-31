@@ -113,7 +113,7 @@ const Page = () => {
           <div className="mt-12">
             {" "}
             <ProductSlideFendi
-              title="محصولات ویژه"
+              title="محصولات جدید"
               // className="my-8"
               // endpoint="/api/shop"
               // category=""
