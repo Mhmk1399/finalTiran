@@ -211,7 +211,7 @@ const Navbar = () => {
   return (
     <nav
       id="navbar"
-      className={`fixed w-full z-50 bg-[#fcf7f1]/50 hover:bg-[#fcf7f1] backdrop-blur-md transition-all duration-300 flex flex-col text-black`}
+      className={`fixed w-full z-50 bg-[#fcf7f1]/50 hover:bg-[#fcf7f1] px-4 md:px-20 backdrop-blur-md transition-all duration-300 flex flex-col text-black`}
       dir="rtl"
     >
       <div className="max-w-screen">

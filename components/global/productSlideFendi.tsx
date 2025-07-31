@@ -1,9 +1,9 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { AriaBold } from "@/next-persian-fonts/woff2";
 import gsap from "gsap";
+import { AriaBold } from "@/next-persian-fonts/woff2";
 import { maneli } from "@/next-persian-fonts/maneli";
 
 interface ProductSlideshowProps {
@@ -20,6 +20,8 @@ interface FakeProduct {
 
 const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
   const [startIndex, setStartIndex] = useState(0);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const slideWidth = 320; // هر اسلاید ۳۲۰ پیکسل
 
   const fakeProducts: FakeProduct[] = [
     {
@@ -94,37 +96,21 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
     },
   ];
 
-  // رفرنس برای هر اسلاید که انیمیشن بخوره
-  const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
-
-  const getVisibleProducts = () => {
-    const items = [];
-    for (let i = 0; i < 3; i++) {
-      items.push(fakeProducts[(startIndex + i) % fakeProducts.length]);
+  const getLoopedProducts = () => {
+    const total = fakeProducts.length;
+    const result = [];
+    for (let i = -1; i <= 1; i++) {
+      result.push(fakeProducts[(startIndex + i + total) % total]);
     }
-    return items;
+    return result;
   };
 
-  // انیمیشن با GSAP روی تغییر startIndex
   useEffect(() => {
-    const slides = slidesRef.current;
-
-    slides.forEach((slide, index) => {
-      if (!slide) return;
-
-      const isCenter = index === 1;
-
-      // موقعیت x در حالت ثابت، فاصله 320 پیکسل
-      const xPos = (index - 1) * 320;
-
-      gsap.to(slide, {
-        x: xPos,
-        scale: isCenter ? 1.1 : 0.9,
-        opacity: isCenter ? 1 : 0.6,
-        zIndex: isCenter ? 10 : 1,
-        duration: 0.6,
-        ease: "power3.out",
-      });
+    const xOffset = -slideWidth;
+    gsap.to(sliderRef.current, {
+      x: xOffset,
+      duration: 0.6,
+      ease: "power3.out",
     });
   }, [startIndex]);
 
@@ -138,75 +124,82 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
     );
   };
 
+  const visibleSlides = getLoopedProducts();
+
   return (
     <div className="w-full py-12" dir="rtl">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className=" mx-auto px-4">
         <div className="text-center mb-12">
-          <h2
-            className={`text-3xl md:text-4xl mb-4 ${AriaBold.className} text-black`}
-          >
+          <h2 className={`text-3xl md:text-4xl mb-4 ${AriaBold.className}`}>
             {title}
           </h2>
-          <div className=" h-full">
-            <p className={` ${maneli.className} text-gray-500 `}>
-              جایی که در آن زیبایی ، کاربرد و پایداری در کنار هم قرار گرفته اند
-            </p>
-          </div>
+          <p className={`${maneli.className} text-gray-500`}>
+            جایی که در آن زیبایی ، کاربرد و پایداری در کنار هم قرار گرفته اند
+          </p>
         </div>
 
-        <div className="relative h-[350px] flex justify-center items-center overflow-hidden">
-          {getVisibleProducts().map((product, i) => (
-            <div
-              key={`${product.id}-${startIndex}`}
-              ref={(el) => {
-                slidesRef.current[i] = el;
-              }}
-              className="absolute top-0 w-[300px] h-[350px] rounded-xl shadow-lg cursor-pointer bg-white"
-            >
-              <Link
-                href={`/shop/${product.id}`}
-                className="block h-full relative overflow-hidden rounded-xl"
-              >
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  fill
-                  className="object-cover rounded-xl"
-                />
-              </Link>
+        <div className="relative h-[450px] overflow-hidden flex justify-center items-center">
+          <div
+            ref={sliderRef}
+            className="flex"
+            style={{ width: slideWidth * 3 }}
+          >
+            {visibleSlides.map((product, index) => {
+              const isCenter = index === 1;
+              return (
+                <div
+                  key={`${product.id}-${index}`}
+                  className={`transition-all duration-500 flex-shrink-0 w-[300px] h-[380px] mx-2 rounded-xl overflow-hidden ${
+                    isCenter
+                      ? "scale-110 opacity-100 z-10"
+                      : "scale-90 opacity-60"
+                  }`}
+                >
+                  <Link
+                    href={`/shop/${product.id}`}
+                    className="relative block w-full h-[75%]"
+                  >
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fill
+                      className="object-cover rounded-xl"
+                    />
+                  </Link>
 
-              {i === 1 && (
-                <div className="absolute bottom-6 left-0 right-0 px-4 text-center">
-                  <h3 className={`text-lg ${AriaBold.className} text-black`}>
-                    {product.name}
-                  </h3>
-                  <p className="text-black font-semibold">
-                    {product.price} تومان
-                  </p>
-                  <div className="flex justify-center gap-2 mt-2">
-                    {product.colors.map((color, idx) => (
-                      <div
-                        key={idx}
-                        className="w-5 h-5 rounded-full border border-gray-400"
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
-                  </div>
+                  {isCenter && (
+                    <div className="text-center px-4 mt-2">
+                      <h3 className={`text-lg ${AriaBold.className}`}>
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-black mt-1">
+                        {product.price} تومان
+                      </p>
+                      <div className="flex justify-center gap-2 mt-2">
+                        {product.colors.map((color, i) => (
+                          <div
+                            key={i}
+                            className="w-4 h-4 rounded-full border border-gray-400"
+                            style={{ backgroundColor: color }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          ))}
+              );
+            })}
+          </div>
 
-          {/* Navigation Buttons */}
           <button
             onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full z-20"
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full z-30"
           >
             ←
           </button>
           <button
             onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full z-20"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-3 rounded-full z-30"
           >
             →
           </button>
