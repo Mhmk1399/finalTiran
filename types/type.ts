@@ -41,8 +41,11 @@ export interface Product {
     is_coworker_price: boolean;
     for_sale: number;
     product_alert: string;
+
     Properties: Array<{
       id: number;
+
+      color_code: number;
       title: string;
       property_id: number | string;
       property: {
@@ -572,7 +575,6 @@ export interface ContactInfoItem {
   isLink?: boolean;
   href?: string;
 }
-
 
 // --------------------------------- marquee slider ------------------------------
 export interface SlideItem {

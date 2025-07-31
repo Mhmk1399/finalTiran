@@ -75,7 +75,7 @@ const ShopIntro: React.FC<ShopIntroProps> = ({ onComplete }) => {
                   duration: 1.5,
                   ease: "easeInOut",
                 }}
-                className="h-0.5 bg-gray-800 rounded-full w-40"
+                className="border-b border-dashed  w-50"
               />
               <motion.p
                 initial={{ opacity: 0, y: 10 }}
@@ -83,7 +83,7 @@ const ShopIntro: React.FC<ShopIntroProps> = ({ onComplete }) => {
                 transition={{ delay: 1, duration: 0.5 }}
                 className="mt-4 text-gray-600 text-lg font-medium"
               >
-                فروشگاه تیران
+                استایل جور دیگر{" "}
               </motion.p>
             </div>
           </motion.div>
