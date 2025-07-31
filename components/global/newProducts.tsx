@@ -274,7 +274,7 @@ const NewProductRow: React.FC<ProductGridProps> = ({
       dir="rtl"
       style={{
         background: `url('/assets/images/texture.png')`,
-      }}
+      }} 
     >
       {/* Top Vertical Line - Coming down 30px from top */}
       <motion.div

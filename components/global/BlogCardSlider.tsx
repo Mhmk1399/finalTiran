@@ -125,7 +125,7 @@ const BlogCardSlider: React.FC<BlogCardSliderProps> = ({ title }) => {
 
                 {/* Content */}
                 <div className="text-black">
-                  <h3 className={`text-xl ${AriaBold.className} mb-4`}>
+                  <h3 className={`text-lg ${AriaBold.className} mb-4`}>
                     {card.title}
                   </h3>
 

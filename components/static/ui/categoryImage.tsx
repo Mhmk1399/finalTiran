@@ -204,6 +204,28 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
         backgroundSize: "cover",
       }}
     >
+      <motion.div
+        className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-[4rem] md:h-[5rem] lg:h-[6rem] bg-gradient-to-b from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, #9ca3af 3px, #9ca3af 6px)",
+          background: "none",
+        }}
+      >
+        {/* Decorative bottom dot */}
+      </motion.div>
+
+      {/* Bottom Vertical Line - Coming up 30px from bottom */}
+      <motion.div
+        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-[4rem] md:h-[5rem] lg:h-[6rem] bg-gradient-to-t from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(to top, transparent 0px, transparent 3px, #9ca3af 3px, #9ca3af 6px)",
+          background: "none",
+        }}
+      >
+        {/* Decorative top dot */}
+      </motion.div>
       <h2 className={`text-xl md:text-4xl  mb-4 ${AriaBold.className} `}>
         دسته بندی محصولات
       </h2>

@@ -102,7 +102,7 @@ const Footer = () => {
       <footer dir="rtl" className="bg-white text-white min-h-full lg:mx-20">
         {/* Wave SVG Divider */}
         <motion.div
-          className="container mx-auto px-8 pt-10 pb-12 border-t border-gray-400/80"
+          className="container mx-auto px-8 pt-10 pb-12 border-t border-dashed border-gray-400/80"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

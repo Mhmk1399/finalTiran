@@ -113,7 +113,33 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
   const centerProduct = fakeProducts[currentIndex];
 
   return (
-    <div className="w-full py-16 bg-gray-50" dir="ltr">
+    <div className={`w-full py-24 md:py-28 lg:py-32 relative `}
+      dir="rtl"
+      style={{
+        background: `url('/assets/images/texture.png')`,
+      }}>
+        <motion.div
+                className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-[4rem] md:h-[5rem] lg:h-[6rem] bg-gradient-to-b from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, #9ca3af 3px, #9ca3af 6px)",
+                  background: "none",
+                }}
+              >
+                {/* Decorative bottom dot */}
+              </motion.div>
+        
+              {/* Bottom Vertical Line - Coming up 30px from bottom */}
+              <motion.div
+                className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-[4rem] md:h-[5rem] lg:h-[6rem] bg-gradient-to-t from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(to top, transparent 0px, transparent 3px, #9ca3af 3px, #9ca3af 6px)",
+                  background: "none",
+                }}
+              >
+                {/* Decorative top dot */}
+              </motion.div>
       <div className="max-w-8xl mx-auto px-4 ">
         <div className="text-center mb-4">
           <h2
