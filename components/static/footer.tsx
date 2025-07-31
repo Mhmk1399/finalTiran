@@ -12,6 +12,7 @@ import {
   Help,
   socialLinks,
 } from "@/lib/footerData";
+import { maneli } from "@/next-persian-fonts/maneli";
 
 // Animation variants
 const containerVariants = {
@@ -122,25 +123,30 @@ const Footer = () => {
                 className="flex items-center justify-center lg:justify-start group"
               >
                 <Image
-                  src="/assets/images/logohalf.png"
+                  src="/assets/images/logo.png"
                   alt="Tiran Logo"
-                  width={160}
+                  width={200}
                   height={60}
-                  className="h-10 w-auto mb-4  transition-all duration-300 group-hover:brightness-110"
+                  className="h-10 w-70 mb-4 -mt-1  transition-all duration-300 group-hover:brightness-110"
                 />
               </Link>
-              <Image
-                src="/assets/images/dastkhat.png"
-                alt="Tiran Logo"
-                width={160}
-                height={60}
-                className="h-10 w-auto mx-auto md:mr-0 transition-all duration-300 group-hover:brightness-110"
-              />
+              <motion.p className={`${maneli.className} text-black`}>
+                استایل جور دیگر
+              </motion.p>
               <div className="max-w-5xl text-center lg:text-right mx-auto lg:mr-auto lg:ml-0">
-                <p className="text-gray-400 text-sm md:text-base lg:text-lg leading-relaxed font-light px-4 lg:px-0">
-                  ماموریت ما در تیران استایل ارائه محصولاتی است که به مشتریانمان
-                  کمک می‌کند تا سبک زندگی خود را با جسارت و اصالت تعریف کنند و
-                  از دیگران متمایز شوند
+                <p className="text-gray-400 text-xs md:text-base lg:text-lg leading-relaxed font-light px-4 lg:px-0">
+                  تیران استایل فقط یک برند نیست؛ یک نگاه تازه است به زندگی‌ای که
+                  ریشه در اصالت دارد و رو به آینده حرکت می‌کند.
+                  <br />
+                  ما از دل هنر، فرهنگ و وقار ایرانی الهام می‌گیریم تا محصولاتی
+                  خلق کنیم که فراتر از زیبایی، معنا داشته باشند.
+                  <br />
+                  محصولاتی برای کسانی که خاص‌بودن را می‌فهمند، به ظرافت اهمیت
+                  می‌دهند و به اصالت وفادارند.
+                  <br />
+                  در تیران استایل، سبک زندگی اصیل ایرانی را نه بازسازی، که
+                  بازآفرینی می‌کنیم؛ با نگاهی تازه، برای سلیقه‌هایی که عمیق‌تر
+                  می‌بینند.{" "}
                 </p>
               </div>
               <div className="max-w-2xl flex flex-col sm:flex-row gap-2 items-center justify-center lg:justify-start mx-auto lg:mx-0">
@@ -151,7 +157,7 @@ const Footer = () => {
                   className="text-gray-600 text-xs md:text-sm lg:text-base leading-relaxed font-light"
                   dir="ltr"
                 >
-                  <Link href="tel:02188965842">۰۲۱ - ۸۸۹۶۵۸۴۲-۴۸</Link>
+                  <Link href="tel:02188965842">۰۲۱ - ۹۱۰۹۷۶۱۳</Link>
                 </p>
               </div>
             </motion.div>
@@ -411,80 +417,25 @@ const Footer = () => {
               className="lg:col-span-4 col-span-1 space-y-6 mr-auto"
             >
               <div className="relative">
-                <h3 className="text-lg text-gray-900 text-nowrap font-semibold mb-6 relative">
-                  نماد اعتماد و اطمینان
-                </h3>
+                
               </div>
               <div className="flex flex-row lg:flex-row gap-4 items-center justify-center">
                 <Image
                   src="/assets/images/enemad.png"
                   alt="Enamad"
-                  width={100}
-                  height={100}
-                  className="w-20 md:w-full h-auto object-contain"
+                  width={200}
+                  height={200}
+                  className="w-30 md:w-full h-30 object-contain"
                 />
                 <Image
                   src="/assets/images/meliNeshan.png"
                   alt="Enamad"
                   width={100}
                   height={100}
-                  className="w-20 md:w-full h-auto object-contain"
+                  className="w-30 md:w-full h-30 object-contain"
                 />
               </div>
             </motion.div>
-
-            {/* Contact Section */}
-            {/* <motion.div
-            variants={itemVariants}
-            className="lg:col-span-3 space-y-6"
-          >
-            <div className="relative">
-              <h3 className="text-lg text-gray-900 font-semibold mb-6 relative">
-                تماس با ما
-                <motion.div
-                  className="absolute -bottom-2 right-0 h-0.5 bg-black rounded-full"
-                  initial={{ width: 0 }}
-                  whileInView={{ width: 80 }}
-                  transition={{ delay: 0.5, duration: 0.6 }}
-                />
-              </h3>
-            </div>
-
-            <div className="space-y-5">
-              {contactInfo.map((contact, index) => {
-                const IconComponent = contact.icon;
-                return (
-                  <motion.div
-                    key={index}
-                    whileHover={{ x: 4 }}
-                    className="group"
-                  >
-                    <div className="flex items-start gap-4 p-3 rounded-xl hover:bg-gray-50 transition-all duration-300">
-                      <div className="w-10 h-10 bg-gradient-to-br text-black from-gray-100 to-gray-200 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:from-gray-200 group-hover:to-gray-300 transition-all duration-300">
-                        <IconComponent />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        {contact.isLink && contact.href ? (
-                          <Link
-                            href={contact.href}
-                            target="_blank"
-                            className="block text-gray-700 hover:text-gray-900 text-sm leading-relaxed transition-colors duration-300 group-hover:font-medium"
-                            title={contact.label}
-                          >
-                            {contact.value}
-                          </Link>
-                        ) : (
-                          <span className="block text-gray-700 text-sm leading-relaxed">
-                            {contact.value}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </motion.div> */}
           </div>
 
           {/* Bottom Section with better spacing */}
@@ -545,21 +496,7 @@ const Footer = () => {
             </motion.div>
 
             {/* Animated Text Below Logo */}
-            <motion.div className="mt-8 text-center">
-              <motion.h2
-                className="text-white text-xl md:text-2xl font-light tracking-wider mb-2"
-                animate={{
-                  opacity: [0.7, 1, 0.7],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                تیران
-              </motion.h2>
-            </motion.div>
+            <motion.div className="mt-8 text-center"></motion.div>
           </motion.div>
         </div>
       </div>

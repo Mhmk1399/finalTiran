@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {  ZoomIn } from "lucide-react";
+import { ZoomIn, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { ProductGalleryProps } from "@/types/type";
 
@@ -91,9 +91,9 @@ ProductGalleryProps) {
   useEffect(() => {
     if (layout === "thumbnails") {
       checkScrollPosition();
-      scrollToActiveThumbnail(currentImageIndex);
+      scrollToActiveThumbnail(activeImageIndex);
     }
-  }, [currentImageIndex, layout]);
+  }, [activeImageIndex, layout]);
 
   // Effect: Set up scroll event listener for thumbnail navigation buttons
   useEffect(() => {
@@ -165,57 +165,66 @@ ProductGalleryProps) {
     setDotsFixed(!isAtBottom);
   };
 
-  // Desktop Layout - All Images in Column
+  // Desktop Layout - Single Image with Navigation
   if (layout === "desktop") {
+    const nextImage = () => {
+      const nextIndex = (activeImageIndex + 1) % allImages.length;
+      if (onThumbnailClick) onThumbnailClick(nextIndex);
+    };
+
+    const prevImage = () => {
+      const prevIndex = (activeImageIndex - 1 + allImages.length) % allImages.length;
+      if (onThumbnailClick) onThumbnailClick(prevIndex);
+    };
+
     return (
-      <div className="relative h-full w-full">
-        <div
-          ref={mainImagesRef}
-          className="h-full overflow-y-auto px-4 py-8 space-y-6 scrollbar-hide"
-          style={{
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-          }}
-        >
-          {allImages.map((image, index) => (
-            <motion.div
-              key={index}
-              ref={(el) => {
-                imageRefs.current[index] = el;
-              }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="relative group"
-              id={`image-${index}`}
-            >
-              <div className="relative bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
-                <Image
-                  src={image || ""}
-                  alt={`${productName} - تصویر ${index + 1}`}
-                  width={500}
-                  height={700}
-                  className="w-full h-auto object-contain"
-                  priority={index === 0}
-                />
+      <div className="relative h-full w-full flex flex-col">
+        {/* Main Image Display */}
+        <div className="flex-1 relative bg-white overflow-hidden shadow-sm group">
+          <Image
+            src={allImages[activeImageIndex] || ""}
+            alt={`${productName} - تصویر ${activeImageIndex + 1}`}
+            width={500}
+            height={700}
+            className="w-full h-full object-contain"
+            priority
+          />
 
-                {/* Zoom Button */}
-                <button
-                  aria-label="zoom"
-                  onClick={() => image && handleZoom(image)}
-                  className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100"
-                >
-                  <ZoomIn size={18} />
-                </button>
+          {/* Navigation Arrows */}
+          {allImages.length > 1 && (
+            <>
+              <button
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+                aria-label="Next image"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </>
+          )}
 
-                {/* Image Number */}
-                <div className="absolute bottom-4 left-4 px-2 py-1 bg-black/70 text-white text-xs rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                  {index + 1} / {allImages.length}
-                </div>
-              </div>
-            </motion.div>
-          ))}
+          {/* Zoom Button */}
+          <button
+            aria-label="zoom"
+            onClick={() => allImages[activeImageIndex] && handleZoom(allImages[activeImageIndex])}
+            className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+          >
+            <ZoomIn size={18} />
+          </button>
+
+          {/* Image Counter */}
+          <div className="absolute bottom-4 left-4 px-2 py-1 bg-black/70 text-white text-xs rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+            {activeImageIndex + 1} / {allImages.length}
+          </div>
         </div>
+
 
         {/* Zoom Modal */}
         <AnimatePresence>
@@ -241,24 +250,12 @@ ProductGalleryProps) {
                   height={1600}
                   className="w-auto h-auto max-w-full max-h-full object-contain"
                 />
-
-                {/* Close button */}
                 <button
-                  aria-label="zoom"
                   onClick={() => setIsZoomed(false)}
-                  className="absolute top-4 right-4 p-2 bg-white/20 text-black rounded-full hover:bg-white/30 transition-colors"
+                  className="absolute top-4 right-4 p-2 bg-white/80 text-black rounded-full hover:bg-white/30 transition-colors cursor-pointer"
+                  aria-label="Close zoom"
                 >
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
+                  ✕
                 </button>
               </motion.div>
             </motion.div>
