@@ -188,7 +188,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   return (
     <motion.div
       ref={containerRef}
-      className="relative w-full min-h-full px-4 p-23 pb-50  flex flex-col items-center "
+      className="relative w-full min-h-full px-4 p-23 pb-50 md:pb-40  flex flex-col items-center "
       variants={containerVariants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
@@ -210,7 +210,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
 
       {/* Bottom Vertical Line - Coming up 30px from bottom */}
       <motion.div
-        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-[4rem] md:h-[5rem] lg:h-[6rem] bg-gradient-to-t from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
+        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-[1rem] md:h-[2rem] lg:h-[2rem] bg-gradient-to-t from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
         style={{
           backgroundImage:
             "repeating-linear-gradient(to top, transparent 0px, transparent 3px, #9ca3af 3px, #9ca3af 6px)",
