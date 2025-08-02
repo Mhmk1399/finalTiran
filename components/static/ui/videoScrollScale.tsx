@@ -8,6 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 interface VideoSlide {
   id: number;
   src: string;
+  mobileSrc: string;
   title: string;
   description: string;
 }
@@ -21,12 +22,14 @@ const videoSlides: VideoSlide[] = [
   {
     id: 1,
     src: "/assets/video/videoslide2.mp4",
+    mobileSrc: "/assets/video/tiran1sm.mp4",
     title: "مجموعه ی چرم فرش",
     description: "استایل جور دیگر",
   },
   {
     id: 2,
     src: "/assets/video/videoslide1.mp4",
+    mobileSrc: "/assets/video/tiran2sm.mp4",
     title: "تیران استایل",
     description: "استایل جور دیگر",
   },
@@ -41,10 +44,23 @@ export default function VideoScrollScale({
     useState(isTransitioning);
   const [videoVisible, setVideoVisible] = useState(!isTransitioning);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const transitionImageRef = useRef<HTMLDivElement | null>(null);
+
+  // Check if mobile on mount
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Handle transition from grid image to video
   useEffect(() => {
@@ -201,7 +217,11 @@ export default function VideoScrollScale({
         <video
           ref={videoRef}
           key={currentSlide}
-          src={videoSlides[currentSlide].src}
+          src={
+            isMobile
+              ? videoSlides[currentSlide].mobileSrc
+              : videoSlides[currentSlide].src
+          }
           autoPlay
           muted
           playsInline

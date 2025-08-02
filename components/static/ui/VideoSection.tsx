@@ -1,11 +1,25 @@
 "use client";
+import {  useEffect, useState } from "react";
 
 const videoSlides = {
   src: "/assets/video/videoslide1.mp4",
+  mobileSrc: "/assets/video/watchsm.mp4",
   title: "استایل جور دیگر",
 };
 
 export default function VideoSection() {
+  const [isMobile, setIsMobile] = useState(false);
+  
+    useEffect(() => {
+      const checkMobile = () => {
+        setIsMobile(window.innerWidth < 640);
+      };
+  
+      checkMobile();
+      window.addEventListener("resize", checkMobile);
+  
+      return () => window.removeEventListener("resize", checkMobile);
+    }, []);
   return (
     <div
       className="w-screen h-screen"
@@ -16,7 +30,7 @@ export default function VideoSection() {
     >
       <div className="relative w-full h-full  overflow-hidden">
         <video
-          src={videoSlides.src}
+          src={isMobile ? videoSlides.mobileSrc : videoSlides.src}
           autoPlay
           muted
           playsInline
