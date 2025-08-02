@@ -1,4 +1,3 @@
-// Mixed Grid Card Component (Updated for static positioning)
 import Image from "next/image";
 import { MixedGridCardProps } from "@/types/type";
 import { AnimatePresence, motion } from "framer-motion";

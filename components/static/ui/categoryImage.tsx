@@ -188,7 +188,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   return (
     <motion.div
       ref={containerRef}
-      className="relative w-full min-h-full px-4 pt-23 pb-30  flex flex-col items-center "
+      className="relative w-full min-h-full px-4 p-23 pb-50  flex flex-col items-center "
       variants={containerVariants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}

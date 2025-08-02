@@ -210,9 +210,9 @@ export default function VideoScrollScale({
         />
 
         {/* Text Overlay */}
-        <div className="absolute inset-0 flex items-end justify-center mb-28 z-30">
+        <div className="absolute inset-0 flex items-end justify-center mb-36 md:mb-28 z-30">
           <div className="text-center text-white px-8">
-            <h2 className="text-4xl md:text-3xl font-bold mb-4 drop-shadow-lg">
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 drop-shadow-lg">
               {videoSlides[currentSlide].title}
             </h2>
             <p className="text-lg md:text-xl max-w-2xl drop-shadow-md">
