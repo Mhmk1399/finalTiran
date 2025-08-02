@@ -2,16 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence, useScroll } from "framer-motion";
 import { gsap } from "gsap";
-import {
-  navItems,
-  categoryItemVariants,
-  categoryVariants,
-  itemVariants,
-  logoVariants,
-  mobileMenuVariants,
-} from "../../lib/navbarData";
+import { navItems } from "../../lib/navbarData";
 
 import {
   RiShoppingBag3Line,
@@ -42,15 +34,17 @@ const Navbar = () => {
   const [showCategoriesOnly, setShowCategoriesOnly] = useState(false);
   const prevScrollY = useRef(0);
   const pathname = usePathname();
-  const { scrollYProgress } = useScroll();
-  const navItemsRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
+  const scrollProgressRef = useRef<HTMLDivElement>(null);
 
-  // Set isMounted to true after component mounts to ensure client-side rendering
   useEffect(() => {
     setIsMounted(true);
     setActiveItem(pathname);
+
+    // Initialize GSAP animations
+    gsap.set(".nav-item", { opacity: 0, y: -10 });
+    gsap.to(".nav-item", { opacity: 1, y: 0, duration: 0.3, stagger: 0.1 });
   }, [pathname]);
 
   const fetchCategories = async () => {
@@ -71,14 +65,20 @@ const Navbar = () => {
     fetchCategories();
   }, []);
 
-  // Handle scroll effect for shadow
   useEffect(() => {
     const handleScroll = () => {
       const navbar = document.getElementById("navbar");
+      const scrollProgress = Math.min(window.scrollY / window.innerHeight, 1);
+
       if (window.scrollY > 10) {
         navbar?.classList.add("shadow-md");
       } else {
         navbar?.classList.remove("shadow-md");
+      }
+
+      // Update scroll progress
+      if (scrollProgressRef.current) {
+        gsap.set(scrollProgressRef.current, { scaleX: scrollProgress });
       }
     };
 
@@ -215,58 +215,37 @@ const Navbar = () => {
     >
       <div className="max-w-screen">
         <div className="flex items-center justify-between h-20 px-4 sm:px-6 lg:px-2">
-          {" "}
           {/* Right side - Navigation Items (Desktop) */}
-          <div ref={navItemsRef} className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center">
             {navItems.map((item) => (
-              <motion.div
-                key={item.name}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className="relative px-1"
-              >
+              <div key={item.name} className="nav-item relative px-1">
                 <Link href={item.href}>
-                  <motion.span
-                    className={`block px-3 py-2 text-base font-medium rounded-md transition-all duration-300 ${
+                  <span
+                    className={`block px-3 py-2 text-base font-medium rounded-md transition-all duration-300 hover:scale-105 ${
                       activeItem === item.href
                         ? "text-black font-bold"
                         : "text-gray-700 hover:text-black hover:bg-gray-100"
                     }`}
-                    whileHover={{
-                      scale: 1.05,
-                      transition: { duration: 0.2 },
-                    }}
-                    whileTap={{ scale: 0.95 }}
+                    onMouseEnter={(e) =>
+                      gsap.to(e.target, { scale: 1.05, duration: 0.2 })
+                    }
+                    onMouseLeave={(e) =>
+                      gsap.to(e.target, { scale: 1, duration: 0.2 })
+                    }
                   >
                     {item.name}
                     {activeItem === item.href && (
-                      <motion.div
-                        className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-gray-500 to-gray-600 rounded-full shadow-lg"
-                        layoutId="underline"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, ease: "easeInOut" }}
-                      />
+                      <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-gray-500 to-gray-600 rounded-full shadow-lg" />
                     )}
-                  </motion.span>
+                  </span>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
           {/* Center - Logo */}
-          <div
-            ref={logoRef}
-            className="absolute left-1/2 transform -translate-x-1/2"
-          >
+          <div className="absolute left-1/2 transform -translate-x-1/2">
             <Link href="/">
-              <motion.div
-                variants={logoVariants}
-                initial="initial"
-                animate="animate"
-                whileHover="hover"
-                className="flex items-center justify-center"
-              >
+              <div className="flex items-center justify-center transition-transform duration-200 hover:scale-110">
                 <Image
                   src="/assets/images/logo.png"
                   alt="Tiran Logo"
@@ -274,388 +253,394 @@ const Navbar = () => {
                   height={70}
                   className="h-8 w-auto"
                 />
-              </motion.div>
+              </div>
             </Link>
           </div>
           {/* Left side - Cart and Login */}
           <div className="flex gap-3 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative"
-            >
+            <div className="relative">
               <Link href="/cart">
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
+                <div
                   className="p-2 hidden md:block rounded-full hover:bg-gray-100 transition-colors duration-300"
+                  onMouseEnter={(e) =>
+                    gsap.to(e.currentTarget, {
+                      scale: 1.1,
+                      rotation: 5,
+                      duration: 0.2,
+                    })
+                  }
+                  onMouseLeave={(e) =>
+                    gsap.to(e.currentTarget, {
+                      scale: 1,
+                      rotation: 0,
+                      duration: 0.2,
+                    })
+                  }
                 >
                   <RiShoppingBag3Line className="h-6 w-6" />
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
-                  >
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {totalItems}
-                  </motion.span>
-                </motion.div>
+                  </span>
+                </div>
               </Link>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
+            <div>
               <Link href="/auth">
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: -5 }}
-                  whileTap={{ scale: 0.9 }}
+                <div
                   className="p-2 rounded-full hidden md:block hover:bg-gray-100 transition-colors duration-300"
+                  onMouseEnter={(e) =>
+                    gsap.to(e.currentTarget, {
+                      scale: 1.1,
+                      rotation: -5,
+                      duration: 0.2,
+                    })
+                  }
+                  onMouseLeave={(e) =>
+                    gsap.to(e.currentTarget, {
+                      scale: 1,
+                      rotation: 0,
+                      duration: 0.2,
+                    })
+                  }
                 >
                   <RiUser3Line className="h-6 w-6" />
-                </motion.div>
+                </div>
               </Link>
-            </motion.div>
+            </div>
             <div className="relative group">
               {isLoggedIn ? (
                 <>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className=" hidden md:flex items-center text-gray-700 hover:text-gray-900"
-                  >
+                  <button className="hidden md:flex items-center text-gray-700 hover:text-gray-900 transition-transform duration-200 hover:scale-105">
                     <span className="ml-1 text-sm font-medium">
                       {userProfile?.user.username}
                     </span>
-                  </motion.button>
-
-                  {/* Dropdown menu */}
+                  </button>
                   <div className="absolute left-0 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
                     <Link href="/dashboard">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md w-full text-right"
-                      >
+                      <button className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md w-full text-right transition-transform duration-200 hover:scale-105">
                         <RiDashboardLine className="ml-2" />
                         داشبورد کاربری
-                      </motion.button>
+                      </button>
                     </Link>
                   </div>
                 </>
               ) : (
                 <Link href="/auth">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="hidden  md:flex  items-center  text-gray-700 hover:text-gray-900"
-                  >
+                  <button className="hidden md:flex items-center text-gray-700 hover:text-gray-900 transition-transform duration-200 hover:scale-105">
                     <RiLoginCircleLine className="ml-1" />
                     <span className="text-sm font-medium">ورود / ثبت‌نام</span>
-                  </motion.button>
+                  </button>
                 </Link>
               )}
             </div>
 
             {/* Mobile menu button */}
             <div className="md:hidden">
-              <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+              <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="inline-flex items-center justify-center  p-2 rounded-md hover:bg-gray-100 focus:outline-none transition-colors duration-300"
-                aria-expanded="false"
+                className="inline-flex items-center justify-center p-2 -mx-12 rounded-md hover:bg-gray-100 focus:outline-none transition-all duration-300 hover:scale-110"
+                aria-expanded={isOpen}
               >
-                <AnimatePresence mode="wait">
-                  {isOpen ? (
-                    <motion.div
-                      key="close"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <RiCloseLine
-                        className="block h-6 w-6"
-                        aria-hidden="true"
-                      />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="menu"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <RiMenuLine
-                        className="block h-6 w-6"
-                        aria-hidden="true"
-                      />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.button>
+                {isOpen ? (
+                  <RiCloseLine className="block h-6 w-6 transition-transform duration-200" />
+                ) : (
+                  <RiMenuLine className="block h-6 w-6 transition-transform duration-200" />
+                )}
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Categories Row - Desktop */}
-      <motion.div
+      <div
         ref={categoriesRef}
         className="hidden md:block relative w-full transition-all duration-300"
-     
       >
-        <div className="max-w-7xl  mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            className="flex items-center justify-center gap-2"
-            initial="hidden"
-            animate="visible"
-          >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center gap-2">
             {categories.map((category, index: number) => (
-              <motion.div
+              <div
                 key={category.id}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 className="px-2 flex-shrink-0 relative group"
-                onMouseEnter={() => setHoveredCategory(index)}
-                onMouseLeave={() => setHoveredCategory(null)}
+                onMouseEnter={() => {
+                  setHoveredCategory(index);
+                  gsap.to(`#category-${index}`, { scale: 1.05, duration: 0.2 });
+                  gsap.to(`#underline-${index}`, {
+                    width: "100%",
+                    duration: 0.3,
+                  });
+                }}
+                onMouseLeave={() => {
+                  setHoveredCategory(null);
+                  gsap.to(`#category-${index}`, { scale: 1, duration: 0.2 });
+                  gsap.to(`#underline-${index}`, { width: 0, duration: 0.3 });
+                }}
               >
                 <Link
                   href={`/shop?category=${encodeURIComponent(
                     category.cat_name
                   )}`}
                 >
-                  <motion.span
+                  <span
+                    id={`category-${index}`}
                     className={`block px-4 py-2 text-sm font-medium relative transition-all duration-300 ${
                       hoveredCategory === index
                         ? " text-black"
                         : "text-gray-700 hover:text-black hover:bg-gray-100"
                     }`}
-                    layout
                   >
                     {category.cat_name}
-                    <motion.div
+                    <div
+                      id={`underline-${index}`}
                       className="absolute bottom-0 right-0 h-0.5 bg-black"
-                      initial={{ width: 0 }}
-                      animate={{
-                        width: hoveredCategory === index ? "100%" : 0,
-                      }}
-                      transition={{
-                        duration: 0.3,
-                        ease: "easeInOut",
-                      }}
+                      style={{ width: 0 }}
                     />
-                  </motion.span>
+                  </span>
                 </Link>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
 
         {!showCategoriesOnly && (
-          <>
-            <MegaMenu
-              categories={categories}
-              hoveredCategory={hoveredCategory}
-              setHoveredCategory={setHoveredCategory}
-            />
-          </>
+          <MegaMenu
+            categories={categories}
+            hoveredCategory={hoveredCategory}
+            setHoveredCategory={setHoveredCategory}
+          />
         )}
-      </motion.div>
+      </div>
 
       {/* Mobile menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={mobileMenuVariants}
-            className="md:hidden bg-white/80 overflow-hidden"
-          >
-            <div className="px-4 pt-2 pb-5 space-y-1">
-              {/* Categories section in mobile menu */}
-              <motion.div variants={itemVariants} className="mb-2">
-                <motion.button
-                  onClick={() => setExpandedCategory(!expandedCategory)}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-base font-medium text-black hover:bg-gray-50"
-                  whileHover={{ x: 5 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <span>دسته‌بندی‌ها</span>
-                  <motion.div
-                    animate={{ rotate: expandedCategory ? 0 : 180 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <RiArrowRightSLine className="h-5 -rotate-90 w-5" />
-                  </motion.div>
-                </motion.button>
+      {isOpen && (
+        <div
+          ref={mobileMenuRef}
+          className="md:hidden bg-white/95 backdrop-blur-md shadow-lg min-h-[70vh]"
+        >
+          <div className="px-4 pt-4 pb-6 space-y-2">
+            {/* Categories section in mobile menu */}
+            <div className="mb-4">
+              <button
+                onClick={() => {
+                  setExpandedCategory(!expandedCategory);
+                  const arrow = document.getElementById("category-arrow");
+                  gsap.to(arrow, {
+                    rotation: expandedCategory ? 0 : 180,
+                    duration: 0.3,
+                  });
 
-                <AnimatePresence>
-                  {expandedCategory && (
-                    <motion.div
-                      initial="closed"
-                      animate="open"
-                      exit="closed"
-                      variants={categoryVariants}
-                      className="overflow-hidden bg-gray-50/20 rounded-lg mt-1 mr-4 border-r-2 border-gray-200"
-                    >
-                      <div className="py-1">
-                        {categories.map((category, index) => (
-                          <div key={category.id}>
-                            <motion.div
-                              variants={categoryItemVariants}
-                              whileHover={{ x: 5 }}
-                              whileTap={{ scale: 0.98 }}
-                              className="flex items-center justify-between"
-                            >
-                              <Link
-                                href={`/shop?category=${encodeURIComponent(
-                                  category.cat_name
-                                )}`}
-                                onClick={() => setIsOpen(!isOpen)}
-                              >
-                                <span className="block px-4 py-2 text-sm font-medium text-black hover:text-black">
-                                  {category.cat_name}
+                  const categoryList = document.getElementById("category-list");
+                  if (!expandedCategory) {
+                    gsap.fromTo(
+                      categoryList,
+                      { height: 0, opacity: 0 },
+                      { height: "auto", opacity: 1, duration: 0.3 }
+                    );
+                  } else {
+                    gsap.to(categoryList, {
+                      height: 0,
+                      opacity: 0,
+                      duration: 0.3,
+                    });
+                  }
+                }}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium text-black hover:bg-gray-50 transition-all duration-200 active:scale-95"
+              >
+                <span>دسته‌بندی‌ها</span>
+                <div id="category-arrow">
+                  <RiArrowRightSLine className="h-5 rotate-90 w-5" />
+                </div>
+              </button>
+
+              <div
+                id="category-list"
+                className="overflow-hidden bg-gray-50/30 rounded-xl mt-2 mr-4 border-r-2 border-gray-200"
+                style={{ height: 0, opacity: 0 }}
+              >
+                <div className="py-2">
+                  {categories.map((category, index) => (
+                    <div key={category.id}>
+                      <div className="flex items-center justify-between">
+                        <Link
+                          href={`/shop?category=${encodeURIComponent(
+                            category.cat_name
+                          )}`}
+                          onClick={() => {
+                            setIsOpen(false);
+                            gsap.to(mobileMenuRef.current, {
+                              height: 0,
+                              opacity: 0,
+                              duration: 0.3,
+                            });
+                          }}
+                        >
+                          <span
+                            className="block px-4 py-2 text-sm font-medium text-black hover:text-black transition-all duration-200 hover:translate-x-1"
+                            onTouchStart={(e) =>
+                              gsap.to(e.target, { x: 5, duration: 0.1 })
+                            }
+                            onTouchEnd={(e) =>
+                              gsap.to(e.target, { x: 0, duration: 0.1 })
+                            }
+                          >
+                            {category.cat_name}
+                          </span>
+                        </Link>
+                        {category.children && category.children.length > 0 && (
+                          <button
+                            onClick={() => {
+                              const newHovered =
+                                hoveredCategory === index ? null : index;
+                              setHoveredCategory(newHovered);
+
+                              const subcategoryList = document.getElementById(
+                                `subcategory-${index}`
+                              );
+                              const arrow = document.getElementById(
+                                `subcategory-arrow-${index}`
+                              );
+
+                              if (newHovered === index) {
+                                gsap.fromTo(
+                                  subcategoryList,
+                                  { height: 0, opacity: 0 },
+                                  { height: "auto", opacity: 1, duration: 0.3 }
+                                );
+                                gsap.to(arrow, {
+                                  rotation: 270,
+                                  duration: 0.3,
+                                });
+                              } else {
+                                gsap.to(subcategoryList, {
+                                  height: 0,
+                                  opacity: 0,
+                                  duration: 0.3,
+                                });
+                                gsap.to(arrow, { rotation: 90, duration: 0.3 });
+                              }
+                            }}
+                            className="px-4 py-2 active:scale-90 transition-transform duration-100"
+                          >
+                            <div id={`subcategory-arrow-${index}`}>
+                              <RiArrowRightSLine className="h-4 text-black w-4" />
+                            </div>
+                          </button>
+                        )}
+                      </div>
+
+                      {category.children && category.children.length > 0 && (
+                        <div
+                          id={`subcategory-${index}`}
+                          className="overflow-hidden bg-gray-50/20 mr-6 border-r border-gray-200"
+                          style={{ height: 0, opacity: 0 }}
+                        >
+                          {category.children.map((subcategory) => (
+                            <div key={subcategory.id}>
+                              <Link href={`/category/${subcategory.slug}`}>
+                                <span
+                                  className="block px-4 py-1.5 text-xs font-medium text-gray-800 hover:text-black transition-all duration-200 hover:translate-x-1"
+                                  onTouchStart={(e) =>
+                                    gsap.to(e.target, { x: 5, duration: 0.1 })
+                                  }
+                                  onTouchEnd={(e) =>
+                                    gsap.to(e.target, { x: 0, duration: 0.1 })
+                                  }
+                                >
+                                  {subcategory.cat_name}
                                 </span>
                               </Link>
-                              {category.children &&
-                                category.children.length > 0 && (
-                                  <motion.button
-                                    onClick={() => {
-                                      if (hoveredCategory === index) {
-                                        setHoveredCategory(null);
-                                      } else {
-                                        setHoveredCategory(index);
-                                      }
-                                    }}
-                                    className="px-4 py-2"
-                                    whileTap={{ scale: 0.9 }}
-                                  >
-                                    <motion.div
-                                      animate={{
-                                        rotate:
-                                          hoveredCategory === index ? 270 : 90,
-                                      }}
-                                      transition={{ duration: 0.2 }}
-                                    >
-                                      <RiArrowRightSLine className="h-4 text-black w-4" />
-                                    </motion.div>
-                                  </motion.button>
-                                )}
-                            </motion.div>
-
-                            <AnimatePresence>
-                              {hoveredCategory === index &&
-                                category.children &&
-                                category.children.length > 0 && (
-                                  <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: "auto", opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="overflow-hidden bg-gray-50/10 mr-6 border-r border-gray-200"
-                                  >
-                                    {category.children.map((subcategory) => (
-                                      <motion.div
-                                        key={subcategory.id}
-                                        whileHover={{ x: 5 }}
-                                        whileTap={{ scale: 0.98 }}
-                                      >
-                                        <Link
-                                          href={`/category/${subcategory.slug}`}
-                                        >
-                                          <span className="block px-4 py-1.5 text-xs font-medium text-gray-800 hover:text-black">
-                                            {subcategory.cat_name}
-                                          </span>
-                                        </Link>
-                                      </motion.div>
-                                    ))}
-                                  </motion.div>
-                                )}
-                            </AnimatePresence>
-                          </div>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-
-              {/* Regular nav items in mobile menu */}
-              {navItems.map((item) => (
-                <motion.div
-                  key={item.name}
-                  variants={itemVariants}
-                  className="block"
-                >
-                  <Link href={item.href}>
-                    <motion.div
-                      whileHover={{ x: 5, backgroundColor: "rgba(0,0,0,0.05)" }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setIsOpen(!isOpen)}
-                      className={`block px-4 py-3 rounded-lg text-base font-medium transition-colors ${
-                        activeItem === item.href
-                          ? "text-black font-bold bg-gray-50"
-                          : "text-black"
-                      }`}
-                    >
-                      {item.name}
-                    </motion.div>
-                  </Link>
-                </motion.div>
-              ))}
-
-              <motion.div
-                variants={itemVariants}
-                className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200"
-              >
-                <Link href="/auth" onClick={() => setIsOpen(!isOpen)}>
-                  <motion.div
-                    whileHover={{
-                      scale: 1.05,
-                      backgroundColor: "rgba(0,0,0,0.05)",
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center px-4 py-3 rounded-lg text-base font-medium text-black"
-                  >
-                    <RiUser3Line className="ml-2 h-5 w-5" />
-                    {/* ورود / ثبت نام */}
-                  </motion.div>
-                </Link>
-
-                <Link href="/cart" onClick={() => setIsOpen(!isOpen)}>
-                  <motion.div
-                    whileHover={{
-                      scale: 1.05,
-                      backgroundColor: "rgba(0,0,0,0.05)",
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center px-4 py-3 rounded-lg text-base font-medium text-black"
-                  >
-                    <RiShoppingBag3Line className="ml-2 h-5 w-5" />
-                    سبد خرید
-                    <span className="mr-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {totalItems}
-                    </span>
-                  </motion.div>
-                </Link>
-              </motion.div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-black origin-left z-50"
-        style={{ scaleX: scrollYProgress }}
-      />
+
+            {/* Regular nav items in mobile menu */}
+            {navItems.map((item, index) => (
+              <div key={item.name} className="block">
+                <Link href={item.href}>
+                  <div
+                    onClick={() => {
+                      setIsOpen(false);
+                      gsap.to(mobileMenuRef.current, {
+                        height: 0,
+                        opacity: 0,
+                        duration: 0.3,
+                      });
+                    }}
+                    className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 active:scale-95 hover:translate-x-1 ${
+                      activeItem === item.href
+                        ? "text-black font-bold bg-gray-50"
+                        : "text-black hover:bg-gray-50"
+                    }`}
+                    onTouchStart={(e) =>
+                      gsap.to(e.currentTarget, {
+                        x: 5,
+                        backgroundColor: "rgba(0,0,0,0.05)",
+                        duration: 0.1,
+                      })
+                    }
+                    onTouchEnd={(e) =>
+                      gsap.to(e.currentTarget, {
+                        x: 0,
+                        backgroundColor: "transparent",
+                        duration: 0.1,
+                      })
+                    }
+                  >
+                    {item.name}
+                  </div>
+                </Link>
+              </div>
+            ))}
+
+            <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200 gap-4">
+              <Link
+                href="/auth"
+                onClick={() => {
+                  setIsOpen(false);
+                  gsap.to(mobileMenuRef.current, {
+                    height: 0,
+                    opacity: 0,
+                    duration: 0.3,
+                  });
+                }}
+              >
+                <div className="flex items-center px-4 py-3 rounded-xl text-base font-medium text-black bg-gray-50 hover:bg-gray-100 transition-all duration-200 active:scale-95">
+                  <RiUser3Line className="ml-2 h-5 w-5" />
+                  <span className="text-sm">ورود</span>
+                </div>
+              </Link>
+
+              <Link
+                href="/cart"
+                onClick={() => {
+                  setIsOpen(false);
+                  gsap.to(mobileMenuRef.current, {
+                    height: 0,
+                    opacity: 0,
+                    duration: 0.3,
+                  });
+                }}
+              >
+                <div className="flex items-center px-4 py-3 rounded-xl text-base font-medium text-black bg-gray-50 hover:bg-gray-100 transition-all duration-200 active:scale-95">
+                  <RiShoppingBag3Line className="ml-2 h-5 w-5" />
+                  <span className="text-sm">سبد خرید</span>
+                  <span className="mr-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

@@ -414,7 +414,7 @@ const Footer = () => {
             {/* Image enamad and trust Section */}
             <motion.div
               variants={itemVariants}
-              className="lg:col-span-4 col-span-1 space-y-6 mr-auto"
+              className="lg:col-span-4 col-span-2 space-y-6 mr-auto"
             >
               <div className="relative">
                 
