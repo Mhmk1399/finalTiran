@@ -271,9 +271,9 @@ const NewProductRow: React.FC<ProductGridProps> = ({
     <div
       className={`w-full py-24 md:py-28 lg:py-32 relative ${className}`}
       dir="rtl"
-      style={{
-        background: `url('/assets/images/texture.png')`,
-      }}
+      // style={{
+      //   background: `url('/assets/images/texture.png')`,
+      // }}
     >
       {/* Top Vertical Line - Coming down 30px from top */}
       <motion.div

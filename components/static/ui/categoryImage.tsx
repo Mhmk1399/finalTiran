@@ -192,10 +192,10 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
       variants={containerVariants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
-      style={{
-        backgroundImage: "url('/assets/images/texture.png')",
-        backgroundSize: "cover",
-      }}
+      // style={{
+      //   backgroundImage: "url('/assets/images/texture.png')",
+      //   backgroundSize: "cover",
+      // }}
     >
       <motion.div
         className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-[4rem] md:h-[5rem] lg:h-[6rem] bg-gradient-to-b from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"

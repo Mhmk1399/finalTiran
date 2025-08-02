@@ -60,9 +60,9 @@ function ShopPage() {
 
       <main
         className="mb-12"
-        style={{
-          background: `url('/assets/images/texture.png')`,
-        }}
+        // style={{
+        //   background: `url('/assets/images/texture.png')`,
+        // }}
       >
         <VideoShowcase />
 
