@@ -24,7 +24,7 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
   return (
     // <Link href="/video">
     <motion.div
-      className={`absolute overflow-hidden shadow-lg group transform transition-all duration-300 cursor-pointer`}
+      className={`absolute overflow-hidden mt-24 ml-1 md:mt-0 md:ml-0 shadow-lg group transform transition-all duration-300 cursor-pointer`}
       onClick={handleRoute}
       style={{
         left: position?.x || 0,
@@ -59,7 +59,6 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
             alt={category.title}
             fill
             className="object-cover"
-        
             onClick={handleRoute}
             // onLoad={() => setImageLoaded(true)}
             // sizes={`(max-width: 768px) 50vw, ${
