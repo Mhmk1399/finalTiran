@@ -17,7 +17,7 @@ function ShopPage() {
     colors: [] as string[],
     available: false,
   });
-  console.log(filters)
+  console.log(filters);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -64,21 +64,20 @@ function ShopPage() {
           background: `url('/assets/images/texture.png')`,
         }}
       >
-       
         <VideoShowcase />
-        
+
         <div className="md:px-8 lg:px-20">
           {/* Filter Card */}
           <div className="mt-8 mb-12">
             <FilterCard
               onFilterChange={setFilters}
-              categories={categories.map(cat => ({
+              categories={categories.map((cat) => ({
                 id: cat.id.toString(),
                 label: cat.cat_name,
               }))}
               colors={[
                 { id: "red", label: "قرمز" },
-                { id: "blue", label: "آبی" },
+                { id: "abi", label: "آبی" },
                 { id: "black", label: "مشکی" },
                 { id: "white", label: "سفید" },
               ]}
@@ -94,6 +93,7 @@ function ShopPage() {
                 endpoint="/api/shop"
                 className=""
                 category={category.cat_name}
+                showLoadMore={true}
               />
             </div>
           ))}

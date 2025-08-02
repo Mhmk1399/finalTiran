@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 
 interface DynamicFashionGridProps {
   onComplete?: (centerImage: string) => void;
+  // onTransitionStart?: () => void;
 }
 
 const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
@@ -24,7 +25,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
   ];
 
   const [currentImages, setCurrentImages] = useState<string[]>([]);
-  const [centerImage, setCenterImage] = useState("");
+  const [centerImage] = useState("/assets/images/lether.jpg"); // Static center image
 
   // Animation states
   const [isRapidChanging, setIsRapidChanging] = useState(false);
@@ -33,7 +34,6 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
   const [showCenterOpacity, setShowCenterOpacity] = useState(false);
   const [showVideoTransition, setShowVideoTransition] = useState(false);
   const [blockImages, setBlockImages] = useState<string[][]>([]);
-  const [finalCenterImage, setFinalCenterImage] = useState("");
   const [isTransitioning, setIsTransitioning] = useState(false);
   // Slide variants for video transition
 
@@ -49,15 +49,16 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     return blocks;
   };
 
-  // Initialize random images
+  // Initialize random images with static center
   useEffect(() => {
     const getRandomImages = () => {
       const shuffled = [...fashionImages].sort(() => 0.5 - Math.random());
-      return shuffled.slice(0, 9);
+      const images = shuffled.slice(0, 9);
+      images[4] = "/assets/images/lether.jpg"; // Keep center image static
+      return images;
     };
     const initialImages = getRandomImages();
     setCurrentImages(initialImages);
-    setCenterImage(initialImages[4]);
     setBlockImages(generateBlockImages());
   }, []);
 
@@ -80,27 +81,33 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
       setIsRapidChanging(false);
       setShowBlockHide(true);
 
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       // Step 3: Scale up center image
       setShowCenterScale(true);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       // Step 4: Center image opacity animation
       setShowCenterOpacity(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // NEW: Hold center image for 2 seconds
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setFinalCenterImage(centerImage);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      
+      // // Hold center image and prepare for video transition
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      // setFinalCenterImage(centerImage);
 
-      // NEW: Start transition to next component
+      // // Notify parent about transition start
+      // if (onTransitionStart) {
+      //   onTransitionStart();
+      // }
+
+      // Start transition to video component
       setIsTransitioning(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       // Call completion callback
       if (onComplete) {
-        onComplete(finalCenterImage);
+        onComplete(centerImage);
       }
 
       // Step 5: Transition to video showcase
@@ -128,14 +135,15 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
       setCurrentImages((prevImages) => {
         const newImages = [...prevImages];
         for (let i = 0; i < 9; i++) {
-          if (blockImages[i] && blockImages[i].length > 0) {
+          if (i === 4) {
+            newImages[i] = "/assets/images/lether.jpg"; // Keep center static
+          } else if (blockImages[i] && blockImages[i].length > 0) {
             const randomIndex = Math.floor(
               Math.random() * blockImages[i].length
             );
             newImages[i] = blockImages[i][randomIndex];
           }
         }
-        setCenterImage(newImages[4]);
         return newImages;
       });
     }, 200);
@@ -213,9 +221,11 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                         key={`${image}-${index}`}
                         className={`relative overflow-hidden transform transition-all duration-700 ease-out ${
                           index === 4
-                            ? showCenterScale
+                            ? isTransitioning
+                              ? "w-screen h-screen fixed inset-0 z-50 scale-100 rounded-none opacity-100"
+                              : showCenterScale
                               ? showCenterOpacity
-                                ? "w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 scale-110 lg:scale-125 z-10 ring-2 lg:ring-4 ring-white/50 rounded-lg opacity-30"
+                                ? "w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 scale-150 lg:scale-200 z-20 ring-2 lg:ring-4 ring-white/50 rounded-lg opacity-100"
                                 : "w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 scale-110 lg:scale-125 z-10 ring-2 lg:ring-4 ring-white/50 rounded-lg opacity-100"
                               : "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 ring-1 lg:ring-2 ring-white/30 opacity-100"
                             : isRapidChanging
@@ -233,10 +243,15 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                         <img
                           src={image}
                           alt={`Fashion ${index + 1}`}
-                          className={`w-full h-full object-cover transition-all duration-300 ${
-                            showCenterScale && index === 4 ? "" : ""
+                          className={`w-full h-full object-cover transition-all duration-1000 ${
+                            index === 4 && isTransitioning ? "scale-110 brightness-110" : ""
                           }`}
                         />
+                        
+                        {/* Overlay for center image during transition */}
+                        {index === 4 && isTransitioning && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20 animate-pulse" />
+                        )}
 
                         {isRapidChanging && (
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse" />

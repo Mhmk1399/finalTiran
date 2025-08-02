@@ -4,6 +4,7 @@ import { gsap } from "gsap";
 import Link from "next/link";
 import Image from "next/image";
 import { AriaBold } from "@/next-persian-fonts/woff2";
+import { maneli } from "@/next-persian-fonts/maneli";
 
 interface ProductSlideshowProps {
   title: string;
@@ -213,9 +214,6 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
     <div
       className="w-full py-24 md:py-28 lg:py-32 relative overflow-hidden"
       dir="rtl"
-      style={{
-        background: `url('/assets/images/texture.png')`,
-      }}
     >
       {/* خطوط تزئینی بالا و پایین */}
       <div
@@ -239,10 +237,15 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
       <div className="max-w-8xl mx-auto px-4">
         <div className="text-center mb-4">
           <h2
-            className={`text-3xl md:text-4xl ${AriaBold.className} text-black`}
+            className={`text-3xl mb-4 md:text-4xl ${AriaBold.className} text-black`}
           >
             {title}
           </h2>
+          <div className=" text-center">
+            <p className={` ${maneli.className} text-gray-500 `}>
+              جایی که در آن زیبایی ، کاربرد و پایداری در کنار هم قرار گرفته اند{" "}
+            </p>
+          </div>
         </div>
 
         {/* اسلایدر محصولات */}
@@ -271,7 +274,7 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
                 }}
               >
                 <Link href={`/shop/${product.id}`}>
-                  <div className="w-[320px] h-[350px] bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl relative">
+                  <div className="w-[320px] h-[350px] bg-white shadow-lg  overflow-hidden hover:shadow-2xl transition-all duration-300 relative">
                     <Image
                       src={product.image}
                       alt={product.name}

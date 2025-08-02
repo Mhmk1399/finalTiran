@@ -2,9 +2,9 @@
 import CategoryShowcase from "@/components/static/ui/categoryImage";
 import DynamicFashionGrid from "@/components/static/ui/dynamicFashionGrid";
 import { useState, useEffect } from "react";
-import { slideItems, categories } from "@/lib/homePageData";
+import {  categories } from "@/lib/homePageData";
 import NewProductRow from "../global/newProducts";
-import VideoRevealCurtain from "./ui/videoScrollScale";
+import VideoScrollScale from "./ui/videoScrollScale";
 import ProductSlideFendi from "../global/productSlideFendi";
 import VideoSection from "./ui/VideoSection";
 import BlogCardSlider from "../global/BlogCardSlider";
@@ -13,13 +13,10 @@ const Page = () => {
   const [currentComponent, setCurrentComponent] = useState<
     "grid" | "transition" | "showcase"
   >("showcase"); // Default to showcase
-  const [expandingImage, setExpandingImage] = useState<string>("");
   const [isFirstLoad, setIsFirstLoad] = useState(true);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [showGrid, setShowGrid] = useState(false);
   const [showShowcase, setShowShowcase] = useState(false);
-
-  console.log(expandingImage, isFirstLoad, isTransitioning);
+  const [videoTransitionImage, setVideoTransitionImage] = useState<string>("");
 
   // Check localStorage immediately on component mount
   useEffect(() => {
@@ -30,12 +27,8 @@ const Page = () => {
       setCurrentComponent("grid");
       setShowGrid(true);
 
-      // Automatically transition after 5 seconds
-      const timer = setTimeout(() => {
-        handleGridToShowcaseTransition();
-      }, 5000);
-
-      return () => clearTimeout(timer);
+      // Let the grid component handle its own timing
+      // The transition will be triggered by the grid's onComplete callback
     } else {
       // Returning user, show showcase directly with no delay
       setCurrentComponent("showcase");
@@ -44,37 +37,28 @@ const Page = () => {
     }
   }, []);
 
-  // Handle smooth transition from grid to showcase
-  const handleGridToShowcaseTransition = async () => {
+
+
+  // Handle completion of grid animation
+  const handleGridComplete = async (centerImage: string) => {
     // Mark as seen
     localStorage.setItem("tiran-fashion-grid-seen", "true");
 
-    // Start transition sequence
-    setIsTransitioning(true);
+    // Set the transition image for video component
+    setVideoTransitionImage(centerImage);
 
-    // Get a random image for transition effect
-    const randomImage =
-      slideItems[Math.floor(Math.random() * slideItems.length)].image;
-    setExpandingImage(randomImage);
-
-    // Phase 1: Fade out grid (300ms - reduced from 500ms)
+    // Phase 1: Fade out grid
     setShowGrid(false);
 
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Phase 2: Show transition overlay (600ms - reduced from 1000ms)
-    setCurrentComponent("transition");
-
-    await new Promise((resolve) => setTimeout(resolve, 600));
-
-    // Phase 3: Switch to showcase and start showing it immediately
+    // Phase 2: Switch to showcase with video transition
     setCurrentComponent("showcase");
     setShowShowcase(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Phase 4: Complete transition
-    setIsTransitioning(false);
+    // Phase 3: Complete transition
     setIsFirstLoad(false);
   };
 
@@ -83,11 +67,14 @@ const Page = () => {
       {/* DynamicFashionGrid - shows for exactly 5 seconds on first visit */}
       {currentComponent === "grid" && (
         <div
-          className={`fixed inset-0 z-50 transition-all duration-300 ease-in-out ${
+          className={`fixed inset-0 z-50 transition-all duration-500 ease-in-out ${
             showGrid ? "opacity-100" : "opacity-0"
           }`}
         >
-          <DynamicFashionGrid />
+          <DynamicFashionGrid
+            onComplete={handleGridComplete}
+            // onTransitionStart={handleGridTransitionStart}
+          />
         </div>
       )}
 
@@ -101,7 +88,10 @@ const Page = () => {
           }`}
         >
           <div className="min-h-screen mt-20">
-            <VideoRevealCurtain />
+            <VideoScrollScale
+              transitionImage={videoTransitionImage}
+              isTransitioning={isFirstLoad}
+            />
           </div>
           <div className="min-h-screen pt-20">
             <CategoryShowcase
@@ -129,45 +119,10 @@ const Page = () => {
               className=""
               category=""
             />
-
             <BlogCardSlider />
           </div>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes scale-up-fast {
-          from {
-            transform: scale(0.2);
-            border-radius: 30%;
-            opacity: 0.8;
-          }
-          to {
-            transform: scale(1.02);
-            border-radius: 0;
-            opacity: 1;
-          }
-        }
-
-        @keyframes fade-in-fast {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        .animate-scale-up-fast {
-          animation: scale-up-fast 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)
-            forwards;
-          transform-origin: center;
-        }
-
-        .animate-fade-in-fast {
-          animation: fade-in-fast 0.5s ease-in-out forwards;
-        }
-      `}</style>
     </div>
   );
 };

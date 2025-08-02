@@ -134,7 +134,7 @@ const Footer = () => {
                 استایل جور دیگر
               </motion.p>
               <div className="max-w-5xl text-center lg:text-right mx-auto lg:mr-auto lg:ml-0">
-                <p className="text-gray-400 text-xs md:text-base lg:text-lg leading-relaxed font-light px-4 lg:px-0">
+                <p className="text-gray-400 text-xs md:text-sm lg:text-base leading-relaxed font-light px-4 lg:px-0">
                   تیران استایل فقط یک برند نیست؛ یک نگاه تازه است به زندگی‌ای که
                   ریشه در اصالت دارد و رو به آینده حرکت می‌کند.
                   <br />

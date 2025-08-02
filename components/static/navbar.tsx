@@ -394,7 +394,7 @@ const Navbar = () => {
                     {category.cat_name}
                     <div
                       id={`underline-${index}`}
-                      className="absolute bottom-0 right-0 h-0.5 bg-black"
+                      className="absolute bottom-0 right-0 h-[1px] bg-black"
                       style={{ width: 0 }}
                     />
                   </span>
@@ -562,7 +562,7 @@ const Navbar = () => {
             </div>
 
             {/* Regular nav items in mobile menu */}
-            {navItems.map((item, index) => (
+            {navItems.map((item) => (
               <div key={item.name} className="block">
                 <Link href={item.href}>
                   <div

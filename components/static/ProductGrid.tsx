@@ -5,64 +5,78 @@ import { CartProvider } from "@/context/cartContext";
 import { Product, ProductGridProps } from "@/types/type";
 import Link from "next/link";
 
+interface PaginationMeta {
+  totalCount: number;
+  pageCount: number;
+  currentPage: number;
+  perPage: number;
+}
+
 export default function ProductGrid({ categoryFilter }: ProductGridProps) {
-  const [products, setProducts] = useState([]);
-  const [allProducts, setAllProducts] = useState([]);
-  console.log(allProducts);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const fetchProducts = async (page: number = 1, append: boolean = false) => {
+    try {
+      setLoading(true);
+      const url = `/api/shop?page=${page}`;
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+
+      const data = await response.json();
+      console.log(data, "Fetched products data");
+
+      const newProducts = data.data?.items || data.items || [];
+      const meta = data.data?._meta;
+
+      // Filter products based on category if provided
+      let filteredProducts = newProducts;
+      if (categoryFilter) {
+        filteredProducts = newProducts.filter((product: Product) => {
+          if (product.variety && product.variety.category) {
+            const category = product.variety.category;
+            if (category.cat_name === categoryFilter) return true;
+            if (category.parent && category.parent.cat_name === categoryFilter) return true;
+          }
+          return false;
+        });
+      }
+
+      if (append) {
+        setProducts(prev => [...prev, ...filteredProducts]);
+      } else {
+        setProducts(filteredProducts);
+      }
+      
+      setPagination(meta);
+      setCurrentPage(page);
+    } catch (error) {
+      console.log("Error fetching products:", error);
+      if (!append) {
+        setProducts([]);
+        setPagination(null);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const url = "/api/shop"; // Your products API endpoint
+    fetchProducts(1, false);
+  }, [categoryFilter]);
 
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
-        }
+  const handleLoadMore = () => {
+    if (pagination && currentPage < pagination.pageCount) {
+      fetchProducts(currentPage + 1, true);
+    }
+  };
 
-        const data = await response.json();
-        console.log(data, "Fetched products data");
-
-        // Store all products
-        const allProductsData = data.data?.items || data.items || [];
-        setAllProducts(allProductsData);
-
-        // Filter products based on category if provided
-        let filteredProducts = allProductsData;
-
-        if (categoryFilter) {
-          filteredProducts = allProductsData.filter((product: Product) => {
-            // Check if product has variety and category structure
-            if (product.variety && product.variety.category) {
-              const category = product.variety.category;
-
-              // Check if current category matches
-              if (category.cat_name === categoryFilter) {
-                return true;
-              }
-
-              // Check if parent category matches
-              if (
-                category.parent &&
-                category.parent.cat_name === categoryFilter
-              ) {
-                return true;
-              }
-            }
-            return false;
-          });
-        }
-
-        setProducts(filteredProducts);
-      } catch (error) {
-        console.log("Error fetching products:", error);
-        setProducts([]);
-        setAllProducts([]);
-      }
-    };
-
-    fetchProducts();
-  }, [categoryFilter]); // Re-fetch when filter changes
+  const showLoadMore = pagination && pagination.totalCount > 20 && currentPage < pagination.pageCount;
 
   return (
     <CartProvider>
@@ -124,6 +138,19 @@ export default function ProductGrid({ categoryFilter }: ProductGridProps) {
             </div>
           )}
         </div>
+        
+        {/* Load More Button */}
+        {showLoadMore && (
+          <div className="text-center mt-8">
+            <button
+              onClick={handleLoadMore}
+              disabled={loading}
+              className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {loading ? "در حال بارگذاری..." : "مشاهده بیشتر"}
+            </button>
+          </div>
+        )}
       </div>
     </CartProvider>
   );

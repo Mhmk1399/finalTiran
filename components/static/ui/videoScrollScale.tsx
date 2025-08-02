@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -12,6 +12,11 @@ interface VideoSlide {
   description: string;
 }
 
+interface VideoScrollScaleProps {
+  transitionImage?: string;
+  isTransitioning?: boolean;
+}
+
 const videoSlides: VideoSlide[] = [
   {
     id: 1,
@@ -22,19 +27,62 @@ const videoSlides: VideoSlide[] = [
   {
     id: 2,
     src: "/assets/video/videoslide1.mp4",
-    title: "Product Demo",
+    title: "تیران استایل",
     description: "استایل جور دیگر",
   },
 ];
 
-export default function VideoScrollScale() {
+export default function VideoScrollScale({ transitionImage, isTransitioning = false }: VideoScrollScaleProps = {}) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [showTransitionImage, setShowTransitionImage] = useState(isTransitioning);
+  const [videoVisible, setVideoVisible] = useState(!isTransitioning);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const transitionImageRef = useRef<HTMLDivElement | null>(null);
+
+  // Handle transition from grid image to video
+  useEffect(() => {
+    if (isTransitioning && transitionImage) {
+      const animateTransition = async () => {
+        // Show transition image first
+        setShowTransitionImage(true);
+        setVideoVisible(false);
+        
+        // Wait a bit, then start the transition
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Animate transition image scaling down and fading
+        if (transitionImageRef.current) {
+          gsap.to(transitionImageRef.current, {
+            scale: 0.8,
+            opacity: 0,
+            duration: 1.2,
+            ease: "power2.inOut",
+            onComplete: () => {
+              setShowTransitionImage(false);
+              setVideoVisible(true);
+              
+              // Animate video entrance
+              if (videoWrapperRef.current) {
+                gsap.fromTo(videoWrapperRef.current, 
+                  { scale: 1.1, opacity: 0 },
+                  { scale: 1, opacity: 1, duration: 1, ease: "power2.out" }
+                );
+              }
+            }
+          });
+        }
+      };
+      
+      animateTransition();
+    } else {
+      setVideoVisible(true);
+    }
+  }, [isTransitioning, transitionImage]);
 
   useEffect(() => {
-    if (overlayRef.current) {
+    if (overlayRef.current && videoVisible) {
       gsap.fromTo(
         overlayRef.current,
         { opacity: 1 },
@@ -46,7 +94,7 @@ export default function VideoScrollScale() {
       );
     }
 
-    if (videoWrapperRef.current) {
+    if (videoWrapperRef.current && videoVisible) {
       gsap.to(videoWrapperRef.current, {
         scale: 0.1,
         ease: "none",
@@ -58,7 +106,7 @@ export default function VideoScrollScale() {
         },
       });
     }
-  }, []);
+  }, [videoVisible]);
 
   const nextSlide = () => {
     console.log("Next clicked, current:", currentSlide);
@@ -101,15 +149,31 @@ export default function VideoScrollScale() {
 
   return (
     <div
-      className="w-screen h-screen"
+      className="w-screen h-screen relative"
       style={{
         backgroundImage: "url('/assets/images/texture.png')",
         backgroundSize: "cover",
       }}
     >
+      {/* Transition Image Overlay */}
+      {showTransitionImage && transitionImage && (
+        <div
+          ref={transitionImageRef}
+          className="absolute inset-0 z-50 flex items-center justify-center"
+        >
+          <img
+            src={transitionImage}
+            alt="Transition"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
+        </div>
+      )}
       <div
         ref={videoWrapperRef}
-        className="relative w-full h-full  overflow-hidden"
+        className={`relative w-full h-full overflow-hidden transition-opacity duration-1000 ${
+          videoVisible ? "opacity-100" : "opacity-0"
+        }`}
         style={{ transformOrigin: "center center" }}
       >
         <video

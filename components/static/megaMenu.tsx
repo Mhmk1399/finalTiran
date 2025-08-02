@@ -142,7 +142,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
 
                 {/* Subcategories */}
                 <div className="col-span-9">
-                  <div className="grid grid-cols-5">
+                  <div className="grid grid-cols-8">
                     {categories[hoveredCategory].children &&
                       categories[hoveredCategory].children.map(
                         (subcategory, index) => (
@@ -158,9 +158,10 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                           >
                             <Link
                               href={`/category/${subcategory.slug}`}
-                              className="text-gray-900 font-medium text-base mb-3 hover:text-black  transition-all duration-300 hover:border-black hover:pr-3"
+                              className="text-gray-900 font-medium text-[12px] mb-3 hover:text-black transition-all w-fit duration-300  relative group"
                             >
-                              {subcategory.cat_name}
+                              <span className="inline-block">{subcategory.cat_name}</span>
+                              <span className="absolute top-8 right-0 w-0 h-[1px] bg-black transition-all duration-300 group-hover:w-full -translate-y-1/2"></span>
                             </Link>
 
                             {/* Third level categories if they exist */}

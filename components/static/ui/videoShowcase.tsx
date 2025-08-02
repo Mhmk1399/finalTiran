@@ -24,8 +24,8 @@ const VideoShowcase = () => {
           setActiveVideo(videoData[currentIndex]);
           // بعد از تغییر عکس fade-in
           setFade(true);
-        }, 800); // زمان fade-out
-      }, 5000); // هر ۳ ثانیه تغییر
+        }, 100); // زمان fade-out
+      }, 4000); // هر ۳ ثانیه تغییر
 
       return () => clearInterval(interval);
     }
@@ -88,15 +88,15 @@ const VideoShowcase = () => {
       <div className="hidden lg:block relative w-[35%] bg-white/90 md:w-1/5 overflow-y-auto max-h-full py-4">
         <div
           ref={marqueeRef}
-          className="relative z-10 flex flex-col gap-3 overflow-y-auto h-full  lg:-ml-1.5 scrollbar-thin scrollbar-thumb-white/20"
+          className="relative z-10 flex flex-col gap-3 overflow-y-auto h-full   scrollbar-thin scrollbar-thumb-white/20"
         >
           {infiniteVideos.map((video, index) => (
             <div
               key={`marquee-${index}`}
-              className={`flex-shrink-0 pr-3 cursor-pointer transition-all duration-300 ${
+              className={`flex-shrink-0 pl-1 pr-3 cursor-pointer transition-all duration-300 ${
                 activeVideo.id === video.id
                   ? "opacity-100  transform"
-                  : "opacity-90 hover:opacity-100 hover:scale-102"
+                  : "opacity-90 hover:opacity-100 "
               }`}
               onClick={() => handleVideoSelect(video)}
               style={{ minHeight: "120px" }}
@@ -109,10 +109,6 @@ const VideoShowcase = () => {
                     className="w-full h-full object-cover transition-transform duration-300"
                   />
                 </div>
-
-                {activeVideo.id === video.id && (
-                  <div className="absolute -top-2 -right-2 w-4 h-4 bg-black/50 rounded-full animate-pulse"></div>
-                )}
               </div>
             </div>
           ))}
