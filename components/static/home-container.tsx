@@ -2,7 +2,7 @@
 import CategoryShowcase from "@/components/static/ui/categoryImage";
 import DynamicFashionGrid from "@/components/static/ui/dynamicFashionGrid";
 import { useState, useEffect } from "react";
-import {  categories } from "@/lib/homePageData";
+import { categories } from "@/lib/homePageData";
 import NewProductRow from "../global/newProducts";
 import VideoScrollScale from "./ui/videoScrollScale";
 import ProductSlideFendi from "../global/productSlideFendi";
@@ -13,10 +13,8 @@ const Page = () => {
   const [currentComponent, setCurrentComponent] = useState<
     "grid" | "transition" | "showcase"
   >("showcase"); // Default to showcase
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [showGrid, setShowGrid] = useState(false);
   const [showShowcase, setShowShowcase] = useState(false);
-  const [videoTransitionImage, setVideoTransitionImage] = useState<string>("");
 
   // Check localStorage immediately on component mount
   useEffect(() => {
@@ -33,19 +31,15 @@ const Page = () => {
       // Returning user, show showcase directly with no delay
       setCurrentComponent("showcase");
       setShowShowcase(true);
-      setIsFirstLoad(false);
     }
   }, []);
 
-
-
   // Handle completion of grid animation
-  const handleGridComplete = async (centerImage: string) => {
+  const handleGridComplete = async () => {
     // Mark as seen
     localStorage.setItem("tiran-fashion-grid-seen", "true");
 
     // Set the transition image for video component
-    setVideoTransitionImage(centerImage);
 
     // Phase 1: Fade out grid
     setShowGrid(false);
@@ -59,7 +53,6 @@ const Page = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Phase 3: Complete transition
-    setIsFirstLoad(false);
   };
 
   return (
@@ -89,11 +82,11 @@ const Page = () => {
         >
           <div className="min-h-screen mt-20">
             <VideoScrollScale
-              transitionImage={videoTransitionImage}
-              isTransitioning={isFirstLoad}
+            // transitionImage={videoTransitionImage}
+            // isTransitioning={isFirstLoad}
             />
           </div>
-          <div className="min-h-screen pt-20">
+          <div className="min-h-screen">
             <CategoryShowcase
               categories={categories}
               title="دسته‌بندی‌های ما"

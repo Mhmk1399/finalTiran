@@ -13,7 +13,6 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [animationKey, setAnimationKey] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
 
@@ -29,16 +28,10 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   }, []);
 
   const isInView = useInView(containerRef, {
-    once: false,
+    once: true,
     margin: "-20%",
     amount: 0.1,
   });
-
-  useEffect(() => {
-    if (isInView) {
-      setAnimationKey((prev) => prev + 1);
-    }
-  }, [isInView]);
   const staticTextPositionsLg = [
     {
       dotPosition: { top: -25, right: 6 },
@@ -195,7 +188,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   return (
     <motion.div
       ref={containerRef}
-      className="relative w-full min-h-full px-4 pt-23 pb-30 md:-mt-43 flex flex-col items-center "
+      className="relative w-full min-h-full px-4 pt-23 pb-30  flex flex-col items-center "
       variants={containerVariants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
@@ -250,7 +243,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
 
             return (
               <motion.div
-                key={`${category.id}-${animationKey}`}
+                key={category.id}
                 custom={index}
                 variants={itemVariants}
                 onHoverStart={() => setHoveredIndex(index)}

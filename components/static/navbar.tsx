@@ -224,7 +224,7 @@ const Navbar = () => {
                     className={`block px-3 py-2 text-base font-medium rounded-md transition-all duration-300 hover:scale-105 ${
                       activeItem === item.href
                         ? "text-black font-bold"
-                        : "text-gray-700 hover:text-black hover:bg-gray-100"
+                        : "text-gray-700 hover:text-black "
                     }`}
                     onMouseEnter={(e) =>
                       gsap.to(e.target, { scale: 1.05, duration: 0.2 })

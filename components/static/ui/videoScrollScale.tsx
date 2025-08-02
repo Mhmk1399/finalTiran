@@ -32,10 +32,15 @@ const videoSlides: VideoSlide[] = [
   },
 ];
 
-export default function VideoScrollScale({ transitionImage, isTransitioning = false }: VideoScrollScaleProps = {}) {
+export default function VideoScrollScale({
+  transitionImage,
+  isTransitioning = false,
+}: VideoScrollScaleProps = {}) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [showTransitionImage, setShowTransitionImage] = useState(isTransitioning);
+  const [showTransitionImage, setShowTransitionImage] =
+    useState(isTransitioning);
   const [videoVisible, setVideoVisible] = useState(!isTransitioning);
+  const [isLoaded, setIsLoaded] = useState(false);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -48,10 +53,10 @@ export default function VideoScrollScale({ transitionImage, isTransitioning = fa
         // Show transition image first
         setShowTransitionImage(true);
         setVideoVisible(false);
-        
+
         // Wait a bit, then start the transition
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
         // Animate transition image scaling down and fading
         if (transitionImageRef.current) {
           gsap.to(transitionImageRef.current, {
@@ -62,19 +67,20 @@ export default function VideoScrollScale({ transitionImage, isTransitioning = fa
             onComplete: () => {
               setShowTransitionImage(false);
               setVideoVisible(true);
-              
+
               // Animate video entrance
               if (videoWrapperRef.current) {
-                gsap.fromTo(videoWrapperRef.current, 
+                gsap.fromTo(
+                  videoWrapperRef.current,
                   { scale: 1.1, opacity: 0 },
                   { scale: 1, opacity: 1, duration: 1, ease: "power2.out" }
                 );
               }
-            }
+            },
           });
         }
       };
-      
+
       animateTransition();
     } else {
       setVideoVisible(true);
@@ -82,6 +88,23 @@ export default function VideoScrollScale({ transitionImage, isTransitioning = fa
   }, [isTransitioning, transitionImage]);
 
   useEffect(() => {
+    if (videoVisible && !isLoaded) {
+      setIsLoaded(true);
+
+      // Initial fade in animation
+      if (videoWrapperRef.current) {
+        gsap.fromTo(
+          videoWrapperRef.current,
+          { opacity: 0 },
+          {
+            opacity: 1,
+            duration: 1.5,
+            ease: "power2.out",
+          }
+        );
+      }
+    }
+
     if (overlayRef.current && videoVisible) {
       gsap.fromTo(
         overlayRef.current,
@@ -90,13 +113,14 @@ export default function VideoScrollScale({ transitionImage, isTransitioning = fa
           opacity: 0,
           duration: 2,
           ease: "power2.out",
+          delay: 0.5,
         }
       );
     }
 
     if (videoWrapperRef.current && videoVisible) {
       gsap.to(videoWrapperRef.current, {
-        scale: 0.1,
+        scale: 0.7,
         ease: "none",
         scrollTrigger: {
           trigger: videoWrapperRef.current,
@@ -106,7 +130,7 @@ export default function VideoScrollScale({ transitionImage, isTransitioning = fa
         },
       });
     }
-  }, [videoVisible]);
+  }, [videoVisible, isLoaded]);
 
   const nextSlide = () => {
     console.log("Next clicked, current:", currentSlide);
@@ -149,7 +173,7 @@ export default function VideoScrollScale({ transitionImage, isTransitioning = fa
 
   return (
     <div
-      className="w-screen h-screen relative"
+      className=" h-screen relative"
       style={{
         backgroundImage: "url('/assets/images/texture.png')",
         backgroundSize: "cover",
@@ -171,10 +195,8 @@ export default function VideoScrollScale({ transitionImage, isTransitioning = fa
       )}
       <div
         ref={videoWrapperRef}
-        className={`relative w-full h-full overflow-hidden transition-opacity duration-1000 ${
-          videoVisible ? "opacity-100" : "opacity-0"
-        }`}
-        style={{ transformOrigin: "center center" }}
+        className="relative w-full h-full overflow-hidden"
+        style={{ transformOrigin: "center center", opacity: 0 }}
       >
         <video
           ref={videoRef}
@@ -206,7 +228,7 @@ export default function VideoScrollScale({ transitionImage, isTransitioning = fa
             e.stopPropagation();
             prevSlide();
           }}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-50 bg-black/50 hover:bg-black/70 text-white p-3  transition-all"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-black/50 hover:bg-black/70 text-white p-3  transition-all"
         >
           ←
         </button>
