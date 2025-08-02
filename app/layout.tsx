@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 import { CartProvider } from "@/context/cartContext";
 import CanonicalUrl from "@/components/global/CanonicalUrl";
 import TopFooterText from "@/components/static/ui/topFooterText";
-import SmoothScrollProvider from "@/components/global/smoothScrollProvider.tsx";
+// import SmoothScrollProvider from "@/components/global/smoothScrollProvider.tsx";
 
 export const metadata: Metadata = {
   title: "فروشگاه تیران | تجربه‌ای متفاوت از خرید آنلاین",
@@ -51,7 +51,7 @@ export default function RootLayout({
   return (
     <html lang="fa">
       <body className={` ${AriaRegular.className} antialiased relative`}>
-        <SmoothScrollProvider />
+        {/* <SmoothScrollProvider /> */}
         <CanonicalUrl />
         <ToastContainer
           position="top-center"
