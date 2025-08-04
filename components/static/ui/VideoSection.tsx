@@ -2,8 +2,8 @@
 import {  useEffect, useState } from "react";
 
 const videoSlides = {
-  src: "/assets/video/videoslide1.mp4",
-  mobileSrc: "/assets/video/watchsm.mp4",
+  src: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
+  mobileSrc: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
   title: "استایل جور دیگر",
 };
 
