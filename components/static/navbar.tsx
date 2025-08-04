@@ -379,8 +379,8 @@ const Navbar = () => {
                 }}
               >
                 <Link
-                  href={`/shop?category=${encodeURIComponent(
-                    category.cat_name
+                  href={`/shop?query=${encodeURIComponent(
+                    category.cat_en_name
                   )}`}
                 >
                   <span

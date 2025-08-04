@@ -10,14 +10,15 @@ import { Category } from "@/types/type";
 
 function ShopPage() {
   const [showIntro, setShowIntro] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
   const [filters, setFilters] = useState({
     categories: [] as string[],
     colors: [] as string[],
     available: false,
   });
-  console.log(filters);
+  console.log(filters)
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -35,16 +36,27 @@ function ShopPage() {
     };
 
     fetchCategories();
+  }, []);
 
-    // Get category parameter from URL
-    const categoryParam = searchParams.get("category");
-    if (categoryParam) {
-      setSelectedCategory(categoryParam);
+  useEffect(() => {
+    const query = searchParams.get("query");
+
+    if (query && categories.length > 0) {
+      // Find parent category by cat_en_name and show its children
+      const parentCategory = categories.find(
+        (cat) => cat.cat_en_name === query
+      );
+      if (parentCategory && parentCategory.children.length > 0) {
+        setFilteredCategories(parentCategory.children);
+      } else {
+        setFilteredCategories([]);
+      }
       setShowIntro(false);
     } else {
-      setSelectedCategory(null);
+      // Show all categories if no query
+      setFilteredCategories(categories);
     }
-  }, [searchParams]);
+  }, [searchParams, categories]);
 
   const handleIntroComplete = () => {
     setShowIntro(false);
@@ -74,6 +86,7 @@ function ShopPage() {
               categories={categories.map((cat) => ({
                 id: cat.id.toString(),
                 label: cat.cat_name,
+                cat_en_name: cat.cat_en_name,
               }))}
               colors={[
                 { id: "red", label: "قرمز" },
@@ -85,7 +98,7 @@ function ShopPage() {
           </div>
 
           {/* Dynamic Product Rows */}
-          {categories.map((category) => (
+          {filteredCategories.map((category) => (
             <div key={category.id} className="mt-12">
               <ProductRow
                 title={category.cat_name}

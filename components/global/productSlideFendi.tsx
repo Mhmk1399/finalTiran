@@ -97,7 +97,6 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
     },
   ];
 
-  // دریافت 5 محصول برای نمایش (2 چپ، 1 مرکز، 2 راست)
   const getVisibleProducts = (index = currentIndex) => {
     return [
       fakeProducts[(index - 2 + fakeProducts.length) % fakeProducts.length],
@@ -112,61 +111,35 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
     if (isAnimating) return;
     setIsAnimating(true);
 
-    // انیمیشن خروج
-    productRefs.current.forEach((card, i) => {
-      if (card) {
-        const targetX = (i - 2) * 500; // موقعیت نهایی
-        const moveOutX = direction === "next" ? -500 : 500;
-
-        gsap.to(card, {
-          x: targetX + moveOutX,
-          opacity: i === 2 ? 0 : 0.5,
-          scale: i === 2 ? 0.8 : 0.7,
-          duration: 0.6,
-          ease: "power3.inOut",
-        });
-      }
+    const tl = gsap.timeline({
+      defaults: {
+        duration: 1,
+        ease: "expo.inOut",
+      },
+      onComplete: () => {
+        setCurrentIndex(newIndex);
+        setIsAnimating(false);
+      },
     });
 
-    // تغییر ایندکس
-    setTimeout(() => {
-      setCurrentIndex(newIndex);
+    productRefs.current.forEach((card, i) => {
+      if (card) {
+        const currentX = (i - 2) * 500;
+        const newX = direction === "next" ? currentX - 500 : currentX + 500;
+        const willBeCenter = direction === "next" ? i === 3 : i === 1;
 
-      // تنظیم موقعیت اولیه برای انیمیشن ورود
-      productRefs.current.forEach((card, i) => {
-        if (card) {
-          const targetX = (i - 2) * 500;
-          const moveInX = direction === "next" ? 500 : -500;
-
-          gsap.set(card, {
-            x: targetX + moveInX,
-            opacity: 0,
-            scale: i === 2 ? 0.8 : 0.7,
-          });
-        }
-      });
-
-      // انیمیشن ورود
-      productRefs.current.forEach((card, i) => {
-        if (card) {
-          const targetX = (i - 2) * 500;
-          const isCenter = i === 2;
-
-          gsap.to(card, {
-            x: targetX,
-            opacity: isCenter ? 1 : 0.7,
-            scale: isCenter ? 1.3 : 0.85,
-            duration: 0.8,
-            ease: "power3.out",
-            onComplete: () => {
-              if (i === productRefs.current.length - 1) {
-                setIsAnimating(false);
-              }
-            },
-          });
-        }
-      });
-    }, 100);
+        tl.to(
+          card,
+          {
+            x: newX,
+            scale: willBeCenter ? 1.2 : 0.8,
+            opacity: willBeCenter ? 1 : 0.6,
+            filter: "blur(0px)",
+          },
+          i * 0.08 // افکت موجی آرام
+        );
+      }
+    });
   };
 
   const nextSlide = () => {
@@ -191,16 +164,14 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
           card,
           {
             x: targetX + 100,
-            opacity: 0,
             scale: 0.8,
           },
           {
             x: targetX,
             opacity: isCenter ? 1 : 0.7,
-            scale: isCenter ? 1.3 : 0.85,
-            duration: 0.8,
-            ease: "power3.out",
-            delay: i * 0.1,
+            scale: isCenter ? 1.2 : 0.8,
+            ease: "expo.out",
+            duration: 1.2,
           }
         );
       }
@@ -211,10 +182,7 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
   const centerProduct = visibleProducts[2];
 
   return (
-    <div
-      className="w-full py-24 md:py-28 lg:py-32 relative overflow-hidden"
-      dir="rtl"
-    >
+    <div className="w-full py-24 md:py-28 lg:py-32 relative overflow-hidden">
       {/* خطوط تزئینی بالا و پایین */}
       <div
         className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-[4rem] md:h-[5rem] lg:h-[6rem] bg-gradient-to-b from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
@@ -249,47 +217,92 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
         </div>
 
         {/* اسلایدر محصولات */}
-        <div
-          ref={sliderRef}
-          className="relative h-[450px] flex justify-center items-center overflow-hidden"
-        >
-          {visibleProducts.map((product, index) => {
-            const position = index - 2; // -2, -1, 0, 1, 2
-            const translateX = position * 500;
-            const isCenter = position === 0;
+        <div className="relative">
+          {/* Left Navigation Button - Desktop Only */}
+          <button
+            onClick={prevSlide}
+            disabled={isAnimating}
+            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-20 w-14 h-14  backdrop-blur-sm  transition-all duration-300 items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg
+              className="w-7 h-7 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
 
-            return (
-              <div
-                ref={(el) => {
-                  productRefs.current[index] = el;
-                }}
-                key={`${product.id}-${index}`}
-                className="product-card absolute will-change-transform"
-                style={{
-                  transform: `translateX(${translateX}px) scale(${
-                    isCenter ? 1.3 : 0.85
-                  })`,
-                  zIndex: isCenter ? 10 : 5 - Math.abs(position),
-                  opacity: isCenter ? 1 : 0.7,
-                }}
-              >
-                <Link href={`/shop/${product.id}`}>
-                  <div className="w-[320px] h-[350px] bg-white shadow-lg  overflow-hidden hover:shadow-2xl transition-all duration-300 relative">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                      priority={isCenter}
-                    />
-                    {isCenter && (
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
-                    )}
-                  </div>
-                </Link>
-              </div>
-            );
-          })}
+          {/* Right Navigation Button - Desktop Only */}
+          <button
+            onClick={nextSlide}
+            disabled={isAnimating}
+            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-20 w-14 h-14  backdrop-blur-sm  transition-all duration-300 items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg
+              className="w-7 h-7 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+
+          <div
+            ref={sliderRef}
+            className="relative h-[450px] flex justify-center items-center overflow-hidden"
+          >
+            {visibleProducts.map((product, index) => {
+              const position = index - 2; // -2, -1, 0, 1, 2
+              const translateX = position * 500;
+              const isCenter = position === 0;
+
+              return (
+                <div
+                  ref={(el) => {
+                    productRefs.current[index] = el;
+                  }}
+                  key={`product-${product.id}`}
+                  className="product-card absolute will-change-transform"
+                  style={{
+                    transform: `translateX(${translateX}px) scale(${
+                      isCenter ? 1.2 : 0.8
+                    })`,
+                    zIndex: isCenter ? 10 : 5 - Math.abs(position),
+                    opacity: isCenter ? 1 : 0.7,
+                    transformOrigin: "center center",
+                  }}
+                >
+                  <Link href={`/shop/${product.id}`}>
+                    <div className="w-[320px] h-[350px] bg-white shadow-lg  overflow-hidden hover:shadow-2xl transition-all duration-300 relative">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-cover"
+                        priority={isCenter}
+                      />
+                      {isCenter && (
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
+                      )}
+                    </div>
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* اطلاعات محصول مرکزی */}
@@ -303,74 +316,58 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
             {centerProduct.price} تومان
           </p>
           <div className="flex justify-center gap-3 mt-4">
-            {centerProduct.colors.map((color, i) => (
+            {centerProduct.colors.map((color, index) => (
               <div
-                key={i}
-                className="w-5 h-5 rounded-full border-2 border-gray-300 transition-all duration-200 hover:scale-125 hover:border-gray-600 cursor-pointer shadow-sm will-change-transform"
+                key={index}
+                className="w-4 h-4 rounded-full border-2 border-gray-300"
                 style={{ backgroundColor: color }}
-                onMouseEnter={(e) => {
-                  gsap.to(e.currentTarget, {
-                    scale: 1.3,
-                    duration: 0.2,
-                    ease: "power2.out",
-                  });
-                }}
-                onMouseLeave={(e) => {
-                  gsap.to(e.currentTarget, {
-                    scale: 1,
-                    duration: 0.2,
-                    ease: "power2.out",
-                  });
-                }}
               />
             ))}
           </div>
         </div>
-      </div>
 
-      {/* دکمه‌های ناوبری */}
-      <button
-        onClick={prevSlide}
-        disabled={isAnimating}
-        className="absolute left-12 bottom-20 md:top-1/2 -translate-y-1/2 z-50 w-12 h-12 flex items-center justify-center rounded-full  hover:bg-white  transition-all duration-300 hover:scale-110 focus:outline-none"
-        aria-label="محصول قبلی"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 text-gray-800"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-      </button>
-      <button
-        onClick={nextSlide}
-        disabled={isAnimating}
-        className="absolute right-12 bottom-20 md:top-1/2 -translate-y-1/2 z-50 w-12 h-12 flex items-center justify-center rounded-full  hover:bg-white  transition-all duration-300 hover:scale-110 focus:outline-none"
-        aria-label="محصول بعدی"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 text-gray-800"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
-      </button>
+        {/* Mobile Navigation Buttons */}
+        <div className="flex md:hidden justify-center gap-8 mt-8">
+          <button
+            onClick={prevSlide}
+            disabled={isAnimating}
+            className="w-12 h-12  transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg
+              className="w-6 h-6 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+          <button
+            onClick={nextSlide}
+            disabled={isAnimating}
+            className="w-12 h-12  transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg
+              className="w-6 h-6 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

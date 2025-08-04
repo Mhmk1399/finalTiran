@@ -26,7 +26,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
       opacity: 0,
       y: -20,
       height: 0,
-      transition: { duration: 0.2, ease: "easeInOut"as const },
+      transition: { duration: 0.2, ease: "easeInOut" as const },
     },
     visible: {
       opacity: 1,
@@ -157,10 +157,12 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                             onMouseLeave={() => setHoveredSubcategory(null)}
                           >
                             <Link
-                              href={`/category/${subcategory.slug}`}
+                              href={`/shop?query=${subcategory.cat_en_name}`}
                               className="text-gray-900 font-medium text-[12px] mb-3 hover:text-black transition-all w-fit duration-300  relative group"
                             >
-                              <span className="inline-block">{subcategory.cat_name}</span>
+                              <span className="inline-block">
+                                {subcategory.cat_name}
+                              </span>
                               <span className="absolute top-8 right-0 w-0 h-[1px] bg-black transition-all duration-300 group-hover:w-full -translate-y-1/2"></span>
                             </Link>
 

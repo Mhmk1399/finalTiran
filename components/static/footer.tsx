@@ -348,8 +348,8 @@ const Footer = () => {
                       }}
                     >
                       <Link
-                        href={`/shop?category=${encodeURIComponent(
-                          category.cat_name
+                        href={`/shop?query=${encodeURIComponent(
+                          category.cat_en_name
                         )}`}
                         className="group flex items-center text-gray-600 hover:text-gray-900 transition-all duration-300 text-sm"
                       >

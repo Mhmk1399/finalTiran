@@ -1,137 +1,208 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { videoData } from "@/lib/homePageData";
-import { VideoItem } from "@/types/type";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
+import { videoData, getAllVideos } from "@/lib/homePageData";
+import { VideoItem, CategoryData } from "@/types/type";
 import Image from "next/image";
 
 const VideoShowcase = () => {
-  const [activeVideo, setActiveVideo] = useState<VideoItem>(videoData[0]);
-  const [fade, setFade] = useState(true); // برای افکت
+  const searchParams = useSearchParams();
+  const query = searchParams.get("query");
+  const [currentVideos, setCurrentVideos] = useState<VideoItem[]>([]);
+  const [currentImage, setCurrentImage] = useState<string>("");
+  const [activeVideoIndex, setActiveVideoIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const marqueeRef = useRef<HTMLDivElement>(null);
-
-  const infiniteVideos = [...videoData, ...videoData, ...videoData];
-
-  // ✅ اسلاید اتوماتیک فقط در موبایل/تبلت با fade
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth < 1024) {
-      let currentIndex = 0;
-      const interval = setInterval(() => {
-        // اول fade-out
-        setFade(false);
-        setTimeout(() => {
-          currentIndex = (currentIndex + 1) % videoData.length;
-          setActiveVideo(videoData[currentIndex]);
-          // بعد از تغییر عکس fade-in
-          setFade(true);
-        }, 100); // زمان fade-out
-      }, 4000); // هر ۳ ثانیه تغییر
+    setIsMobile(window.innerWidth < 1024);
+  }, []);
 
-      return () => clearInterval(interval);
+  useEffect(() => {
+    if (query && videoData[query as keyof typeof videoData]) {
+      const categoryData = videoData[
+        query as keyof typeof videoData
+      ] as CategoryData;
+      const videos = categoryData.videos.map((video, index) => ({
+        id: `${categoryData.id}-${index}`,
+        videoUrl: video,
+        categoryId: categoryData.id,
+        categoryName: categoryData.name,
+        image: categoryData.image,
+      }));
+      setCurrentVideos(videos);
+      setCurrentImage(categoryData.image);
+    } else {
+      const allVideos = getAllVideos();
+      setCurrentVideos(allVideos);
+      setCurrentImage(allVideos[0]?.image || "");
     }
-  }, []);
+    setActiveVideoIndex(0);
+  }, [query]);
 
-  // ✅ marquee auto-scroll مثل قبل
+  // Auto-play all videos in marquee
   useEffect(() => {
-    let animationFrame: number;
-    const scrollMarquee = () => {
-      if (marqueeRef.current) {
-        marqueeRef.current.scrollTop += 0.5;
-        if (
-          marqueeRef.current.scrollTop + marqueeRef.current.clientHeight >=
-          marqueeRef.current.scrollHeight
-        ) {
-          marqueeRef.current.scrollTop = 0;
+    if (!isMobile) {
+      videoRefs.current.forEach((video) => {
+        if (video) {
+          video.play().catch(() => {});
         }
-      }
-      animationFrame = requestAnimationFrame(scrollMarquee);
-    };
-    animationFrame = requestAnimationFrame(scrollMarquee);
+      });
+    }
+  }, [currentVideos, isMobile]);
 
-    const el = marqueeRef.current;
-    const pause = () => cancelAnimationFrame(animationFrame);
-    const resume = () =>
-      (animationFrame = requestAnimationFrame(scrollMarquee));
+  // Marquee scroll
+  useEffect(() => {
+    if (!isMobile && marqueeRef.current && currentVideos.length > 0) {
+      let animationId: number;
+      const scroll = () => {
+        if (marqueeRef.current) {
+          marqueeRef.current.scrollTop += 0.5;
+          if (
+            marqueeRef.current.scrollTop >=
+            marqueeRef.current.scrollHeight - marqueeRef.current.clientHeight
+          ) {
+            marqueeRef.current.scrollTop = 0;
+          }
+        }
+        animationId = requestAnimationFrame(scroll);
+      };
+      animationId = requestAnimationFrame(scroll);
+      return () => cancelAnimationFrame(animationId);
+    }
+  }, [isMobile, currentVideos]);
 
-    el?.addEventListener("mouseenter", pause);
-    el?.addEventListener("mouseleave", resume);
+  const handleVideoClick = useCallback(
+    (video: VideoItem, index: number) => {
+      setActiveVideoIndex(index % currentVideos.length);
+      if (!isMobile) setCurrentImage(video.image);
+    },
+    [currentVideos.length, isMobile]
+  );
 
-    return () => {
-      cancelAnimationFrame(animationFrame);
-      el?.removeEventListener("mouseenter", pause);
-      el?.removeEventListener("mouseleave", resume);
-    };
-  }, []);
-
-  const handleVideoSelect = (video: VideoItem) => {
-    setActiveVideo(video);
+  const nextVideo = () => {
+    setActiveVideoIndex((prev) => (prev + 1) % currentVideos.length);
   };
+
+  const prevVideo = () => {
+    setActiveVideoIndex(
+      (prev) => (prev - 1 + currentVideos.length) % currentVideos.length
+    );
+  };
+
+  if (currentVideos.length === 0) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
+  const infiniteVideos = [...currentVideos];
 
   return (
     <div className="relative h-screen bg-white/90 flex z-40" dir="rtl">
-      {/* Main Image Section */}
-      <div className="relative w-full lg:w-4/5">
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src={activeVideo.thumbnail}
-            alt={activeVideo.title}
-            width={4000}
-            height={3000}
-            className={`w-full h-full object-cover transition-opacity duration-500 ${
-              fade ? "opacity-100" : "opacity-0"
-            }`}
+      {isMobile ? (
+        /* Mobile: Full screen video only */
+        <div className="relative w-full">
+          <video
+            key={currentVideos[activeVideoIndex]?.id}
+            src={currentVideos[activeVideoIndex]?.videoUrl}
+            className="w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
           />
+          {/* Mobile Navigation */}
+          <button
+            onClick={prevVideo}
+            className="absolute left-4 text-xl bottom-10 -translate-y-1/2  text-white p-3  hover:bg-black/70 transition-colors"
+          >
+            ←
+          </button>
+          <button
+            onClick={nextVideo}
+            className="absolute right-4 text-xl bottom-10 -translate-y-1/2  text-white p-3  hover:bg-black/70 transition-colors"
+          >
+            →
+          </button>
         </div>
-      </div>
-
-      {/* Marquee Section - فقط دسکتاپ */}
-      <div className="hidden lg:block relative w-[35%] bg-white/90 md:w-1/5 overflow-y-auto max-h-full py-4">
-        <div
-          ref={marqueeRef}
-          className="relative z-10 flex flex-col gap-3 overflow-y-auto h-full   scrollbar-thin scrollbar-thumb-white/20"
-        >
-          {infiniteVideos.map((video, index) => (
+      ) : (
+        /* Desktop: Image + Video Marquee */
+        <>
+          <div className="relative w-4/5">
+            <Image
+              src={currentImage}
+              alt="Category Image"
+              width={4000}
+              height={3000}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="relative w-1/5 bg-white/90 overflow-hidden">
             <div
-              key={`marquee-${index}`}
-              className={`flex-shrink-0 pl-1 pr-3 cursor-pointer transition-all duration-300 ${
-                activeVideo.id === video.id
-                  ? "opacity-100  transform"
-                  : "opacity-90 hover:opacity-100 "
-              }`}
-              onClick={() => handleVideoSelect(video)}
-              style={{ minHeight: "120px" }}
+              ref={marqueeRef}
+              className="flex flex-col gap-1 pr-2 h-full overflow-y-auto w-full py-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
+              style={{ height: "100vh" }}
             >
-              <div className="relative group w-full">
-                <div className="w-20 h-30 md:w-[100%] md:h-auto md:aspect-[3/4] overflow-hidden transition-shadow duration-300">
-                  <img
-                    src={video.thumbnail}
-                    alt={video.title}
-                    className="w-full h-full object-cover transition-transform duration-300"
-                  />
+              {infiniteVideos.map((video, index) => (
+                <div
+                  key={`${video.id}-${index}`}
+                  className={`flex-shrink-0 cursor-pointer transition-opacity duration-300 ${
+                    activeVideoIndex === index % currentVideos.length
+                      ? "opacity-100"
+                      : "opacity-80"
+                  }`}
+                  onClick={() => handleVideoClick(video, index)}
+                  style={{ minHeight: "150px" }}
+                >
+                  <div className="w-full aspect-[3/4] overflow-hidden">
+                    <video
+                      ref={(el) => {
+                        if (el) videoRefs.current[index] = el;
+                      }}
+                      src={video.videoUrl}
+                      className="w-full h-full object-cover"
+                      muted
+                      loop
+                      playsInline
+                      autoPlay
+                    />
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-
-      <style jsx>{`
-        .scrollbar-thin::-webkit-scrollbar {
-          width: 6px;
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-          background-color: rgba(255, 255, 255, 0.2);
-          border-radius: 3px;
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-          background-color: rgba(255, 255, 255, 0.4);
-        }
-        .scrollbar-thin::-webkit-scrollbar-track {
-          background-color: transparent;
-        }
-      `}</style>
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
 export default VideoShowcase;
+
+// Add scrollbar styles
+const styles = `
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+`;
+
+if (typeof document !== "undefined") {
+  const styleSheet = document.createElement("style");
+  styleSheet.textContent = styles;
+  document.head.appendChild(styleSheet);
+}

@@ -138,46 +138,81 @@ export const mediaItems: MediaItem[] = [
   },
 ];
 
-export const videoData = [
-  {
-    id: "1",
-    videoUrl:
-      "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
-    thumbnail: "/assets/images/shop/shop2.jpg",
-    title: "Spring Collection 2024",
+export const videoData = {
+  bag: {
+    id: "bag",
+    name: "لوازم الکترونیکی",
+    image: "/assets/images/category/kif.webp",
+    videos: [
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/O3Z04zGeE5/origin_IJf0di4OYvvJhHjJFRtQIjuAemFig8DxrCihM9wy.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/XoVw54QmP5/origin_qPMQD1SVr7HZ5G7w7UBy7nOKB4jPj9pLiLDhRCgr.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/gK3PxZN5nW/origin_8u8JfSj38tR4lKMRs7IdhQI6Yp5HTAyqCFvfomBS.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/zr5nG7nbPj/origin_V4PNZ2ZjAGyl2Lx5qExp1zIh2QoTEKZcErHTdQWA.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/kGD8AoP1Qn/origin_LQrmBjqOPDEfHAPqLohOvdioKMCKBNSiDalpyFSm.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/DPVzbjzabA/origin_12KYUIAEVmW0MwNy2u5CtJfwqCeR7sXbsgZCezkv.mp4",
+    ],
   },
-  {
-    id: "2",
-    videoUrl:
-      "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",
-    thumbnail: "/assets/images/shop/shop1.jpg",
-    title: "Urban Essentials",
+  lethear: {
+    id: "lethear",
+    name: "مد و پوشاک",
+    image: "/assets/images/category/charmtarkibi.JPG",
+    videos: [
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/Re0peLBzZk/origin_ahqilU4lhHK5T6eOr2aPLs0x3S5ygp544vVDoj9w.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/MKkJR2JvDe/origin_hRZuBzcSM7GicgwjmznDfgoLOsH3faZfchLbSpFu.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/JgkjrgQM1L/origin_cmnAgrjNDQIW1v9QWIRJylVyk5sZLLZ1EUVqhcL6.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/5V781E8DXx/origin_2OqNGeKXKY0dWC3MGKckxTOUwdq8TX53xfZeg64r.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/omVW6a42yg/origin_uIH4n4EzoCXApKyvhslvE8etROwklphSCjndLewQ.mp4",
+    ],
   },
-  {
-    id: "3",
-    videoUrl:
-      "https://file-examples.com/storage/fe68c1b7c1a9d6c2ccf1e5f/2017/10/file_example_MP4_1280_10MG.mp4",
-    thumbnail: "/assets/images/shop/shop3.jpg",
-    title: "Sustainable Fashion",
+  accesories: {
+    id: "accesories",
+    name: "خانه و آشپزخانه",
+    image: "/assets/images/category/accessory.webp",
+    videos: [
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/n16rERZ79E/origin_7m1xWe9ioFlRNpgmt9hqH50sfFYIJEcR4vIS4I7z.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/O53KQP7kBr/origin_KUVfwBmUpB243EEb3kBSKZVpD3t5bm9y5WonfQU0.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aXqzDXzJAn/origin_JJ1HbdyxQ0CdAAuyN9VV0Qm1Ymszl9TBdS1ZhDXo.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/zO21mvkNbQ/origin_HOoRyHW3x091EXpXcm3SYWXSFZXEHwSErdDFxZ8Y.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/zlavyzbdEj/origin_3Gj2CXXw3WiG024StlsqHJhe9wEecFSRQYfXJOjV.mp4",
+    ],
   },
-  {
-    id: "4",
-    videoUrl: "https://media.w3.org/2010/05/sintel/trailer_hd.mp4",
-    thumbnail: "/assets/images/shop/shop4.jpg",
-    title: "Minimalist Approach",
+  board: {
+    id: "board",
+    name: "ورزش و سرگرمی",
+    image: "/assets/images/category/tablo.JPG",
+    videos: [
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    ],
   },
-  {
-    id: "5",
-    videoUrl:
-      "https://www.html5rocks.com/en/tutorials/video/basics/devstories.mp4",
-    thumbnail: "/assets/images/shop/shop5.jpg",
-    title: "Artisan Craftsmanship",
+  gift: {
+    id: "gift",
+    name: "کتاب و فرهنگ",
+    image: "/assets/images/category/gift.JPG",
+    videos: [
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/5RNEBLJGwB/origin_qzGauH5bh7biHgh63gfYURp7J8XDMMtQ8FECq5hd.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/XPWZ1knG8g/origin_pNOWoAo8XWYEt1PUGtD7fE7efFbh3TGFdJgUkEKI.mp4",
+    ],
   },
-  {
-    id: "6",
-    videoUrl:
-      "https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4",
-    thumbnail: "/assets/images/shop/shop6.jpg",
-    title: "Future Forward",
+  "home and life style": {
+    id: "home and life style",
+    name: "اسباب بازی",
+    image: "/assets/images/category/sabkzendegi.jpg",
+    videos: [
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/BAmpW02vDr/origin_5Wux2Bb51WBrRG8YN1xrjGogHsxqNjtev2p7sruu.mp4",
+    ],
   },
-];
+};
+
+export const getAllVideos = () => {
+  return Object.values(videoData).flatMap((category) =>
+    category.videos.map((video, index) => ({
+      id: `${category.id}-${index}`,
+      videoUrl: video,
+      categoryId: category.id,
+      categoryName: category.name,
+      image: category.image,
+    }))
+  );
+};

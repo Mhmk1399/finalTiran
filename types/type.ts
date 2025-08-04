@@ -476,8 +476,16 @@ export interface Position {
 export interface VideoItem {
   id: string;
   videoUrl: string;
-  thumbnail: string;
-  title: string;
+  categoryId: string;
+  categoryName: string;
+  image: string;
+}
+
+export interface CategoryData {
+  id: string;
+  name: string;
+  image: string;
+  videos: string[];
 }
 
 // ------------------------------------ Orders dashboard ------------------------------

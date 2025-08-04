@@ -10,22 +10,49 @@ interface DynamicFashionGridProps {
 const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
   // Sample fashion images
   const fashionImages = [
-    "/assets/images/bluesky.jpg",
-    "/assets/images/ahoramazda.jpg",
-    "/assets/images/lether.jpg",
-    "/assets/images/purpleroof.jpg",
-    "/assets/images/unicorn.jpg",
-    "/assets/images/zaferon.jpg",
-    "/assets/images/shop/shop2.jpg",
-    "/assets/images/shop/shop1.jpg",
-    "/assets/images/shop/shop3.jpg",
-    "/assets/images/shop/shop4.jpg",
-     "/assets/images/shop/shop5.jpg",
-     "/assets/images/shop/shop6.jpg",
+    "/assets/images/grid/1.jpg",
+    "/assets/images/grid/2.jpg",
+    "/assets/images/grid/3.jpg",
+    "/assets/images/grid/4.jpg",
+    "/assets/images/grid/5.jpg",
+    "/assets/images/grid/6.jpg",
+    "/assets/images/grid/7.jpg",
+    "/assets/images/grid/8.jpg",
+    "/assets/images/grid/9.jpg",
+    "/assets/images/grid/10.jpg",
+    "/assets/images/grid/11.jpg",
+    "/assets/images/grid/12.jpg",
+    "/assets/images/grid/13.jpg",
+    "/assets/images/grid/14.jpg",
+    "/assets/images/grid/15.jpg",
+    "/assets/images/grid/16.jpg",
+    "/assets/images/grid/17.jpg",
+    "/assets/images/grid/18.jpg",
+    "/assets/images/grid/19.jpg",
+    "/assets/images/grid/20.jpg",
+    "/assets/images/grid/21.jpg",
+    "/assets/images/grid/22.jpg",
+    "/assets/images/grid/23.jpg",
+    "/assets/images/grid/24.jpg",
+    "/assets/images/grid/25.jpg",
+    "/assets/images/grid/26.jpg",
+    "/assets/images/grid/27.jpg",
+    "/assets/images/grid/28.jpg",
+    "/assets/images/grid/29.jpg",
+    "/assets/images/grid/30.jpg",
+    "/assets/images/grid/31.jpg",
+    "/assets/images/grid/32.jpg",
+    "/assets/images/grid/33.jpg",
+    "/assets/images/grid/34.jpg",
+    "/assets/images/grid/35.jpg",
+    "/assets/images/grid/36.jpg",
+    "/assets/images/grid/37.jpg",
+    "/assets/images/grid/38.jpg",
+   
   ];
 
   const [currentImages, setCurrentImages] = useState<string[]>([]);
-  const [centerImage] = useState("/assets/images/lether.jpg"); // Static center image
+  const [centerImage] = useState("/assets/images/center.webpg"); // Static center image
 
   // Animation states
   const [isRapidChanging, setIsRapidChanging] = useState(false);
@@ -44,7 +71,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     const blocks: string[][] = [];
     for (let i = 0; i < 9; i++) {
       const shuffled = [...fashionImages].sort(() => 0.5 - Math.random());
-      blocks.push(shuffled.slice(0, 4));
+      blocks.push(shuffled.slice(0, 8));
     }
     return blocks;
   };
@@ -54,7 +81,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     const getRandomImages = () => {
       const shuffled = [...fashionImages].sort(() => 0.5 - Math.random());
       const images = shuffled.slice(0, 9);
-      images[4] = "/assets/images/lether.jpg"; // Keep center image static
+      images[4] = "/assets/images/center.webp"; // Keep center image static
       return images;
     };
     const initialImages = getRandomImages();
@@ -136,7 +163,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
         const newImages = [...prevImages];
         for (let i = 0; i < 9; i++) {
           if (i === 4) {
-            newImages[i] = "/assets/images/lether.jpg"; // Keep center static
+            newImages[i] = "/assets/images/center.webp"; // Keep center static
           } else if (blockImages[i] && blockImages[i].length > 0) {
             const randomIndex = Math.floor(
               Math.random() * blockImages[i].length
