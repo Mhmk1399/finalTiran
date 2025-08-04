@@ -48,12 +48,10 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     "/assets/images/grid/36.jpg",
     "/assets/images/grid/37.jpg",
     "/assets/images/grid/38.jpg",
-   
   ];
 
   const [currentImages, setCurrentImages] = useState<string[]>([]);
   const [centerImage] = useState("/assets/images/center.webpg"); // Static center image
-
   // Animation states
   const [isRapidChanging, setIsRapidChanging] = useState(false);
   const [showBlockHide, setShowBlockHide] = useState(false);
@@ -118,7 +116,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
       // Step 4: Center image opacity animation
       setShowCenterOpacity(true);
       await new Promise((resolve) => setTimeout(resolve, 100));
-      
+
       // // Hold center image and prepare for video transition
       // await new Promise((resolve) => setTimeout(resolve, 1000));
       // setFinalCenterImage(centerImage);
@@ -206,9 +204,9 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
       transition={{ duration: 1, ease: "easeInOut" }}
       className="relative inset-0 h-full z-100000000"
       dir="rtl"
-      style={{
-        background: `url('/assets/images/texture.png')`,
-      }}
+      // style={{
+      //   background: `url('/assets/images/texture.png')`,
+      // }}
     >
       {/* Top Vertical Line - Coming down 30px from top */}
       <motion.div
@@ -271,10 +269,12 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                           src={image}
                           alt={`Fashion ${index + 1}`}
                           className={`w-full h-full object-cover transition-all duration-1000 ${
-                            index === 4 && isTransitioning ? "scale-110 brightness-110" : ""
+                            index === 4 && isTransitioning
+                              ? "scale-110 brightness-110"
+                              : ""
                           }`}
                         />
-                        
+
                         {/* Overlay for center image during transition */}
                         {index === 4 && isTransitioning && (
                           <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20 animate-pulse" />
