@@ -32,7 +32,6 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/22.webp?versionId=",
-    // "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/23.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/24.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/25.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
@@ -114,14 +113,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
       // Step 4: Center image opacity animation
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // // Hold center image and prepare for video transition
-      // await new Promise((resolve) => setTimeout(resolve, 1000));
-      // setFinalCenterImage(centerImage);
 
-      // // Notify parent about transition start
-      // if (onTransitionStart) {
-      //   onTransitionStart();
-      // }
 
       // Start transition to video component
       setIsTransitioning(true);
@@ -173,16 +165,16 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     return () => clearInterval(rapidInterval);
   }, [isRapidChanging, blockImages]);
 
-
   return (
     <div
-      className={`relative inset-0 h-full z-100000000 transition-opacity duration-1000 ${
+      className={`fixed inset-0 w-full h-full min-h-screen bg-white z-[9999] transition-opacity duration-1000 ${
         isTransitioning ? "opacity-0" : "opacity-100"
       }`}
       dir="rtl"
+      style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0 }}
     >
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-25 bg-gradient-to-b from-transparent to-gray-400 z-10" />
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-30 md:h-25 bg-gradient-to-t from-transparent to-gray-400 z-10" />
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-25 border-l border-dashed border-gray-400 z-10" />
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-30 md:h-25 border-l border-dashed border-gray-400 z-10" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-none flex items-center justify-center">
