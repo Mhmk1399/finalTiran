@@ -1,3 +1,4 @@
+import SmoothScrollProvider from "@/components/global/smoothScrollProvider.tsx";
 import HelpContainer from "@/components/static/help-container";
 import { Metadata } from "next";
 
@@ -63,6 +64,7 @@ export default function HelpPage() {
   return (
     <main>
       <HelpContainer />
+      <SmoothScrollProvider />
     </main>
   );
 }

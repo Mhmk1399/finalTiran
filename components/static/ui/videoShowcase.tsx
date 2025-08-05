@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { videoData, getAllVideos } from "@/lib/homePageData";
 import { VideoItem, CategoryData } from "@/types/type";
@@ -12,8 +12,6 @@ const VideoShowcase = () => {
   const [currentImage, setCurrentImage] = useState<string>("");
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const marqueeRef = useRef<HTMLDivElement>(null);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 1024);
@@ -41,45 +39,10 @@ const VideoShowcase = () => {
     setActiveVideoIndex(0);
   }, [query]);
 
-  // Auto-play all videos in marquee
-  useEffect(() => {
-    if (!isMobile) {
-      videoRefs.current.forEach((video) => {
-        if (video) {
-          video.play().catch(() => {});
-        }
-      });
-    }
-  }, [currentVideos, isMobile]);
-
-  // Marquee scroll
-  useEffect(() => {
-    if (!isMobile && marqueeRef.current && currentVideos.length > 0) {
-      let animationId: number;
-      const scroll = () => {
-        if (marqueeRef.current) {
-          marqueeRef.current.scrollTop += 0.5;
-          if (
-            marqueeRef.current.scrollTop >=
-            marqueeRef.current.scrollHeight - marqueeRef.current.clientHeight
-          ) {
-            marqueeRef.current.scrollTop = 0;
-          }
-        }
-        animationId = requestAnimationFrame(scroll);
-      };
-      animationId = requestAnimationFrame(scroll);
-      return () => cancelAnimationFrame(animationId);
-    }
-  }, [isMobile, currentVideos]);
-
-  const handleVideoClick = useCallback(
-    (video: VideoItem, index: number) => {
-      setActiveVideoIndex(index % currentVideos.length);
-      if (!isMobile) setCurrentImage(video.image);
-    },
-    [currentVideos.length, isMobile]
-  );
+  const handleVideoClick = (video: VideoItem, index: number) => {
+    setActiveVideoIndex(index % currentVideos.length);
+    if (!isMobile) setCurrentImage(video.image);
+  };
 
   const nextVideo = () => {
     setActiveVideoIndex((prev) => (prev + 1) % currentVideos.length);
@@ -94,12 +57,10 @@ const VideoShowcase = () => {
   if (currentVideos.length === 0) {
     return (
       <div className="h-screen flex items-center justify-center">
-        Loading...
+        ... درحال بارگذاری
       </div>
     );
   }
-
-  const infiniteVideos = [...currentVideos];
 
   return (
     <div className="relative h-screen bg-white/90 flex z-40" dir="rtl">
@@ -143,32 +104,31 @@ const VideoShowcase = () => {
           </div>
           <div className="relative w-1/5 bg-white/90 overflow-hidden">
             <div
-              ref={marqueeRef}
-              className="flex flex-col gap-1 pr-2 h-full overflow-y-auto w-full py-4 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200"
+              className="flex flex-col gap-2 pr-2 h-full overflow-y-auto w-full py-4"
               style={{ height: "100vh" }}
             >
-              {infiniteVideos.map((video, index) => (
+              {currentVideos.map((video, index) => (
                 <div
-                  key={`${video.id}-${index}`}
-                  className={`flex-shrink-0 cursor-pointer transition-opacity duration-300 ${
-                    activeVideoIndex === index % currentVideos.length
+                  key={video.id}
+                  className={`flex-shrink-0 cursor-pointer transition-opacity duration-200 ${
+                    activeVideoIndex === index
                       ? "opacity-100"
-                      : "opacity-80"
+                      : "brightness-75 blur-[1px]"
                   }`}
                   onClick={() => handleVideoClick(video, index)}
                   style={{ minHeight: "150px" }}
                 >
-                  <div className="w-full aspect-[3/4] overflow-hidden">
+                  <div className="w-full aspect-[3/4] overflow-hidden bg-gray-200">
                     <video
-                      ref={(el) => {
-                        if (el) videoRefs.current[index] = el;
-                      }}
                       src={video.videoUrl}
                       className="w-full h-full object-cover"
                       muted
                       loop
                       playsInline
-                      autoPlay
+                      preload="metadata"
+                      onMouseEnter={(e) => e.currentTarget.play()}
+                      onMouseLeave={(e) => e.currentTarget.pause()}
+                      onClick={(e) => e.currentTarget.play()}
                     />
                   </div>
                 </div>
@@ -182,27 +142,3 @@ const VideoShowcase = () => {
 };
 
 export default VideoShowcase;
-
-// Add scrollbar styles
-const styles = `
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 8px;
-  }
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-  }
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-  }
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-`;
-
-if (typeof document !== "undefined") {
-  const styleSheet = document.createElement("style");
-  styleSheet.textContent = styles;
-  document.head.appendChild(styleSheet);
-}

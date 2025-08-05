@@ -1,3 +1,4 @@
+import SmoothScrollProvider from "@/components/global/smoothScrollProvider.tsx";
 import ContactContainer from "@/components/static/contact-container";
 import { Metadata } from "next";
 
@@ -61,6 +62,7 @@ export default function ContactPage() {
   return (
     <main>
       <ContactContainer />
+      <SmoothScrollProvider />
     </main>
   );
 }

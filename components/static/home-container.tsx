@@ -39,20 +39,10 @@ const Page = () => {
     // Mark as seen
     localStorage.setItem("tiran-fashion-grid-seen", "true");
 
-    // Set the transition image for video component
-
-    // Phase 1: Fade out grid
+    // Immediate transition - no delay
     setShowGrid(false);
-
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Phase 2: Switch to showcase with video transition
     setCurrentComponent("showcase");
     setShowShowcase(true);
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Phase 3: Complete transition
   };
 
   return (

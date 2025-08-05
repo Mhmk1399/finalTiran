@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface DynamicFashionGridProps {
   onComplete?: (centerImage: string) => void;
@@ -48,7 +48,6 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/36.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/37.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/38.webp?versionId=",
-  
   ];
 
   const [currentImages, setCurrentImages] = useState<string[]>([]);
@@ -57,7 +56,6 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
   const [isRapidChanging, setIsRapidChanging] = useState(false);
   const [showBlockHide, setShowBlockHide] = useState(false);
   const [showCenterScale, setShowCenterScale] = useState(false);
-  const [showCenterOpacity, setShowCenterOpacity] = useState(false);
   const [showVideoTransition, setShowVideoTransition] = useState(false);
   const [blockImages, setBlockImages] = useState<string[][]>([]);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -93,7 +91,6 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     const startAnimationSequence = async () => {
       // Reset all states
       setShowVideoTransition(false);
-      setShowCenterOpacity(false);
       setShowCenterScale(false);
       setShowBlockHide(false);
 
@@ -115,7 +112,6 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       // Step 4: Center image opacity animation
-      setShowCenterOpacity(true);
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       // // Hold center image and prepare for video transition
@@ -177,61 +173,16 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     return () => clearInterval(rapidInterval);
   }, [isRapidChanging, blockImages]);
 
-  // Individual block hide animations
-  const getBlockHideStyle = (index: number) => {
-    if (!showBlockHide || index === 4) return {};
-
-    const hideAnimations = [
-      { transform: "translateY(-100px) rotate(-15deg)", opacity: 0 }, // top-left
-      { transform: "translateY(-120px)", opacity: 0 }, // top-center
-      { transform: "translateY(-100px) rotate(15deg)", opacity: 0 }, // top-right
-      { transform: "translateX(-100px) rotate(-10deg)", opacity: 0 }, // middle-left
-      {}, // center - no animation
-      { transform: "translateX(100px) rotate(10deg)", opacity: 0 }, // middle-right
-      { transform: "translateY(100px) rotate(15deg)", opacity: 0 }, // bottom-left
-      { transform: "translateY(120px)", opacity: 0 }, // bottom-center
-      { transform: "translateY(100px) rotate(-15deg)", opacity: 0 }, // bottom-right
-    ];
-
-    return hideAnimations[index];
-  };
 
   return (
-    <motion.div
-      initial={{ opacity: 1 }}
-      animate={{
-        opacity: isTransitioning ? 0 : 1,
-      }}
-      transition={{ duration: 1, ease: "easeInOut" }}
-      className="relative inset-0 h-full z-100000000"
+    <div
+      className={`relative inset-0 h-full z-100000000 transition-opacity duration-1000 ${
+        isTransitioning ? "opacity-0" : "opacity-100"
+      }`}
       dir="rtl"
-      // style={{
-      //   background: `url('/assets/images/texture.png')`,
-      // }}
     >
-      {/* Top Vertical Line - Coming down 30px from top */}
-      <motion.div
-        className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-25 bg-gradient-to-b from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, #9ca3af 3px, #9ca3af 6px)",
-          background: "none",
-        }}
-      >
-        {/* Decorative bottom dot */}
-      </motion.div>
-
-      {/* Bottom Vertical Line - Coming up 30px from bottom */}
-      <motion.div
-        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-30 md:h-25 bg-gradient-to-t from-transparent to-gray-400 z-10 border-l border-dashed border-gray-400"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(to top, transparent 0px, transparent 3px, #9ca3af 3px, #9ca3af 6px)",
-          background: "none",
-        }}
-      >
-        {/* Decorative top dot */}
-      </motion.div>
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-px h-25 bg-gradient-to-b from-transparent to-gray-400 z-10" />
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-px h-30 md:h-25 bg-gradient-to-t from-transparent to-gray-400 z-10" />
 
       <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-none flex items-center justify-center">
@@ -245,45 +196,27 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                     {currentImages.map((image, index) => (
                       <div
                         key={`${image}-${index}`}
-                        className={`relative overflow-hidden transform transition-all duration-700 ease-out ${
+                        className={`relative overflow-hidden transition-all duration-500 ${
                           index === 4
                             ? isTransitioning
-                              ? "w-screen h-screen fixed inset-0 z-50 scale-100 rounded-none opacity-100"
+                              ? "w-screen h-screen fixed inset-0 z-50 rounded-none"
                               : showCenterScale
-                              ? showCenterOpacity
-                                ? "w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 scale-150 lg:scale-200 z-20 ring-2 lg:ring-4 ring-white/50 rounded-lg opacity-100"
-                                : "w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 scale-110 lg:scale-125 z-10 ring-2 lg:ring-4 ring-white/50 rounded-lg opacity-100"
-                              : "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 ring-1 lg:ring-2 ring-white/30 opacity-100"
-                            : isRapidChanging
-                            ? "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 scale-95 opacity-80"
-                            : "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 scale-100 opacity-100 hover:scale-105"
+                              ? "w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 scale-125 z-20 ring-2 ring-white/50"
+                              : "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 ring-1 ring-white/30"
+                            : "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32"
+                        } ${
+                          showBlockHide && index !== 4
+                            ? "opacity-0 scale-75"
+                            : "opacity-100"
                         }`}
-                        style={{
-                          ...getBlockHideStyle(index),
-                          transitionDuration: showBlockHide ? "700ms" : "200ms",
-                          transitionTimingFunction: showBlockHide
-                            ? "ease-in-out"
-                            : "ease-out",
-                        }}
                       >
-                        <img
+                        <Image
                           src={image}
+                          width={500}
+                          height={500}
                           alt={`Fashion ${index + 1}`}
-                          className={`w-full h-full object-cover transition-all duration-1000 ${
-                            index === 4 && isTransitioning
-                              ? "scale-110 brightness-110"
-                              : ""
-                          }`}
+                          className="w-full h-full object-cover"
                         />
-
-                        {/* Overlay for center image during transition */}
-                        {index === 4 && isTransitioning && (
-                          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20 animate-pulse" />
-                        )}
-
-                        {isRapidChanging && (
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse" />
-                        )}
                       </div>
                     ))}
                   </div>
@@ -291,38 +224,12 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                   // Video Showcase Phase - Responsive sizing
                   <div className="relative z-20"></div>
                 )}
-
-                {/* Center image highlight effect during scaling - Responsive sizing */}
-                {showCenterScale && !showVideoTransition && (
-                  <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                    <div className="w-24 h-24 sm:w-32 sm:h-32 lg:w-48 lg:h-48 bg-white/5 rounded-full animate-ping" />
-                  </div>
-                )}
-
-                {/* Transition overlay effect - Responsive sizing */}
-                {showCenterOpacity && !showVideoTransition && (
-                  <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-                    <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-64 lg:h-64 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-2xl animate-pulse" />
-                  </div>
-                )}
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Additional transition effects */}
-      {showVideoTransition && (
-        <div className="absolute inset-0 pointer-events-none">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
-          />
-        </div>
-      )}
-    </motion.div>
+    </div>
   );
 };
 

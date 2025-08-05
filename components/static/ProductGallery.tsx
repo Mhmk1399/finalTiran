@@ -173,7 +173,8 @@ ProductGalleryProps) {
     };
 
     const prevImage = () => {
-      const prevIndex = (activeImageIndex - 1 + allImages.length) % allImages.length;
+      const prevIndex =
+        (activeImageIndex - 1 + allImages.length) % allImages.length;
       if (onThumbnailClick) onThumbnailClick(prevIndex);
     };
 
@@ -195,14 +196,14 @@ ProductGalleryProps) {
             <>
               <button
                 onClick={prevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/40 hover:bg-white  shadow-md transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
                 aria-label="Previous image"
               >
                 <ChevronLeft size={20} />
               </button>
               <button
                 onClick={nextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/80 hover:bg-white rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/40 hover:bg-white  shadow-md transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
                 aria-label="Next image"
               >
                 <ChevronRight size={20} />
@@ -213,7 +214,10 @@ ProductGalleryProps) {
           {/* Zoom Button */}
           <button
             aria-label="zoom"
-            onClick={() => allImages[activeImageIndex] && handleZoom(allImages[activeImageIndex])}
+            onClick={() =>
+              allImages[activeImageIndex] &&
+              handleZoom(allImages[activeImageIndex])
+            }
             className="absolute top-4 right-4 p-2 bg-white/80 hover:bg-white rounded-full shadow-md transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
           >
             <ZoomIn size={18} />
@@ -224,7 +228,6 @@ ProductGalleryProps) {
             {activeImageIndex + 1} / {allImages.length}
           </div>
         </div>
-
 
         {/* Zoom Modal */}
         <AnimatePresence>
@@ -294,39 +297,6 @@ ProductGalleryProps) {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Scroll to Top Button */}
-        <div className="flex justify-center p-3">
-          <button
-            onClick={() => {
-              // Select first thumbnail
-              handleThumbnailClick(0);
-              // Scroll to top
-              if (scrollContainerRef.current) {
-                scrollContainerRef.current.scrollTo({
-                  top: 0,
-                  behavior: "smooth",
-                });
-              }
-            }}
-            className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors duration-200 shadow-sm"
-            aria-label="Go to first image and scroll to top"
-          >
-            <svg
-              className="w-4 h-4 text-gray-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 15l7-7 7 7"
-              />
-            </svg>
-          </button>
         </div>
       </div>
     );

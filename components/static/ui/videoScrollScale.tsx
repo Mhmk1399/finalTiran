@@ -22,14 +22,16 @@ const videoSlides: VideoSlide[] = [
   {
     id: 1,
     src: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
-    mobileSrc: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
+    mobileSrc:
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
     title: "مجموعه ی چرم فرش",
     description: "استایل جور دیگر",
   },
   {
     id: 2,
     src: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/NYVMk7Mvnl/origin_8WmQvnpZ3v8Oo2f0Qwkz6ZBuEVpki3dkGO7ScAKK.mp4",
-    mobileSrc: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
+    mobileSrc:
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
     title: "تیران استایل",
     description: "استایل جور دیگر",
   },
@@ -188,13 +190,7 @@ export default function VideoScrollScale({
   };
 
   return (
-    <div
-      className=" h-screen relative"
-      style={{
-        backgroundImage: "url('/assets/images/texture.png')",
-        backgroundSize: "cover",
-      }}
-    >
+    <div className=" h-screen relative">
       {/* Transition Image Overlay */}
       {showTransitionImage && transitionImage && (
         <div

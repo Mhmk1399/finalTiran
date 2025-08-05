@@ -32,11 +32,12 @@ const Navbar = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userProfile, setUserProfile] = useState<UserProfile>();
   const [showCategoriesOnly, setShowCategoriesOnly] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const prevScrollY = useRef(0);
   const pathname = usePathname();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
-  const scrollProgressRef = useRef<HTMLDivElement>(null);
+  const ticking = useRef(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -65,90 +66,35 @@ const Navbar = () => {
     fetchCategories();
   }, []);
 
+  // Optimized single scroll handler
   useEffect(() => {
     const handleScroll = () => {
-      const navbar = document.getElementById("navbar");
-      const scrollProgress = Math.min(window.scrollY / window.innerHeight, 1);
+      if (!ticking.current) {
+        requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          const newIsScrolled = currentScrollY > 10;
+          const newShowCategoriesOnly = currentScrollY > 150;
 
-      if (window.scrollY > 10) {
-        navbar?.classList.add("shadow-md");
-      } else {
-        navbar?.classList.remove("shadow-md");
+          // Update scroll state
+          if (newIsScrolled !== isScrolled) {
+            setIsScrolled(newIsScrolled);
+          }
+
+          // Handle categories-only mode
+          if (newShowCategoriesOnly !== showCategoriesOnly) {
+            setShowCategoriesOnly(newShowCategoriesOnly);
+          }
+
+          prevScrollY.current = currentScrollY;
+          ticking.current = false;
+        });
+        ticking.current = true;
       }
-
-      // Update scroll progress
-      if (scrollProgressRef.current) {
-        gsap.set(scrollProgressRef.current, { scaleX: scrollProgress });
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY > 150) {
-        if (!showCategoriesOnly) {
-          setShowCategoriesOnly(true);
-
-          // Hide entire navbar except categories
-          gsap.to("#navbar > div:first-child", {
-            height: 0,
-            opacity: 0,
-            duration: 0.4,
-            ease: "power2.inOut",
-          });
-
-          // Transform categories to fixed position
-          gsap.to(categoriesRef.current, {
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 60,
-            backgroundColor: "rgba(255, 255, 255, 0.7)",
-            backdropFilter: "blur(20px)",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-            padding: "8px 0",
-            duration: 0.4,
-            ease: "power2.inOut",
-          });
-        }
-      } else {
-        if (showCategoriesOnly) {
-          setShowCategoriesOnly(false);
-
-          // Show navbar
-          gsap.to("#navbar > div:first-child", {
-            height: "auto",
-            opacity: 1,
-            duration: 0.4,
-            ease: "power2.inOut",
-          });
-
-          // Reset categories position
-          gsap.to(categoriesRef.current, {
-            position: "relative",
-            top: "auto",
-            backgroundColor: "transparent",
-            backdropFilter: "none",
-            boxShadow: "none",
-            padding: "8px 0",
-            duration: 0.4,
-            ease: "power2.inOut",
-          });
-        }
-      }
-
-      prevScrollY.current = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [showCategoriesOnly]);
+  }, [isScrolled, showCategoriesOnly]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -210,11 +156,21 @@ const Navbar = () => {
   return (
     <nav
       id="navbar"
-      className={`fixed w-full z-50 bg-[#fcf7f1]/50 hover:bg-[#fcf7f1] px-4 md:px-20 backdrop-blur-md transition-all duration-300 flex flex-col text-black`}
+      className={`fixed w-full z-50 transition-all duration-300 flex flex-col text-black ${
+        isScrolled || showCategoriesOnly
+          ? "bg-[#fcf7f1]/95 backdrop-blur-xl shadow-lg"
+          : "bg-[#fcf7f1]/50 backdrop-blur-md"
+      } ${showCategoriesOnly ? "md:bg-transparent" : ""}`}
       dir="rtl"
     >
-      <div className="max-w-screen">
-        <div className="flex items-center justify-between h-20 px-4 sm:px-6 lg:px-2">
+      <div
+        className={`max-w-screen transition-all duration-300 px-4 md:px-20 ${
+          showCategoriesOnly
+            ? "md:opacity-0 md:h-0 md:overflow-hidden"
+            : "opacity-100"
+        }`}
+      >
+        <div className="flex items-center justify-between h-16 md:h-20 px-2 sm:px-4 lg:px-2">
           {/* Right side - Navigation Items (Desktop) */}
           <div className="hidden md:flex items-center">
             {navItems.map((item) => (
@@ -251,7 +207,8 @@ const Navbar = () => {
                   alt="Tiran Logo"
                   width={70}
                   height={70}
-                  className="h-8 w-auto"
+                  className="h-6 md:h-8 w-auto"
+                  priority
                 />
               </div>
             </Link>
@@ -339,7 +296,7 @@ const Navbar = () => {
             <div className="md:hidden">
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="inline-flex items-center justify-center p-2 -mx-12 rounded-md hover:bg-gray-100 focus:outline-none transition-all duration-300 hover:scale-110"
+                className="inline-flex items-center justify-center p-2 rounded-lg hover:bg-white/20 focus:outline-none transition-all duration-200 active:scale-95"
                 aria-expanded={isOpen}
               >
                 {isOpen ? (
@@ -356,7 +313,11 @@ const Navbar = () => {
       {/* Categories Row - Desktop */}
       <div
         ref={categoriesRef}
-        className="hidden md:block relative w-full transition-all duration-300"
+        className={`hidden md:block w-full transition-all duration-300 ${
+          showCategoriesOnly
+            ? "fixed top-0 left-0 right-0 z-60 bg-[#fcf7f1]/95 backdrop-blur-xl shadow-lg px-4 md:px-20"
+            : "relative"
+        }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center gap-2">
@@ -417,9 +378,9 @@ const Navbar = () => {
       {isOpen && (
         <div
           ref={mobileMenuRef}
-          className="md:hidden bg-white/95 backdrop-blur-md shadow-lg min-h-[70vh]"
+          className="md:hidden fixed top-16 left-0 right-0 bg-[#fcf7f1]/98 backdrop-blur-xl shadow-2xl min-h-[calc(100vh-4rem)] z-40 border-t border-white/20"
         >
-          <div className="px-4 pt-4 pb-6 space-y-2">
+          <div className="px-4 pt-6 pb-8 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
             {/* Categories section in mobile menu */}
             <div className="mb-4">
               <button
@@ -446,7 +407,7 @@ const Navbar = () => {
                     });
                   }
                 }}
-                className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-base font-medium text-black hover:bg-gray-50 transition-all duration-200 active:scale-95"
+                className="w-full flex items-center justify-between px-4 py-4 rounded-2xl text-base font-medium text-black hover:bg-white/30 transition-all duration-200 active:scale-95 backdrop-blur-sm"
               >
                 <span>دسته‌بندی‌ها</span>
                 <div id="category-arrow">
@@ -456,7 +417,7 @@ const Navbar = () => {
 
               <div
                 id="category-list"
-                className="overflow-hidden bg-gray-50/30 rounded-xl mt-2 mr-4 border-r-2 border-gray-200"
+                className="overflow-hidden bg-white/20 backdrop-blur-sm rounded-2xl mt-3 mr-4 border-r-2 border-white/30"
                 style={{ height: 0, opacity: 0 }}
               >
                 <div className="py-2">
@@ -574,10 +535,10 @@ const Navbar = () => {
                         duration: 0.3,
                       });
                     }}
-                    className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 active:scale-95 hover:translate-x-1 ${
+                    className={`block px-4 py-4 rounded-2xl text-base font-medium transition-all duration-200 active:scale-95 hover:translate-x-1 ${
                       activeItem === item.href
-                        ? "text-black font-bold bg-gray-50"
-                        : "text-black hover:bg-gray-50"
+                        ? "text-black font-bold bg-white/40 backdrop-blur-sm"
+                        : "text-black hover:bg-white/30 backdrop-blur-sm"
                     }`}
                     onTouchStart={(e) =>
                       gsap.to(e.currentTarget, {
@@ -600,7 +561,7 @@ const Navbar = () => {
               </div>
             ))}
 
-            <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200 gap-4">
+            <div className="flex justify-between items-center mt-8 pt-6 border-t border-white/30 gap-4">
               <Link
                 href="/auth"
                 onClick={() => {
@@ -612,7 +573,7 @@ const Navbar = () => {
                   });
                 }}
               >
-                <div className="flex items-center px-4 py-3 rounded-xl text-base font-medium text-black bg-gray-50 hover:bg-gray-100 transition-all duration-200 active:scale-95">
+                <div className="flex items-center px-4 py-4 rounded-2xl text-base font-medium text-black bg-white/40 hover:bg-white/50 backdrop-blur-sm transition-all duration-200 active:scale-95">
                   <RiUser3Line className="ml-2 h-5 w-5" />
                   <span className="text-sm">ورود</span>
                 </div>
@@ -629,7 +590,7 @@ const Navbar = () => {
                   });
                 }}
               >
-                <div className="flex items-center px-4 py-3 rounded-xl text-base font-medium text-black bg-gray-50 hover:bg-gray-100 transition-all duration-200 active:scale-95">
+                <div className="flex items-center px-4 py-4 rounded-2xl text-base font-medium text-black bg-white/40 hover:bg-white/50 backdrop-blur-sm transition-all duration-200 active:scale-95">
                   <RiShoppingBag3Line className="ml-2 h-5 w-5" />
                   <span className="text-sm">سبد خرید</span>
                   <span className="mr-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">

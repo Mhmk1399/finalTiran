@@ -1,25 +1,26 @@
 "use client";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const videoSlides = {
   src: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
-  mobileSrc: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
+  mobileSrc:
+    "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
   title: "استایل جور دیگر",
 };
 
 export default function VideoSection() {
   const [isMobile, setIsMobile] = useState(false);
-  
-    useEffect(() => {
-      const checkMobile = () => {
-        setIsMobile(window.innerWidth < 640);
-      };
-  
-      checkMobile();
-      window.addEventListener("resize", checkMobile);
-  
-      return () => window.removeEventListener("resize", checkMobile);
-    }, []);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
   return (
     <div
       className="w-screen h-screen"

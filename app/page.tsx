@@ -1,3 +1,4 @@
+import SmoothScrollProvider from "@/components/global/smoothScrollProvider.tsx";
 import HomeContainer from "@/components/static/home-container";
 import { Metadata } from "next";
 
@@ -64,6 +65,7 @@ export default function Home() {
   return (
     <main className="">
       <HomeContainer />
+      <SmoothScrollProvider />
     </main>
   );
 }

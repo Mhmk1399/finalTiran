@@ -6,6 +6,7 @@ import ProductComments from "@/components/static/ProductComments";
 import RelatedProducts from "@/components/static/RelatedProducts";
 import { Product } from "@/types/type";
 import Breadcrumbs from "../global/breadcrumbs";
+import SmoothScrollProvider from "../global/smoothScrollProvider.tsx";
 
 interface ProductPageClientProps {
   slug: string;
@@ -113,87 +114,98 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
   // Desktop Layout
   if (isDesktop) {
     return (
-      <main className="min-h-screen relative bg-white py-20 px-20" dir="rtl">
-        <div className="absolute top-30 right-20 z-20">
-          {" "}
-          <Breadcrumbs />
-        </div>
+      <>
+        {" "}
+        <main className="min-h-screen relative bg-white py-20 px-20" dir="rtl">
+          <div className="absolute top-30 right-20 z-20">
+            {" "}
+            <Breadcrumbs />
+          </div>
 
-        {/* Your existing desktop layout */}
-        <div className="min-h-screen mt-20">
-          <div className="grid grid-cols-12 h-full gap-0">
-            <div className="col-span-1 mt-6">
-              <ProductGallery
-                primaryImage={primaryImage}
-                secondaryImage={secondaryImage}
-                additionalImages={additionalImages}
-                productName={product.fa_name}
-                layout="thumbnails"
-                activeImageIndex={activeImageIndex}
-                onThumbnailClick={setActiveImageIndex}
-              />
-            </div>
+          {/* Your existing desktop layout */}
+          <div className="min-h-screen mt-20">
+            <div className="grid grid-cols-12 h-full gap-0">
+              <div className="col-span-1 mt-6">
+                <ProductGallery
+                  primaryImage={primaryImage}
+                  secondaryImage={secondaryImage}
+                  additionalImages={additionalImages}
+                  productName={product.fa_name}
+                  layout="thumbnails"
+                  activeImageIndex={activeImageIndex}
+                  onThumbnailClick={setActiveImageIndex}
+                />
+              </div>
 
-            <div className="col-span-5 overflow-auto min-h-full bg-white">
-              <ProductGallery
-                primaryImage={primaryImage}
-                secondaryImage={secondaryImage}
-                additionalImages={additionalImages}
-                productName={product.fa_name}
-                layout="desktop"
-                activeImageIndex={activeImageIndex}
-                onImageChange={setActiveImageIndex}
-              />
-            </div>
+              <div className="col-span-5 overflow-auto min-h-full bg-white">
+                <ProductGallery
+                  primaryImage={primaryImage}
+                  secondaryImage={secondaryImage}
+                  additionalImages={additionalImages}
+                  productName={product.fa_name}
+                  layout="desktop"
+                  activeImageIndex={activeImageIndex}
+                  onThumbnailClick={setActiveImageIndex}
+                />
+              </div>
 
-            <div className="col-span-6 max-w-4xl mr-4 bg-white">
-              <div className="h-full overflow-y-auto scrollbar-hide">
-                <ProductInfo product={product} layout="desktop" />
+              <div className="col-span-6 max-w-4xl mr-4 bg-white">
+                <div className="h-full overflow-y-auto scrollbar-hide">
+                  <ProductInfo product={product} layout="desktop" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white">
-          <div className="container mx-auto px-4 py-8">
-            <ProductComments
-              productSlug={product.slug}
-              productId={product.id}
-            />
+          <div className="bg-white">
+            <div className="container mx-auto px-4 py-8">
+              <ProductComments
+                productSlug={product.slug}
+                productId={product.id}
+              />
 
-            {relatedProducts.length > 0 && (
-              <RelatedProducts products={relatedProducts} />
-            )}
+              {relatedProducts.length > 0 && (
+                <RelatedProducts products={relatedProducts} />
+              )}
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+        <SmoothScrollProvider />
+      </>
     );
   }
 
   // Mobile Layout
   return (
-    <main className="container relative mx-auto px-4 md:px-15 py-12" dir="rtl">
-      <div className="absolute top-0 right-4 md:top-20 md:right-15 z-20">
-        {" "}
-        <Breadcrumbs />
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2  sm:mt-36 mt-15">
-        <ProductGallery
-          primaryImage={primaryImage}
-          secondaryImage={secondaryImage}
-          additionalImages={additionalImages}
-          productName={product.fa_name}
-          layout="mobile"
-        />
+    <>
+      {" "}
+      <main
+        className="container relative mx-auto px-4 md:px-15 py-12"
+        dir="rtl"
+      >
+        <div className="absolute top-0 right-4 md:top-20 md:right-15 z-20">
+          {" "}
+          <Breadcrumbs />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2  sm:mt-36 mt-15">
+          <ProductGallery
+            primaryImage={primaryImage}
+            secondaryImage={secondaryImage}
+            additionalImages={additionalImages}
+            productName={product.fa_name}
+            layout="mobile"
+          />
 
-        <ProductInfo product={product} layout="mobile" />
-      </div>
+          <ProductInfo product={product} layout="mobile" />
+        </div>
 
-      <ProductComments productSlug={product.slug} productId={product.id} />
+        <ProductComments productSlug={product.slug} productId={product.id} />
 
-      {relatedProducts.length > 0 && (
-        <RelatedProducts products={relatedProducts} />
-      )}
-    </main>
+        {relatedProducts.length > 0 && (
+          <RelatedProducts products={relatedProducts} />
+        )}
+      </main>
+      <SmoothScrollProvider />
+    </>
   );
 }
