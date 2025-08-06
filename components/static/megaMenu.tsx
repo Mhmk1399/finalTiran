@@ -108,7 +108,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                   <div className="relative w-full h-48 rounded-lg overflow-hidden mb-3 shadow-md transform transition-transform duration-300 hover:scale-105">
                     <Image
                       src={
-                        categories[hoveredCategory].image_url ||
+                        categories[hoveredCategory].src ||
                         "/assets/images/imagegrow.avif"
                       }
                       alt={categories[hoveredCategory].cat_name}
@@ -118,31 +118,20 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                   </div>
 
                   <Link
-                    href={`/category/${categories[hoveredCategory].slug}`}
-                    className="text-gray-700 hover:text-black font-medium text-sm flex items-center group"
+                    href={`/shop?query=${categories[hoveredCategory].slug}`}
+                    className="text-gray-900 hover:text-black font-medium text-sm flex items-center group"
                   >
                     <span className="relative">
-                      مشاهده همه محصولات
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
+                      مشاهده همه محصولات {categories[hoveredCategory].cat_name}
+                      <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
                     </span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 mr-1 rtl:rotate-180 transition-transform duration-300 group-hover:translate-x-1"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                
                   </Link>
                 </motion.div>
 
                 {/* Subcategories */}
-                <div className="col-span-9">
-                  <div className="grid grid-cols-8">
+                <div className="col-span-9 mt-20 mr-4">
+                  <div className="grid grid-cols-3 justify-start items-start gap-3">
                     {categories[hoveredCategory].children &&
                       categories[hoveredCategory].children.map(
                         (subcategory, index) => (

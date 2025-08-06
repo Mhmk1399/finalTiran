@@ -70,7 +70,7 @@ const Page = () => {
               : "opacity-0 transform translate-y-2"
           }`}
         >
-          <div className="min-h-screen mt-20">
+          <div className="min-h-screen mt-30">
             <VideoScrollScale
             // transitionImage={videoTransitionImage}
             // isTransitioning={isFirstLoad}

@@ -156,9 +156,9 @@ const Navbar = () => {
   return (
     <nav
       id="navbar"
-      className={`fixed w-full z-50 transition-all duration-300 flex flex-col text-black ${
+      className={`fixed w-full z-50 transition-all hover:bg-[#fcf7f1] duration-300 flex flex-col text-black ${
         isScrolled || showCategoriesOnly
-          ? "bg-[#fcf7f1]/95 backdrop-blur-xl shadow-lg"
+          ? "bg-[#fcf7f1]/95 backdrop-blur-md "
           : "bg-[#fcf7f1]/50 backdrop-blur-md"
       } ${showCategoriesOnly ? "md:bg-transparent" : ""}`}
       dir="rtl"
