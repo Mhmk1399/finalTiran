@@ -244,7 +244,7 @@ export default function VideoScrollScale({
             e.stopPropagation();
             prevSlide();
           }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-50 bg-black/50 hover:bg-black/70 text-white p-3  transition-all"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-50  hover:bg-black/20 text-white p-3  transition-all"
         >
           ←
         </button>
@@ -254,7 +254,7 @@ export default function VideoScrollScale({
             e.stopPropagation();
             nextSlide();
           }}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-50 bg-black/50 hover:bg-black/70 text-white p-3  transition-all"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-50  hover:bg-black/20 text-white p-3  transition-all"
         >
           →
         </button>
