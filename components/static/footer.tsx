@@ -134,7 +134,7 @@ const Footer = () => {
                 استایل جور دیگر
               </motion.p>
               <div className="max-w-5xl text-center lg:text-right mx-auto lg:mr-auto lg:ml-0">
-                <p className="text-gray-400 text-xs md:text-sm lg:text-base leading-relaxed font-light px-4 lg:px-0">
+                <p className="text-gray-600 text-xs md:text-sm lg:text-base leading-relaxed font-light px-4 lg:px-0">
                   تیران استایل فقط یک برند نیست؛ یک نگاه تازه است به زندگی‌ای که
                   ریشه در اصالت دارد و رو به آینده حرکت می‌کند.
                   <br />
@@ -147,17 +147,6 @@ const Footer = () => {
                   در تیران استایل، سبک زندگی اصیل ایرانی را نه بازسازی، که
                   بازآفرینی می‌کنیم؛ با نگاهی تازه، برای سلیقه‌هایی که عمیق‌تر
                   می‌بینند.{" "}
-                </p>
-              </div>
-              <div className="max-w-2xl flex flex-col sm:flex-row gap-2 items-center justify-center lg:justify-start mx-auto lg:mx-0">
-                <p className="text-gray-400 text-xs md:text-sm lg:text-base leading-relaxed font-light">
-                  تلفن تماس :
-                </p>
-                <p
-                  className="text-gray-600 text-xs md:text-sm lg:text-base leading-relaxed font-light"
-                  dir="ltr"
-                >
-                  <Link href="tel:02188965842">۰۲۱ - ۹۱۰۹۷۶۱۳</Link>
                 </p>
               </div>
             </motion.div>
@@ -416,9 +405,7 @@ const Footer = () => {
               variants={itemVariants}
               className="lg:col-span-4 col-span-2 space-y-6 mr-auto"
             >
-              <div className="relative">
-                
-              </div>
+              <div className="relative"></div>
               <div className="flex flex-row lg:flex-row gap-4 items-center justify-center">
                 <Image
                   src="/assets/images/enemad.png"
@@ -469,34 +456,26 @@ const Footer = () => {
         />{" "}
       </footer>
       {/* Backdrop Logo */}
-      <div className="relative z-99 h-screen bg-gradient-to-b from-black via-slate-900 to-black overflow-hidden">
+      <div className="relative z-99 min-h-screen bg-gradient-to-br from-slate-900 via-black to-slate-800 overflow-hidden">
         {/* Main Content Container */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
           {/* Logo Container with Multiple Animation Layers */}
-          <motion.div className="relative flex flex-col items-center">
+          <motion.div className="relative flex flex-col items-center justify-center">
             {/* Logo Image with Enhanced Effects */}
-            <motion.div className="relative z-10 mt-30">
-              <motion.div
-                className="relative"
-                whileHover={{
-                  scale: 1.05,
-                  rotateY: 10,
-                  transition: { duration: 0.3 },
-                }}
-              >
+            <motion.div className=" z-10">
+              <motion.div className="">
                 <Image
                   src="/assets/images/whitelogo.png"
                   alt="Tiran Logo"
-                  width={4000}
-                  height={4000}
-                  className="md:h-20 h-10 w-auto object-cover transition-all duration-700"
+                  width={2000}
+                  height={2000}
+                  className="object-cover md:w-[500px] mx-auto transition-all duration-700"
                   priority
                 />
               </motion.div>
             </motion.div>
 
             {/* Animated Text Below Logo */}
-            <motion.div className="mt-8 text-center"></motion.div>
           </motion.div>
         </div>
       </div>

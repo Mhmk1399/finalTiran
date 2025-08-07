@@ -23,7 +23,7 @@ const videoSlides: VideoSlide[] = [
     id: 1,
     src: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
     mobileSrc:
-      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/JgkjrgQM1L/origin_cmnAgrjNDQIW1v9QWIRJylVyk5sZLLZ1EUVqhcL6.mp4",
     title: "مجموعه ی چرم فرش",
     description: "استایل جور دیگر",
   },
@@ -31,7 +31,7 @@ const videoSlides: VideoSlide[] = [
     id: 2,
     src: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/NYVMk7Mvnl/origin_8WmQvnpZ3v8Oo2f0Qwkz6ZBuEVpki3dkGO7ScAKK.mp4",
     mobileSrc:
-      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
+      "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/JgkjrgQM1L/origin_cmnAgrjNDQIW1v9QWIRJylVyk5sZLLZ1EUVqhcL6.mp4",
     title: "تیران استایل",
     description: "استایل جور دیگر",
   },
@@ -47,9 +47,11 @@ export default function VideoScrollScale({
   const [videoVisible, setVideoVisible] = useState(!isTransitioning);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [activeVideo, setActiveVideo] = useState(0);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoRef1 = useRef<HTMLVideoElement | null>(null);
+  const videoRef2 = useRef<HTMLVideoElement | null>(null);
   const transitionImageRef = useRef<HTMLDivElement | null>(null);
 
   // Check if mobile on mount
@@ -151,42 +153,55 @@ export default function VideoScrollScale({
   }, [videoVisible, isLoaded]);
 
   const nextSlide = () => {
-    console.log("Next clicked, current:", currentSlide);
-    setCurrentSlide((prev) => {
-      const next = (prev + 1) % videoSlides.length;
-      console.log("Next slide will be:", next);
-      return next;
-    });
+    const nextSlideIndex = (currentSlide + 1) % videoSlides.length;
+    const nextVideoRef = activeVideo === 0 ? videoRef2 : videoRef1;
+    
+    if (nextVideoRef.current) {
+      nextVideoRef.current.src = isMobile 
+        ? videoSlides[nextSlideIndex].mobileSrc 
+        : videoSlides[nextSlideIndex].src;
+      nextVideoRef.current.load();
+      nextVideoRef.current.play();
+    }
+    
+    setCurrentSlide(nextSlideIndex);
+    setActiveVideo(activeVideo === 0 ? 1 : 0);
   };
 
   const prevSlide = () => {
-    console.log("Prev clicked, current:", currentSlide);
-    setCurrentSlide((prev) => {
-      const next = (prev - 1 + videoSlides.length) % videoSlides.length;
-      console.log("Prev slide will be:", next);
-      return next;
-    });
+    const prevSlideIndex = (currentSlide - 1 + videoSlides.length) % videoSlides.length;
+    const nextVideoRef = activeVideo === 0 ? videoRef2 : videoRef1;
+    
+    if (nextVideoRef.current) {
+      nextVideoRef.current.src = isMobile 
+        ? videoSlides[prevSlideIndex].mobileSrc 
+        : videoSlides[prevSlideIndex].src;
+      nextVideoRef.current.load();
+      nextVideoRef.current.play();
+    }
+    
+    setCurrentSlide(prevSlideIndex);
+    setActiveVideo(activeVideo === 0 ? 1 : 0);
   };
 
   useEffect(() => {
-    console.log("Current slide changed to:", currentSlide);
-    const video = videoRef.current;
-    if (video) {
-      video.load();
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.catch((error) => {
-          console.log("Video play failed:", error);
-        });
-      }
+    const video1 = videoRef1.current;
+    const video2 = videoRef2.current;
+    
+    if (video1) {
+      video1.src = isMobile ? videoSlides[0].mobileSrc : videoSlides[0].src;
+      video1.load();
+      video1.play().catch(console.error);
     }
-  }, [currentSlide]);
+    
+    if (video2 && videoSlides[1]) {
+      video2.src = isMobile ? videoSlides[1].mobileSrc : videoSlides[1].src;
+      video2.load();
+    }
+  }, [isMobile]);
 
-  const handleVideoLoad = () => {
-    const video = videoRef.current;
-    if (video) {
-      video.play().catch(console.error);
-    }
+  const handleVideoEnd = () => {
+    nextSlide();
   };
 
   return (
@@ -211,18 +226,23 @@ export default function VideoScrollScale({
         style={{ transformOrigin: "center center", opacity: 0 }}
       >
         <video
-          ref={videoRef}
-          key={currentSlide}
-          src={
-            isMobile
-              ? videoSlides[currentSlide].mobileSrc
-              : videoSlides[currentSlide].src
-          }
+          ref={videoRef1}
           autoPlay
           muted
           playsInline
-          onLoadedData={handleVideoLoad}
-          className="w-full h-full object-cover"
+          onEnded={handleVideoEnd}
+          className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-300 ${
+            activeVideo === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'
+          }`}
+        />
+        <video
+          ref={videoRef2}
+          muted
+          playsInline
+          onEnded={handleVideoEnd}
+          className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-300 ${
+            activeVideo === 1 ? 'opacity-100 z-10' : 'opacity-0 z-0'
+          }`}
         />
 
         {/* Text Overlay */}

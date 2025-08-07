@@ -67,11 +67,11 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
     },
     {
       dotPosition: { top: 0, left: -25 },
-      lineDirection: "vertical-down",
+      lineDirection: "vertical-downn",
       lineLength: 80,
       text: "تابلوها",
       textAlign: "left",
-      textOrientation: "vertical",
+      textOrientation: "verticall",
     },
     {
       dotPosition: { top: 0, right: -20 },
@@ -113,21 +113,21 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
     // 6
   ];
 
-  const staticPositionsSm = [
-    { x: 20, y: -70, width: 129, height: 169, zIndex: 80 },
-    // 1
-    { x: 30, y: 120, width: 151, height: 183, zIndex: 95 },
-    // 3
-    { x: 5, y: 260, width: 164, height: 197, zIndex: 90 },
-    // 2
-    { x: 130, y: 30, width: 157, height: 188, zIndex: 100 },
-    // 4
-    { x: 190, y: -50, width: 133, height: 97, zIndex: 105 },
-    // 5
+  // const staticPositionsSm = [
+  //   { x: 20, y: -70, width: 129, height: 169, zIndex: 80 },
+  //   // 1
+  //   { x: 30, y: 120, width: 151, height: 183, zIndex: 95 },
+  //   // 3
+  //   { x: 5, y: 260, width: 164, height: 197, zIndex: 90 },
+  //   // 2
+  //   { x: 130, y: 30, width: 157, height: 188, zIndex: 100 },
+  //   // 4
+  //   { x: 190, y: -50, width: 133, height: 97, zIndex: 105 },
+  //   // 5
 
-    { x: 150, y: 200, width: 176, height: 196, zIndex: 100 },
-    // 6
-  ];
+  //   { x: 150, y: 200, width: 176, height: 196, zIndex: 100 },
+  //   // 6
+  // ];
 
   const gridPatterns = [
     {
@@ -227,126 +227,158 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
           کشف کنید ، تجربه کنید و لذت ببرید{" "}
         </p>
       </div>
-      {/* Desktop: Static positioned grid */}
-      <div className="flex justify-center items-center  w-full">
-        <div className="relative w-full max-w-6xl h-[400px] md:h-[700px]">
-          {" "}
-          {categories.slice(0, 6).map((category, index) => {
-            const pattern = gridPatterns[index % gridPatterns.length];
-            const position = isMobile
-              ? staticPositionsSm[index % staticPositionsSm.length]
-              : isTablet
-              ? staticPositionsMd[index % staticPositionsMd.length]
-              : staticPositionsLg[index % staticPositionsLg.length];
+      {/* Mobile: Grid layout, Desktop: Static positioned */}
+      <div className="flex justify-center items-center w-full">
+        {isMobile ? (
+          <div className="grid grid-cols-2 gap-4 w-full max-w-md">
+            {categories.slice(0, 6).map((category, index) => {
+              const pattern = gridPatterns[index % gridPatterns.length];
+              return (
+                <div
+                  key={category.id}
+                  className="aspect-[3/4]"
+                >
+                  <MixedGridCardDesktop
+                    category={category}
+                    index={index}
+                    isHovered={false}
+                    size={pattern.size}
+                    position={{
+                      width: 150,
+                      height: 200,
+                      x: 0,
+                      y: 0,
+                    }}
+                    zIndex={1}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="relative w-full max-w-6xl h-[400px] md:h-[700px]">
+            {categories.slice(0, 6).map((category, index) => {
+              const pattern = gridPatterns[index % gridPatterns.length];
+              const position = isTablet
+                ? staticPositionsMd[index % staticPositionsMd.length]
+                : staticPositionsLg[index % staticPositionsLg.length];
 
-            const textMeta = staticTextPositionsLg[index];
+              const textMeta = staticTextPositionsLg[index];
 
-            return (
-              <motion.div
-                key={category.id}
-                custom={index}
-                variants={itemVariants}
-                onHoverStart={() => setHoveredIndex(index)}
-                onHoverEnd={() => setHoveredIndex(null)}
-                className="absolute"
-                style={{
-                  left: position.x,
-                  top: position.y,
-                  width: position.width,
-                  height: position.height,
-                  zIndex: hoveredIndex === index ? 999 : position.zIndex,
-                }}
-              >
-                <MixedGridCardDesktop
-                  category={category}
-                  index={index}
-                  isHovered={hoveredIndex === index}
-                  size={pattern.size}
-                  position={{
+              return (
+                <motion.div
+                  key={category.id}
+                  custom={index}
+                  variants={itemVariants}
+                  onHoverStart={() => setHoveredIndex(index)}
+                  onHoverEnd={() => setHoveredIndex(null)}
+                  className="absolute"
+                  style={{
+                    left: position.x,
+                    top: position.y,
                     width: position.width,
                     height: position.height,
-                    x: 0,
-                    y: 0,
+                    zIndex: hoveredIndex === index ? 999 : position.zIndex,
                   }}
-                  zIndex={hoveredIndex === index ? 999 : position.zIndex}
-                />
-
-                {/* TEXT POINTER WITH LINE */}
-                {!isMobile && !isTablet && textMeta && (
-                  <div
-                    className="absolute"
-                    style={{
-                      top: textMeta.dotPosition?.top,
-                      left: textMeta.dotPosition?.left,
-                      right: textMeta.dotPosition?.right,
-                      bottom: textMeta.dotPosition?.bottom,
+                >
+                  <MixedGridCardDesktop
+                    category={category}
+                    index={index}
+                    isHovered={hoveredIndex === index}
+                    size={pattern.size}
+                    position={{
+                      width: position.width,
+                      height: position.height,
+                      x: 0,
+                      y: 0,
                     }}
-                  >
-                    {/* Dot */}
-                    <div className="absolute w-2 h-2 bg-black rounded-full z-10" />
+                    zIndex={hoveredIndex === index ? 999 : position.zIndex}
+                  />
 
-                    {/* Line */}
-                    {textMeta.lineDirection === "horizontal-left" && (
-                      <div
-                        className="absolute top-1 bg-black h-[0.5px]"
-                        style={{ width: textMeta.lineLength, right: 0 }}
-                      />
-                    )}
-                    {textMeta.lineDirection === "horizontal-right" && (
-                      <div
-                        className="absolute top-1 bg-black h-0.5"
-                        style={{ width: textMeta.lineLength, left: 8 }}
-                      />
-                    )}
-                    {textMeta.lineDirection === "vertical-down" && (
-                      <div
-                        className="absolute left-[3px] bg-black w-[1px]"
-                        style={{ height: textMeta.lineLength, top: 8 }}
-                      />
-                    )}
-
-                    {/* Text */}
+                  {/* TEXT POINTER WITH LINE */}
+                  {!isTablet && textMeta && (
                     <div
-                      className={`absolute text-sm ${
-                        AriaBold.className
-                      }  whitespace-nowrap ${
-                        textMeta.textOrientation === "vertical"
-                          ? textMeta.textAlign === "right"
-                            ? "transform rotate-90"
-                            : "transform -rotate-90"
-                          : ""
-                      }`}
+                      className="absolute"
                       style={{
-                        ...(textMeta.lineDirection === "horizontal-left" && {
-                          right: textMeta.lineLength + 8,
-                          top: -5,
-                        }),
-                        ...(textMeta.lineDirection === "horizontal-right" && {
-                          left: textMeta.lineLength + 16,
-                          top: -8,
-                        }),
-                        ...(textMeta.lineDirection === "vertical-down" &&
-                          textMeta.textAlign === "left" && {
-                            left: -10,
-                            top: textMeta.lineLength + 20,
-                            transformOrigin: "center center",
-                          }),
-                        ...(textMeta.lineDirection === "vertical-down" &&
-                          textMeta.textAlign === "right" && {
-                            left: -18,
-                            top: textMeta.lineLength + 26,
-                            transformOrigin: "center center",
-                          }),
+                        top: textMeta.dotPosition?.top,
+                        left: textMeta.dotPosition?.left,
+                        right: textMeta.dotPosition?.right,
+                        bottom: textMeta.dotPosition?.bottom,
                       }}
                     >
-                      {textMeta.text}
+                      {/* Dot */}
+                      <div className="absolute w-2 h-2 bg-black rounded-full z-10" />
+
+                      {/* Line */}
+                      {textMeta.lineDirection === "horizontal-left" && (
+                        <div
+                          className="absolute top-1 bg-black h-[0.5px]"
+                          style={{ width: textMeta.lineLength, right: 0 }}
+                        />
+                      )}
+                      {textMeta.lineDirection === "horizontal-right" && (
+                        <div
+                          className="absolute top-1 bg-black h-0.5"
+                          style={{ width: textMeta.lineLength, left: 8 }}
+                        />
+                      )}
+                      {textMeta.lineDirection === "vertical-down" && (
+                        <div
+                          className="absolute left-[3px] bg-black w-[1px]"
+                          style={{ height: textMeta.lineLength, top: 8 }}
+                        />
+                      )}
+                      {textMeta.lineDirection === "vertical-downn" && (
+                        <div
+                          className="absolute left-[3px] bg-black w-[1px]"
+                          style={{ height: textMeta.lineLength, top: 8 }}
+                        />
+                      )}
+
+                      {/* Text */}
+                      <div
+                        className={`absolute text-sm ${
+                          AriaBold.className
+                        }  whitespace-nowrap ${
+                          textMeta.textOrientation === "vertical" || textMeta.textOrientation ==="verticall"
+                            ? textMeta.textAlign === "right"
+                              ? "transform rotate-90"
+                              : "transform -rotate-90"
+                            : ""
+                        }`}
+                        style={{
+                          ...(textMeta.lineDirection === "horizontal-left" && {
+                            right: textMeta.lineLength + 8,
+                            top: -5,
+                          }),
+                          ...(textMeta.lineDirection === "horizontal-right" && {
+                            left: textMeta.lineLength + 16,
+                            top: -8,
+                          }),
+                          ...(textMeta.lineDirection === "vertical-down" &&
+                            textMeta.textAlign === "left" && {
+                              left: -8,
+                              top: textMeta.lineLength + 20,
+                              transformOrigin: "center center",
+                            }),
+                      
+                          ...(textMeta.lineDirection === "vertical-downn" &&
+                            textMeta.textAlign === "left" && {
+                              left: -18,
+                              top: textMeta.lineLength + 26,
+                              transformOrigin: "center center",
+                            }),
+                        }}
+                      >
+                        {textMeta.text}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </motion.div>
-            );
-          })}
-        </div>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Mobile: Marquee with better UX */}

@@ -42,7 +42,7 @@ export default function ImageGrid({ images }: ImageGridProps) {
     <div className="container mx-auto px-4 mb-8" dir="rtl">
       <motion.div
         ref={gridRef}
-        className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8"
+        className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
       >
         {images.map((image) => (
           <motion.div
