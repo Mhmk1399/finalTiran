@@ -458,7 +458,7 @@ const Footer = () => {
       {/* Backdrop Logo */}
       <div className="relative z-99 min-h-screen bg-gradient-to-br from-slate-900 via-black to-slate-800 overflow-hidden">
         {/* Main Content Container */}
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
           {/* Logo Container with Multiple Animation Layers */}
           <motion.div className="relative flex flex-col items-center justify-center">
             {/* Logo Image with Enhanced Effects */}
