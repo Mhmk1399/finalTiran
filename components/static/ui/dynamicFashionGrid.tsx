@@ -8,7 +8,6 @@ interface DynamicFashionGridProps {
 }
 
 const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
-  // Sample fashion images
   const fashionImages = [
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/1.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/2.webp?versionId=",
@@ -50,40 +49,25 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
   ];
 
   const [currentImages, setCurrentImages] = useState<string[]>([]);
-  const [centerImage] = useState("/assets/images/center.webpg"); // Static center image
-  // Animation states
+  const [centerImage] = useState("/assets/images/center.webp");
   const [isRapidChanging, setIsRapidChanging] = useState(false);
   const [showBlockHide, setShowBlockHide] = useState(false);
   const [showCenterScale, setShowCenterScale] = useState(false);
   const [showVideoTransition, setShowVideoTransition] = useState(false);
-  const [blockImages, setBlockImages] = useState<string[][]>([]);
+  const [gridImages] = useState(() => {
+    const shuffled = [...fashionImages].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 24); // 3 images per position (8 positions)
+  });
   const [isTransitioning, setIsTransitioning] = useState(false);
   // Slide variants for video transition
 
   console.log(onComplete);
 
-  // Generate random images for each block
-  const generateBlockImages = () => {
-    const blocks: string[][] = [];
-    for (let i = 0; i < 9; i++) {
-      const shuffled = [...fashionImages].sort(() => 0.5 - Math.random());
-      blocks.push(shuffled.slice(0, 8));
-    }
-    return blocks;
-  };
-
-  // Initialize random images with static center
   useEffect(() => {
-    const getRandomImages = () => {
-      const shuffled = [...fashionImages].sort(() => 0.5 - Math.random());
-      const images = shuffled.slice(0, 9);
-      images[4] = "/assets/images/center.webp"; // Keep center image static
-      return images;
-    };
-    const initialImages = getRandomImages();
+    const initialImages = [...gridImages.slice(0, 8), centerImage];
+    initialImages[4] = centerImage;
     setCurrentImages(initialImages);
-    setBlockImages(generateBlockImages());
-  }, []);
+  }, [gridImages, centerImage]);
 
   // Enhanced animation sequence
   useEffect(() => {
@@ -95,9 +79,8 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
 
       // Step 1: Start rapid image changing for 3 seconds
       setIsRapidChanging(true);
-      setBlockImages(generateBlockImages());
 
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Step 2: Stop rapid changing and start individual block hide animations
       setIsRapidChanging(false);
@@ -112,8 +95,6 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
 
       // Step 4: Center image opacity animation
       await new Promise((resolve) => setTimeout(resolve, 100));
-
-
 
       // Start transition to video component
       setIsTransitioning(true);
@@ -134,14 +115,13 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
 
     const interval = setInterval(() => {
       startAnimationSequence();
-    }, 10000); // Total cycle: 10 seconds
+    }, 3000); // Total cycle: 10 seconds
 
     startAnimationSequence();
 
     return () => clearInterval(interval);
   }, []);
 
-  // Rapid image changing effect
   useEffect(() => {
     if (!isRapidChanging) return;
 
@@ -150,12 +130,11 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
         const newImages = [...prevImages];
         for (let i = 0; i < 9; i++) {
           if (i === 4) {
-            newImages[i] = "/assets/images/center.webp"; // Keep center static
-          } else if (blockImages[i] && blockImages[i].length > 0) {
-            const randomIndex = Math.floor(
-              Math.random() * blockImages[i].length
-            );
-            newImages[i] = blockImages[i][randomIndex];
+            newImages[i] = centerImage;
+          } else {
+            const positionIndex = i > 4 ? i - 1 : i;
+            const imageIndex = (positionIndex * 3) + Math.floor(Math.random() * 3);
+            newImages[i] = gridImages[imageIndex] || gridImages[0];
           }
         }
         return newImages;
@@ -163,7 +142,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     }, 200);
 
     return () => clearInterval(rapidInterval);
-  }, [isRapidChanging, blockImages]);
+  }, [isRapidChanging, gridImages, centerImage]);
 
   return (
     <div
