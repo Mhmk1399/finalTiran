@@ -3,9 +3,21 @@ import { FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { FaInstagram, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 export const socialLinks = [
-  { name: "Instagram", href: "https://www.instagram.com/tiranstyle/profilecard/?igsh=M3V3ZjEwMTdjMGs1", icon: FaInstagram },
-  { name: "Twitter", href: "https://www.linkedin.com/company/tiran-style/", icon: FaTwitter },
-  { name: "LinkedIn", href: "https://www.linkedin.com/company/tiran-style/", icon: FaLinkedin },
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/tiranstyle/profilecard/?igsh=M3V3ZjEwMTdjMGs1",
+    icon: FaInstagram,
+  },
+  {
+    name: "Twitter",
+    href: "https://www.linkedin.com/company/tiran-style/",
+    icon: FaTwitter,
+  },
+  {
+    name: "LinkedIn",
+    href: "https://www.linkedin.com/company/tiran-style/",
+    icon: FaLinkedin,
+  },
 ];
 
 export const contactInfo: ContactInfoItem[] = [
@@ -46,8 +58,10 @@ export const Accsses = [
 export const customersServices = [
   { name: "پرسش های متداول", href: "/" },
   { name: "بلاگ", href: "/blog" },
+  { name: "کارت هدیه", href: "/giftCard" },
 ];
 export const Help = [
+  { name: "راهنما", href: "/help" },
   { name: "نحوه ثبت نام", href: "/" },
   { name: "شیوه های پرداخت", href: "/" },
 ];

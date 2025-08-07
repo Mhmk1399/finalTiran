@@ -39,21 +39,7 @@ const ContactContainer = () => {
           dir="rtl"
         >
           {/* Logo */}
-          <motion.div
-            className="flex justify-start lg:justify-start"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            viewport={{ once: true }}
-          >
-            <Image
-              src="/assets/images/logohalf.png" // Your company logo
-              alt="لوگو شرکت تیران"
-              width={80}
-              height={80}
-              className="object-contain "
-            />
-          </motion.div>
+       
 
           {/* Company Image */}
           <motion.div

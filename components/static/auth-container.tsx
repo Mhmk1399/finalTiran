@@ -34,7 +34,7 @@ const AuthPage = () => {
         "پس از ورود به صفحه محصول برای کامنت بازگردانده خواهید شد"
       );
     else if (redirectUrlCart)
-      setIsRedirecting("پس از ورود به صفحه کارت منتقل میشوید");
+      setIsRedirecting("پس از ورود به صفحه سبد خرید منتقل میشوید");
     else if (redirectUrlDashboard)
       setIsRedirectingDashboard("پس از ورود به داشبورد منتقل میشوید");
   }, []);
@@ -274,7 +274,12 @@ const AuthPage = () => {
                 variants={itemVariants}
                 className="text-center mb-8 border-b border-dashed border-gray-400 pb-2"
               >
-                <h1 className={`text-4xl  ${AriaBold.className} text-gray-900 mb-2`}>تیران</h1>
+                <h1
+                  className={`text-4xl  ${AriaBold.className} text-gray-900 mb-2`}
+                >
+                  {" "}
+                  تیران استایل
+                </h1>
                 <p className="text-gray-600">به حساب کاربری خود وارد شوید</p>
               </motion.div>
 

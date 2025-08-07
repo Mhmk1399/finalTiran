@@ -43,7 +43,7 @@ export default function AboutContainer() {
     const handleWheel = (e: WheelEvent) => {
       // Only handle horizontal scroll on large screens
       if (window.innerWidth >= 1024) {
-        container.scrollLeft += e.deltaY;
+        container.scrollLeft -= e.deltaY;
         e.preventDefault();
       }
     };

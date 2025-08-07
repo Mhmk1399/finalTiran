@@ -105,7 +105,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                     {categories[hoveredCategory].cat_name}
                   </h3>
 
-                  <div className="relative w-full h-48 rounded-lg overflow-hidden mb-3 shadow-md transform transition-transform duration-300 hover:scale-105">
+                  <div className="relative w-64 h-36 overflow-hidden mb-3 shadow-md transform transition-transform duration-300 hover:scale-105">
                     <Image
                       src={
                         categories[hoveredCategory].src ||
@@ -122,7 +122,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                     className="text-gray-900 hover:text-black font-medium text-sm flex items-center group"
                   >
                     <span className="relative">
-                      مشاهده همه محصولات {categories[hoveredCategory].cat_name}
+                     همه  {categories[hoveredCategory].cat_name}  ها
                       <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
                     </span>
                 
@@ -130,8 +130,8 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                 </motion.div>
 
                 {/* Subcategories */}
-                <div className="col-span-9 mt-20 mr-4">
-                  <div className="grid grid-cols-3 justify-start items-start gap-3">
+                <div className="col-span-7 mt-4 mr-24">
+                  <div className="grid grid-cols-3  justify-start items-start gap-1">
                     {categories[hoveredCategory].children &&
                       categories[hoveredCategory].children.map(
                         (subcategory, index) => (
@@ -152,7 +152,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                               <span className="inline-block">
                                 {subcategory.cat_name}
                               </span>
-                              <span className="absolute top-8 right-0 w-0 h-[1px] bg-black transition-all duration-300 group-hover:w-full -translate-y-1/2"></span>
+                              <span className="absolute top-6 right-0 w-0 h-[1px] bg-black transition-all duration-300 group-hover:w-full -translate-y-1/2"></span>
                             </Link>
 
                             {/* Third level categories if they exist */}

@@ -33,6 +33,7 @@ const Navbar = () => {
   const [userProfile, setUserProfile] = useState<UserProfile>();
   const [showCategoriesOnly, setShowCategoriesOnly] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(false);
   const prevScrollY = useRef(0);
   const pathname = usePathname();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -74,6 +75,7 @@ const Navbar = () => {
           const currentScrollY = window.scrollY;
           const newIsScrolled = currentScrollY > 10;
           const newShowCategoriesOnly = currentScrollY > 150;
+          const newIsAtBottom = window.innerHeight + currentScrollY >= document.body.offsetHeight - 100;
 
           // Update scroll state
           if (newIsScrolled !== isScrolled) {
@@ -85,6 +87,11 @@ const Navbar = () => {
             setShowCategoriesOnly(newShowCategoriesOnly);
           }
 
+          // Handle bottom detection
+          if (newIsAtBottom !== isAtBottom) {
+            setIsAtBottom(newIsAtBottom);
+          }
+
           prevScrollY.current = currentScrollY;
           ticking.current = false;
         });
@@ -94,7 +101,7 @@ const Navbar = () => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isScrolled, showCategoriesOnly]);
+  }, [isScrolled, showCategoriesOnly, isAtBottom]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -201,14 +208,13 @@ const Navbar = () => {
           {/* Center - Logo */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
             <Link href="/">
-              <div className="flex items-center justify-center transition-transform duration-200 hover:scale-110">
+              <div className="flex items-center justify-center transition-transform duration-200 ">
                 <Image
                   src="/assets/images/logo.png"
                   alt="Tiran Logo"
-                  width={70}
-                  height={70}
-                  className="h-6 md:h-8 w-auto"
-                  priority
+                  width={200}
+                  height={60}
+                  className="md:h-10 w-70 md:mb-4 -mt-1   transition-all duration-300 group-hover:brightness-110"
                 />
               </div>
             </Link>
@@ -293,7 +299,7 @@ const Navbar = () => {
             </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden">
+            <div className="md:hidden absolute top-3 right-4">
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="inline-flex items-center justify-center p-2 rounded-lg hover:bg-white/20 focus:outline-none transition-all duration-200 active:scale-95"
@@ -365,13 +371,13 @@ const Navbar = () => {
           </div>
         </div>
 
-        {!showCategoriesOnly && (
+      
           <MegaMenu
             categories={categories}
             hoveredCategory={hoveredCategory}
             setHoveredCategory={setHoveredCategory}
           />
-        )}
+       
       </div>
 
       {/* Mobile menu */}

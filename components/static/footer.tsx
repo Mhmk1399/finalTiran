@@ -337,7 +337,7 @@ const Footer = () => {
                 </div>
               ) : categories.length > 0 ? (
                 <nav className="space-y-4">
-                  {categories.slice(0, 4).map((category) => (
+                  {categories.map((category) => (
                     <motion.div
                       key={category.id}
                       whileHover={{ x: 4 }}
@@ -367,7 +367,7 @@ const Footer = () => {
                     </motion.div>
                   ))}
 
-                  {categories.length > 4 && (
+                  {/* {categories.length > 4 && (
                     <motion.div
                       whileHover={{ x: 4 }}
                       transition={{
@@ -402,7 +402,7 @@ const Footer = () => {
                         </svg>
                       </Link>
                     </motion.div>
-                  )}
+                  )} */}
                 </nav>
               ) : (
                 <p className="text-gray-500 text-sm p-4 rounded-lg text-center">

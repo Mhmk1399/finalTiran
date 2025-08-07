@@ -1,8 +1,8 @@
 export const navItems = [
   { name: "فروشگاه", href: "/shop" },
-  { name: "راهنما", href: "/help" },
+  // { name: "راهنما", href: "/help" },
   { name: "بلاگ", href: "/blog" },
-  { name: "درباره", href: "/about" },
+  { name: "درباره ما", href: "/about" },
   { name: "تماس با ما", href: "/contact" },
   // { name: "گیفت کارت", href: "/giftCart" },
   // { name: "هدایای سازمانی", href: "/corporateGifts" },
