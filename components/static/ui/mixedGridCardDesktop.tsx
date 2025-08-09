@@ -3,6 +3,7 @@ import { MixedGridCardProps } from "@/types/type";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
   category,
@@ -17,7 +18,7 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
   console.log(imageLoaded);
 
   const handleRoute = () => {
-    navigate.push("/about");
+    navigate.push(category.href);
   };
 
   return (
@@ -81,13 +82,16 @@ const MixedGridCardDesktop: React.FC<MixedGridCardProps> = ({
               onAnimationStart={() => setShowColorImage(true)}
               onAnimationComplete={() => setShowColorImage(false)}
             >
-              <Image
-                src={category.imageHover}
-                alt={`${category.title} - Color`}
-                fill
-                className="object-cover rounded-lg"
-                onClick={handleRoute}
-              />
+              <Link href={category.href}>
+                {" "}
+                <Image
+                  src={category.imageHover}
+                  alt={`${category.title} - Color`}
+                  fill
+                  className="object-cover rounded-lg"
+                  onClick={handleRoute}
+                />
+              </Link>
             </motion.div>
           )}
         </AnimatePresence>

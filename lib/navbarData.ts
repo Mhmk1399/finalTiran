@@ -4,7 +4,7 @@ export const navItems = [
   { name: "بلاگ", href: "/blog" },
   { name: "درباره ما", href: "/about" },
   { name: "تماس با ما", href: "/contact" },
-  // { name: "گیفت کارت", href: "/giftCart" },
+  { name: "گیفت کارت", href: "/giftCart" },
   { name: "هدایای سازمانی", href: "/corporateGifts" },
 ];
 

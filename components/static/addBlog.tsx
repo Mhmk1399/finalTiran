@@ -175,7 +175,7 @@ export default function AddBlogPage() {
       toast.error("لطفا تمام فیلدها را پر کنید");
       return;
     }
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
     // if (!token) {
     //   toast.error("لطفا مجددا وارد شوید");
     //   return;

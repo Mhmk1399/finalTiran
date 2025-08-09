@@ -5,6 +5,8 @@ import { MixedGridShowcaseProps } from "@/types/type";
 import MixedGridCardDesktop from "./mixedGridCardDesktop";
 import { AriaBold } from "@/next-persian-fonts/woff2";
 import { maneli } from "@/next-persian-fonts/maneli";
+import Image from "next/image";
+import Link from "next/link";
 
 const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   categories,
@@ -230,30 +232,20 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
       {/* Mobile: Grid layout, Desktop: Static positioned */}
       <div className="flex justify-center items-center w-full">
         {isMobile ? (
-          <div className="grid grid-cols-2 gap-4 w-full max-w-md">
-            {categories.slice(0, 6).map((category, index) => {
-              const pattern = gridPatterns[index % gridPatterns.length];
-              return (
-                <div
-                  key={category.id}
-                  className="aspect-[3/4]"
-                >
-                  <MixedGridCardDesktop
-                    category={category}
-                    index={index}
-                    isHovered={false}
-                    size={pattern.size}
-                    position={{
-                      width: 150,
-                      height: 200,
-                      x: 0,
-                      y: 0,
-                    }}
-                    zIndex={1}
+          <div className="grid grid-cols-2 gap-4 w-full mt-8 max-w-md">
+            {categories.map((category) => (
+              <div key={category.id} className="aspect-[3/4]  overflow-hidden">
+                <Link href={category.href}>
+                  <Image
+                    src={category.imageDefault}
+                    alt={category.title}
+                    className="w-full h-full object-cover"
+                    width={300}
+                    height={300}
                   />
-                </div>
-              );
-            })}
+                </Link>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="relative w-full max-w-6xl h-[400px] md:h-[700px]">
@@ -340,7 +332,8 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
                         className={`absolute text-sm ${
                           AriaBold.className
                         }  whitespace-nowrap ${
-                          textMeta.textOrientation === "vertical" || textMeta.textOrientation ==="verticall"
+                          textMeta.textOrientation === "vertical" ||
+                          textMeta.textOrientation === "verticall"
                             ? textMeta.textAlign === "right"
                               ? "transform rotate-90"
                               : "transform -rotate-90"
@@ -361,7 +354,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
                               top: textMeta.lineLength + 20,
                               transformOrigin: "center center",
                             }),
-                      
+
                           ...(textMeta.lineDirection === "vertical-downn" &&
                             textMeta.textAlign === "left" && {
                               left: -18,

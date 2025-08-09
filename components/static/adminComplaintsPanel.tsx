@@ -33,8 +33,9 @@ const AdminComplaintsPanel = () => {
         }
         const data: Complaint[] = await res.json();
         setComplaints(data);
-      } catch (err: any) {
-        setError(err.message || "خطا در دریافت داده‌ها");
+      } catch (err) {
+        console.log(err)
+        setError("خطا در دریافت داده‌ها");
       } finally {
         setLoading(false);
       }

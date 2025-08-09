@@ -444,6 +444,7 @@ export interface CategoryItem {
   description?: string;
   color?: string;
   icon?: string;
+  href: string;
 }
 export interface MixedGridCardProps {
   category: CategoryItem;

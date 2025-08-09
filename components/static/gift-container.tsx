@@ -277,7 +277,7 @@ const GiftCardsContainer = () => {
             با گیفت کارت‌های تیران استایل، لبخند را به چهره عزیزانتان هدیه دهید.
           </p>
           <motion.button
-            className="bg-white text-gray-600 font-bold py-3 px-8 rounded-full text-lg"
+            className="bg-white text-gray-600 font-bold py-3 px-8  text-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { MdDashboard, MdPeople, MdAnalytics, MdSettings } from "react-icons/md";
+import { MdDashboard, MdPeople, MdSettings } from "react-icons/md";
 import AdminComplaintsPanel from "@/components/static/adminComplaintsPanel";
 import BlogManagement from "@/components/static/BlogManagement";
 import AddBlogPage from "@/components/static/addBlog";

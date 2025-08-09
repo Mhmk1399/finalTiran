@@ -75,7 +75,9 @@ const Navbar = () => {
           const currentScrollY = window.scrollY;
           const newIsScrolled = currentScrollY > 10;
           const newShowCategoriesOnly = currentScrollY > 150;
-          const newIsAtBottom = window.innerHeight + currentScrollY >= document.body.offsetHeight - 100;
+          const newIsAtBottom =
+            window.innerHeight + currentScrollY >=
+            document.body.offsetHeight - 100;
 
           // Update scroll state
           if (newIsScrolled !== isScrolled) {
@@ -184,7 +186,7 @@ const Navbar = () => {
               <div key={item.name} className="nav-item relative px-1">
                 <Link href={item.href}>
                   <span
-                    className={`block px-3 py-2 text-base font-medium rounded-md transition-all duration-300 hover:scale-105 ${
+                    className={`block px-3 py-2 text-sm font-medium rounded-md transition-all duration-300 hover:scale-105 ${
                       activeItem === item.href
                         ? "text-black font-bold"
                         : "text-gray-700 hover:text-black "
@@ -371,13 +373,11 @@ const Navbar = () => {
           </div>
         </div>
 
-      
-          <MegaMenu
-            categories={categories}
-            hoveredCategory={hoveredCategory}
-            setHoveredCategory={setHoveredCategory}
-          />
-       
+        <MegaMenu
+          categories={categories}
+          hoveredCategory={hoveredCategory}
+          setHoveredCategory={setHoveredCategory}
+        />
       </div>
 
       {/* Mobile menu */}

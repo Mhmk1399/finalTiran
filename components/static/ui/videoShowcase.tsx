@@ -13,6 +13,14 @@ const VideoShowcase = () => {
   const [activeVideoIndex, setActiveVideoIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
+  const getAnimationDuration = () => {
+    const videoCount = currentVideos.length;
+    if (videoCount <= 3) return "35s";
+    if (videoCount <= 6) return "35s";
+    if (videoCount <= 9) return "35s";
+    return "50s";
+  };
+
   useEffect(() => {
     setIsMobile(window.innerWidth < 1024);
   }, []);
@@ -63,7 +71,7 @@ const VideoShowcase = () => {
   }
 
   return (
-    <div className="relative h-screen bg-white/90 flex z-40 pt-24" dir="rtl">
+    <div className="relative h-screen bg-white/90 flex z-40 md:pt-24" dir="rtl">
       {isMobile ? (
         /* Mobile: Full screen video only */
         <div className="relative w-full">
@@ -105,8 +113,15 @@ const VideoShowcase = () => {
           <div className="relative w-1/5 bg-white/90 overflow-hidden">
             <div
               className="flex flex-col gap-2 pr-2 animate-scroll"
-              onMouseEnter={(e) => e.currentTarget.style.animationPlayState = 'paused'}
-              onMouseLeave={(e) => e.currentTarget.style.animationPlayState = 'running'}
+              style={{
+                animationDuration: getAnimationDuration(),
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.animationPlayState = "paused")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.animationPlayState = "running")
+              }
             >
               {/* First set of videos */}
               {currentVideos.map((video, index) => (

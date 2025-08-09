@@ -45,7 +45,7 @@ export const categories = [
     imageDefault: "/assets/images/bluesky.jpg", // Black & white version
     imageHover: "/assets/images/bluesky.jpg", // Black & white version
     title: "لوازم الکترونیکی",
-
+    href: "/giftCard",
     color: "#fff",
   },
   {
@@ -53,7 +53,7 @@ export const categories = [
     imageDefault: "/assets/images/ahoramazda.jpg", // Black & white version
     imageHover: "/assets/images/ahoramazda.jpg", // Black & white version
     title: "مد و پوشاک",
-
+    href: "/shop?query=home",
     color: "#fff",
   },
   {
@@ -61,7 +61,7 @@ export const categories = [
     imageDefault: "/assets/images/lether.jpg", // Black & white version
     imageHover: "/assets/images/lether.jpg",
     title: "خانه و آشپزخانه",
-
+    href: "/shop?query=lethear",
     color: "#fff",
   },
   {
@@ -69,7 +69,7 @@ export const categories = [
     imageDefault: "/assets/images/purpleroof.jpg", // Black & white version
     imageHover: "/assets/images/purpleroof.jpg",
     title: "ورزش و سرگرمی",
-
+    href: "/shop?query=accesories",
     color: "#fff",
   },
   {
@@ -77,7 +77,7 @@ export const categories = [
     imageDefault: "/assets/images/unicorn.jpg", // Black & white version
     imageHover: "/assets/images/unicorn.jpg",
     title: "کتاب و فرهنگ",
-
+    href: "/shop?query=tablo",
     color: "#fff",
   },
   {
@@ -85,7 +85,7 @@ export const categories = [
     imageDefault: "/assets/images/zaferon.jpg", // Black & white version
     imageHover: "/assets/images/zaferon.jpg",
     title: "اسباب بازی",
-
+    href: "/shop?query=bags",
     color: "#fff",
   },
 ];
@@ -137,7 +137,6 @@ export const mediaItems: MediaItem[] = [
     description: "Envisioning tomorrow's digital landscape",
   },
 ];
-
 export const videoData = {
   bag: {
     id: "bag",
@@ -204,9 +203,8 @@ export const videoData = {
     ],
   },
 };
-
 export const getAllVideos = () => {
-  return Object.values(videoData).flatMap((category) =>
+  const allVideos = Object.values(videoData).flatMap((category) =>
     category.videos.map((video, index) => ({
       id: `${category.id}-${index}`,
       videoUrl: video,
@@ -215,4 +213,8 @@ export const getAllVideos = () => {
       image: category.image,
     }))
   );
+
+  // Shuffle and return only 5 random videos
+  const shuffled = allVideos.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, 4);
 };
