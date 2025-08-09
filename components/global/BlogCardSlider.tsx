@@ -68,6 +68,13 @@ const BlogCardSlider: React.FC<BlogCardSliderProps> = () => {
 
   return (
     <div className="w-full py-16 bg-white" dir="rtl">
+      {/* Title */}
+      <div className="text-center mb-12">
+        <h2 className={`text-3xl lg:text-4xl text-black ${AriaBold.className}`}>
+          آخرین مقالات و اخبار
+        </h2>
+      </div>
+      
       <div className="w-full relative ">
         <div className="lg:px-24 mx-auto">
           {/* Scrollable Container */}
