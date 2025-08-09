@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import { AriaBold } from "@/next-persian-fonts/woff2";
+import { motion } from "framer-motion";
+import { maneli } from "@/next-persian-fonts/maneli";
 
 const teamMembers = [
   {
@@ -135,32 +137,27 @@ export default function AboutContainer() {
                   </span>
                 </h2>
                 <p className="text-[16px] mt-4 md:text-base text-gray-700 text-justify leading-relaxed ">
-                  تیران استایل، با تکیه بر شعار الهام‌بخش استایل جور دیگر…،
-                  برندی پیشرو در فشن، تکنولوژی و لایف‌استایل است که برای افراد
-                  خاص و جسور طراحی شده است. ما با تمرکز بر ارائه محصولات
-                  منحصربه‌فرد، سلیقه مشتریانمان را به بالاترین سطح ارتقا
-                  می‌دهیم.
-                </p>
-                <p className="text-[16px]  md:text-base text-gray-700 text-justify leading-relaxed">
-                  طراحی تیران استایل از یک فلسفه طراحی خاص پیروی می کند:
-                </p>
-                <p className="text-[16px]  md:text-base text-gray-700 text-justify leading-relaxed">
-                  در گام اول، تیران استایل یک هویت قوی و شناخته شده دارد و در
-                  گام دوم، تیران استایل مخصوص افرادی است که از جلوتر بودن در مُد
-                  لذت می‌برند و به دنبال درک مفهوم خاص‌تری از سبک زندگی هستند و
-                  انتخاب‌های شجاعانه‌ای دارند. ماموریت ما در تیران استایل، ارائه
-                  محصولاتی است که به مشتریانمان کمک می‌کند تا سبک زندگی خود را
-                  با جسارت و اصالت تعریف کنند و از دیگران متمایز شوند.{" "}
+                  اصالت، چیزی نیست که ساخته شود؛ به ارث می‌رسد. و ما در تیران
+                  استایل این میراث را، نه در موزه، بلکه در زندگی روزمره زنده نگه
+                  می‌داریم. ما در تیران استایل به دنبال زیبایی سطحی نیستیم. آنچه
+                  برای ما مهم است، آن عمق پنهانی‌ست که پشت هر طراحی خوابیده جایی
+                  بین وقار سنت و جسارت معاصر. در دنیایی که سرعت، سادگی و تکرار
+                  همه‌چیز را بلعیده، ما تلاش می‌کنیم تا طراحی، دوباره معنا پیدا
+                  کند. تا آن‌چه روی دوش نسل امروز می‌نشیند، یادآور اصالت نسل‌های
+                  پیشین باشد. برای ما، این مسیر فقط یک مسیر کاری نیست. تعهدی
+                  شخصی‌ست برای نگه‌داشتن ریشه‌ها در دل طراحی معاصر. باور داریم
+                  که اگر امروز نتونیم گذشته‌مون رو به زبان امروز روایت کنیم،
+                  فردا چیزی برای افتخار نخواهیم داشت.
                 </p>
               </div>
               {/* TIRAN STYLE Heading */}
-              <Image
+              {/* <Image
                 src={"/assets/images/TIRAN.png"}
                 alt="TIRAN STYLE"
                 width={300}
                 height={200}
                 className="lg:mt-20 mt-20 pb-20"
-              />
+              /> */}
             </div>
           </div>
         </section>
@@ -219,41 +216,96 @@ export default function AboutContainer() {
           {/* Text Content with Black Background - Left Side */}
           <div className="w-full lg:w-1/2 bg-slate-950/95 flex flex-col justify-center items-start px-4 sm:px-6 lg:px-8  order-2 lg:order-1 py-16 lg:py-0">
             <div className="w-full">
-              {/* Top Text Box */}
-              <div className=" lg:mb-12 text-center">
-                <h2
-                  className={`text-2xl  ${AriaBold.className}  md:text-2xl text-white mb-10 md:mb-30 leading-tight`}
+              {/* Description Text */}
+              <div className="space-y-3 mr-4">
+                {" "}
+                {/* Company Image */}
+                <motion.div
+                  className={`flex justify-center text-gray-50 lg:justify-end ${maneli.className}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  viewport={{ once: true }}
                 >
-                  ماموریت ما
-                </h2>
-
-                <p className="text-xl  md:text-[20px] text-center text-gray-400 leading-relaxed mb-10 md:mb-30">
-                  تیران استایل، با تکیه بر شعار الهام‌بخش استایل جور دیگر…،
-                  برندی پیشرو در فشن، تکنولوژی و لایف‌استایل است که برای افراد
-                  خاص و جسور طراحی شده است. ما با تمرکز بر ارائه محصولات
-                  منحصربه‌فرد، سلیقه مشتریانمان را به بالاترین سطح ارتقا
-                  می‌دهیم.{" "}
-                </p>
-                {/* Contact Button */}
-                <Link
-                  href="/contact"
-                  className={`inline-flex items-center justify-center px-8   text-lg  text-white  transform hover:scale-105 transition-all duration-300`}
-                >
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                ...  استایل جور دیگر 
+                </motion.div>
+                {/* Address */}
+                <div className=" text-gray-50 text-xl md:text-2xl text-right font-bold">
+                :  آدرس 
+                </div>
+                {/* Description Text */}
+                <div className="space-y-3 mr-4">
+                  {" "}
+                  <motion.p
+                    className="text-gray-400 text-right text-[14px] md:text-[16px] lg:text-sm xl:text-base leading-relaxed  lg:text-right "
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                    viewport={{ once: true }}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                  تماس با ما
-                </Link>
+                    دفتر مرکزی : تهران، اختیاریه، خیابان بهار جنوبی کوچه سعید{" "}
+                  </motion.p>
+                  <motion.p
+                    className="text-gray-400 text-right text-[14px] md:text-[16px] lg:text-sm xl:text-base leading-relaxed  lg:text-right "
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                    viewport={{ once: true }}
+                  >
+                    استودیو طراحی : کرمان، کارخانه نوآوری{" "}
+                  </motion.p>
+                  <motion.p
+                    className="text-gray-400 text-right text-[14px] md:text-[16px] lg:text-sm xl:text-base leading-relaxed  lg:text-right "
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                    viewport={{ once: true }}
+                  >
+                   QT استودیو محتوا : خیابان فلسطین، تقاطع زرگمهر، استودیو 
+                  </motion.p>
+                </div>
+                {/* Contact Info */}
+                <motion.div
+                  className="space-y-1 text-right mt-5 flex flex-col justify-end md:mt-8 mb-8 "
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                  viewport={{ once: true }}
+                >
+                  {/* Phone */}
+
+                  <div className="flex flex-row-reverse items-center justify-end lg:justify-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 lg:w-7 lg:h-7 xl:w-8 xl:h-8  text-gray-400 flex-shrink-0">
+                      تلفن
+                    </div>
+                    <Link
+                      href="tel:02191097613"
+                      className="text-gray-100 font-bold text-sm sm:text-base lg:text-xs xl:text-sm text-center lg:text-right"
+                    >
+                      ۹۱۰۹۷۶۱۳ - ۰۲۱
+                    </Link>
+                  </div>
+
+                  <div className="flex flex-row-reverse items-center justify-end lg:justify-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 lg:w-7 lg:h-7 xl:w-8 xl:h-8  text-gray-400 flex-shrink-0">
+                      ایمیل
+                    </div>
+                    <Link
+                      href="mailto:info@tiranstyle.com"
+                      className="text-gray-100 font-bold text-sm sm:text-base lg:text-xs xl:text-sm text-center lg:text-right"
+                    >
+                      info@tiranstyle.com
+                    </Link>
+                  </div>
+                  <div className="flex flex-row-reverse items-center justify-end lg:justify-start gap-3">
+                    <div className="flex items-center text-gray-400 justify-center text-nowrap ">
+                      ساعات کاری 
+                    </div>
+                    <span className="text-gray-100 font-bold text-sm sm:text-base lg:text-xs xl:text-sm text-center lg:text-right">
+                      از ساعت ۱۰:۰۰ تا ساعت ۱۸:۰۰
+                    </span>
+                  </div>
+                </motion.div>
               </div>
             </div>
           </div>

@@ -94,7 +94,7 @@ const TopFooterText: React.FC = () => {
           <AnimatePresence>
             {!isExpanded && showToggle && (
               <motion.div
-                className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white via-white/40 to-transparent"
+                className="absolute bottom-0 left-0  right-0 h-16 bg-gradient-to-t from-white via-white/40 to-transparent"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}

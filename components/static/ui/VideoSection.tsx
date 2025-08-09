@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 
 const videoSlides = {
-  src: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
+  src: "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/NYVMk7Mvnl/origin_8WmQvnpZ3v8Oo2f0Qwkz6ZBuEVpki3dkGO7ScAKK.mp4",
   mobileSrc:
-    "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/aqYWNXrvpA/origin_X2X6eocORxrdmKJZmP72TmhiZVpi352VXTYuf79J.mp4",
+    "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/xqOg6q0Rd8/origin_5ft3HKzQiAzHw6trjTp6DwR1ok8KxPOsXId25BFl.mp4",
   title: "استایل جور دیگر",
 };
 
@@ -35,6 +35,7 @@ export default function VideoSection() {
           autoPlay
           muted
           playsInline
+          loop
           className="w-full h-full object-cover"
         />
 

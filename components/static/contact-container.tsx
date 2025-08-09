@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { socialLinks } from "@/lib/footerData";
+import { maneli } from "@/next-persian-fonts/maneli";
+import Link from "next/link";
 
 // Form state type
 
@@ -10,7 +12,7 @@ const ContactContainer = () => {
     <section className="bg-white min-h-screen pt-20 px-5 md:px-15 lg:pl-0 lg:pr-20">
       {/* Hero Section */}
 
-      <div className="flex flex-col-reverse lg:flex-row lg:items-end lg:gap-12">
+      <div className="flex flex-col-reverse lg:flex-row lg:items-start  lg:gap-12">
         {/* Left Side - Image */}
         <motion.div
           className="relative w-full lg:w-1/2 h-[450px]  md:h-[500px] lg:h-[620px] overflow-hidden "
@@ -31,7 +33,7 @@ const ContactContainer = () => {
 
         {/* Right Side - Company Info */}
         <motion.div
-          className="w-full h-full lg:w-1/2 flex flex-col items-start lg:items-start gap-4  mt-10 mb-10"
+          className="w-full h-full lg:w-1/2 flex flex-col items-start lg:items-start gap-4 lg:mt-24  mt-10 mb-10"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
@@ -39,37 +41,53 @@ const ContactContainer = () => {
           dir="rtl"
         >
           {/* Logo */}
-       
 
           {/* Company Image */}
           <motion.div
-            className="flex justify-center lg:justify-start"
+            className={`flex justify-center lg:justify-start ${maneli.className}`}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
           >
-            <Image
-              src="/assets/images/dastkhat.png" // Company building or team image
-              alt="ساختمان شرکت"
-              width={100}
-              height={80}
-              className="object-contain "
-            />
+            استایل جور دیگر ...
           </motion.div>
+          {/* Address */}
+          <div className=" text-gray-700 text-xl md:text-2xl font-bold">
+            آدرس :
+          </div>
 
           {/* Description Text */}
-          <motion.p
-            className="text-gray-400 text-right text-[14px] md:text-[16px] lg:text-sm xl:text-base leading-relaxed  lg:text-right "
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            viewport={{ once: true }}
-          >
-            ماموریت ما در تیران استایل ارائه محصولاتی است که به مشتریانمان کمک
-            می‌کند تا سبک زندگی خود را با جسارت و اصالت تعریف کنند و از دیگران
-            متمایز شوند
-          </motion.p>
+          <div className="space-y-3 mr-4">
+            {" "}
+            <motion.p
+              className="text-gray-600 text-right text-[14px] md:text-[16px] lg:text-sm xl:text-base leading-relaxed  lg:text-right "
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              viewport={{ once: true }}
+            >
+              دفتر مرکزی : تهران، اختیاریه، خیابان بهار جنوبی کوچه سعید{" "}
+            </motion.p>
+            <motion.p
+              className="text-gray-600 text-right text-[14px] md:text-[16px] lg:text-sm xl:text-base leading-relaxed  lg:text-right "
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              viewport={{ once: true }}
+            >
+              استودیو طراحی : کرمان، کارخانه نوآوری{" "}
+            </motion.p>
+            <motion.p
+              className="text-gray-600 text-right text-[14px] md:text-[16px] lg:text-sm xl:text-base leading-relaxed  lg:text-right "
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              viewport={{ once: true }}
+            >
+              استودیو محتوا : خیابان فلسطین، تقاطع زرگمهر، استودیو QT
+            </motion.p>
+          </div>
 
           {/* Contact Info */}
           <motion.div
@@ -80,22 +98,36 @@ const ContactContainer = () => {
             viewport={{ once: true }}
           >
             {/* Phone */}
+
             <div className="flex items-center justify-start lg:justify-start gap-3">
               <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 lg:w-7 lg:h-7 xl:w-8 xl:h-8  text-gray-400 flex-shrink-0">
                 تلفن
               </div>
-              <span className="text-gray-800 font-bold text-sm sm:text-base lg:text-xs xl:text-sm text-center lg:text-right">
-                ۰۲۱-۱۲۳۴۵۶۷۸
-              </span>
+              <Link
+                href="tel:02191097613"
+                className="text-gray-800 font-bold text-sm sm:text-base lg:text-xs xl:text-sm text-center lg:text-right"
+              >
+                ۹۱۰۹۷۶۱۳ - ۰۲۱
+              </Link>
             </div>
 
-            {/* Address */}
             <div className="flex items-center justify-start lg:justify-start gap-3">
               <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 lg:w-7 lg:h-7 xl:w-8 xl:h-8  text-gray-400 flex-shrink-0">
-                نشانی
+                ایمیل
+              </div>
+              <Link
+                href="mailto:info@tiranstyle.com"
+                className="text-gray-800 font-bold text-sm sm:text-base lg:text-xs xl:text-sm text-center lg:text-right"
+              >
+                info@tiranstyle.com
+              </Link>
+            </div>
+            <div className="flex items-center justify-start lg:justify-start gap-3">
+              <div className="flex items-center text-gray-400 justify-center text-nowrap ">
+                ساعات کاری:
               </div>
               <span className="text-gray-800 font-bold text-sm sm:text-base lg:text-xs xl:text-sm text-center lg:text-right">
-                تهران، پلاک یک
+                از ساعت ۱۰:۰۰ تا ساعت ۱۸:۰۰
               </span>
             </div>
           </motion.div>

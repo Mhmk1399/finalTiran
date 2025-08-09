@@ -211,7 +211,7 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
           </h2>
           <div className=" text-center">
             <p className={` ${maneli.className} text-gray-500 `}>
-              جایی که در آن زیبایی ، کاربرد و پایداری در کنار هم قرار گرفته اند{" "}
+                زیبایی ، کاربرد و پایداری در کنار هم قرار گرفته اند{" "}
             </p>
           </div>
         </div>
