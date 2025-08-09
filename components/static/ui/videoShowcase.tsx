@@ -63,7 +63,7 @@ const VideoShowcase = () => {
   }
 
   return (
-    <div className="relative h-screen bg-white/90 flex z-40" dir="rtl">
+    <div className="relative h-screen bg-white/90 flex z-40 pt-24" dir="rtl">
       {isMobile ? (
         /* Mobile: Full screen video only */
         <div className="relative w-full">
@@ -104,9 +104,11 @@ const VideoShowcase = () => {
           </div>
           <div className="relative w-1/5 bg-white/90 overflow-hidden">
             <div
-              className="flex flex-col gap-2 pr-2 h-full overflow-y-auto w-full py-4"
-              style={{ height: "100vh" }}
+              className="flex flex-col gap-2 pr-2 animate-scroll"
+              onMouseEnter={(e) => e.currentTarget.style.animationPlayState = 'paused'}
+              onMouseLeave={(e) => e.currentTarget.style.animationPlayState = 'running'}
             >
+              {/* First set of videos */}
               {currentVideos.map((video, index) => (
                 <div
                   key={video.id}
@@ -122,13 +124,32 @@ const VideoShowcase = () => {
                     <video
                       src={video.videoUrl}
                       className="w-full h-full object-cover"
+                      autoPlay
                       muted
                       loop
                       playsInline
                       preload="metadata"
-                      onMouseEnter={(e) => e.currentTarget.play()}
-                      onMouseLeave={(e) => e.currentTarget.pause()}
-                      onClick={(e) => e.currentTarget.play()}
+                    />
+                  </div>
+                </div>
+              ))}
+              {/* Duplicate set for seamless loop */}
+              {currentVideos.map((video, index) => (
+                <div
+                  key={`${video.id}-duplicate`}
+                  className="flex-shrink-0 cursor-pointer transition-opacity duration-200 brightness-75 blur-[1px]"
+                  onClick={() => handleVideoClick(video, index)}
+                  style={{ minHeight: "150px" }}
+                >
+                  <div className="w-full aspect-[3/4] overflow-hidden bg-gray-200">
+                    <video
+                      src={video.videoUrl}
+                      className="w-full h-full object-cover"
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
                     />
                   </div>
                 </div>

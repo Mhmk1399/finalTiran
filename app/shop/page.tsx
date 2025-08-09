@@ -71,11 +71,7 @@ function ShopPage() {
       </AnimatePresence>
 
       <main
-        className="mb-12"
-        // style={{
-        //   background: `url('/assets/images/texture.png')`,
-        // }}
-      >
+         >
         <VideoShowcase />
 
         <div className="md:px-8 lg:px-20">
