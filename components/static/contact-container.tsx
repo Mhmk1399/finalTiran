@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { socialLinks } from "@/lib/footerData";
 import { maneli } from "@/next-persian-fonts/maneli";
 import Link from "next/link";
+import ContactForm from "./contactForm";
 
 // Form state type
 
@@ -181,6 +182,8 @@ const ContactContainer = () => {
           </motion.div>
         </motion.div>
       </div>
+
+      <ContactForm />
     </section>
   );
 };

@@ -86,7 +86,7 @@ const TopFooterText: React.FC = () => {
           animate={{ height: contentHeight }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-          <div className="whitespace-pre-wrap px-7 mt-2 text-justify leading-7 text-base text-gray-800">
+          <div className="whitespace-pre-wrap px-7 my-2 text-justify leading-6.5 text-base text-gray-800">
             {seoContent}
           </div>
 

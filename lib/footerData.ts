@@ -58,6 +58,7 @@ export const Accsses = [
 export const customersServices = [
   { name: "پرسش های متداول", href: "/" },
   { name: "بلاگ", href: "/blog" },
+  { name: "ثبت شکایات", href: "/contact#contact-form" },
   { name: "کارت هدیه", href: "/giftCard" },
 ];
 export const Help = [

@@ -65,6 +65,9 @@ export default function RootLayout({
           {children}
           <TopFooterText />
           <Footer />
+
+          {/* Bottom gradient blur effect */}
+          <div className="fixed bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-white/10 to-transparent backdrop-blur-[3px] pointer-events-none z-50" />
         </CartProvider>
       </body>
     </html>

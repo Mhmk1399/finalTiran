@@ -5,7 +5,7 @@ export const navItems = [
   { name: "درباره ما", href: "/about" },
   { name: "تماس با ما", href: "/contact" },
   // { name: "گیفت کارت", href: "/giftCart" },
-  // { name: "هدایای سازمانی", href: "/corporateGifts" },
+  { name: "هدایای سازمانی", href: "/corporateGifts" },
 ];
 
 // Categories with subcategories

@@ -44,8 +44,24 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/36.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/37.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/38.webp?versionId=",
+  ];
+
+  // Divide images into groups of 4 for each position
+  const positionImages = [
+    fashionImages.slice(0, 4), // Position 0
+    fashionImages.slice(4, 8), // Position 1
+    fashionImages.slice(8, 12), // Position 2
+    fashionImages.slice(12, 16), // Position 3
+    [
+      fashionImages[16],
+      fashionImages[17],
+      fashionImages[18],
+      "/assets/images/center.webp",
+    ], // Position 4 (center) - 4 images with center.webp as last
+    fashionImages.slice(20, 24), // Position 5
+    fashionImages.slice(24, 28), // Position 6
+    fashionImages.slice(28, 32), // Position 7
+    fashionImages.slice(32, 36), // Position 8
   ];
 
   const [currentImages, setCurrentImages] = useState<string[]>([]);
@@ -54,20 +70,14 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
   const [showBlockHide, setShowBlockHide] = useState(false);
   const [showCenterScale, setShowCenterScale] = useState(false);
   const [showVideoTransition, setShowVideoTransition] = useState(false);
-  const [gridImages] = useState(() => {
-    const shuffled = [...fashionImages].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, 24); // 3 images per position (8 positions)
-  });
+
   const [isTransitioning, setIsTransitioning] = useState(false);
   // Slide variants for video transition
 
-  console.log(onComplete);
-
   useEffect(() => {
-    const initialImages = [...gridImages.slice(0, 8), centerImage];
-    initialImages[4] = centerImage;
+    const initialImages = positionImages.map((images) => images[0]);
     setCurrentImages(initialImages);
-  }, [gridImages, centerImage]);
+  }, []);
 
   // Enhanced animation sequence
   useEffect(() => {
@@ -80,10 +90,20 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
       // Step 1: Start rapid image changing for 3 seconds
       setIsRapidChanging(true);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // Step 2: Stop rapid changing and start individual block hide animations
+      // Step 2: Stop rapid changing and show center.webp
       setIsRapidChanging(false);
+      setCurrentImages((prev) => {
+        const newImages = [...prev];
+        newImages[4] = centerImage; // Set final center image (center.webp)
+        return newImages;
+      });
+
+      // Wait a moment to show center.webp
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // Step 3: Start individual block hide animations
       setShowBlockHide(true);
 
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -110,12 +130,12 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
 
       // Update text
 
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 5000));
     };
 
     const interval = setInterval(() => {
       startAnimationSequence();
-    }, 3000); // Total cycle: 10 seconds
+    }, 5000); // Total cycle: 10 seconds
 
     startAnimationSequence();
 
@@ -129,20 +149,16 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
       setCurrentImages((prevImages) => {
         const newImages = [...prevImages];
         for (let i = 0; i < 9; i++) {
-          if (i === 4) {
-            newImages[i] = centerImage;
-          } else {
-            const positionIndex = i > 4 ? i - 1 : i;
-            const imageIndex = (positionIndex * 3) + Math.floor(Math.random() * 3);
-            newImages[i] = gridImages[imageIndex] || gridImages[0];
-          }
+          // All positions: cycle through all 4 images randomly
+          const randomIndex = Math.floor(Math.random() * 4);
+          newImages[i] = positionImages[i][randomIndex];
         }
         return newImages;
       });
     }, 200);
 
     return () => clearInterval(rapidInterval);
-  }, [isRapidChanging, gridImages, centerImage]);
+  }, [isRapidChanging, centerImage]);
 
   return (
     <div
@@ -164,32 +180,45 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                 {!showVideoTransition ? (
                   // Image Grid Phase - Smaller on mobile
                   <div className="grid grid-cols-3 gap-2 lg:gap-3 p-3 lg:p-6 backdrop-blur-lg rounded-2xl lg:rounded-3xl">
-                    {currentImages.map((image, index) => (
-                      <div
-                        key={`${image}-${index}`}
-                        className={`relative overflow-hidden transition-all duration-500 ${
-                          index === 4
-                            ? isTransitioning
-                              ? "w-screen h-screen fixed inset-0 z-50 rounded-none"
-                              : showCenterScale
-                              ? "w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 scale-125 z-20 ring-2 ring-white/50"
-                              : "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 ring-1 ring-white/30"
-                            : "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32"
-                        } ${
-                          showBlockHide && index !== 4
-                            ? "opacity-0 scale-75"
-                            : "opacity-100"
-                        }`}
-                      >
-                        <Image
-                          src={image}
-                          width={500}
-                          height={500}
-                          alt={`Fashion ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ))}
+                    {currentImages.length > 0 &&
+                      currentImages.map(
+                        (image, index) =>
+                          image && (
+                            <div
+                              key={`${image}-${index}`}
+                              className={`relative overflow-hidden ${
+                                index === 4
+                                  ? isTransitioning
+                                    ? "w-screen h-screen fixed inset-0 z-50 rounded-none transition-all duration-700"
+                                    : showCenterScale
+                                    ? "w-20 h-20 sm:w-28 sm:h-28 lg:w-40 lg:h-40 scale-125 z-20 transition-all duration-500"
+                                    : "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 transition-all duration-500"
+                                  : "w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32"
+                              }`}
+                            >
+                              {/* Curtain overlay */}
+                              {index !== 4 && (
+                                <div
+                                  className={`absolute inset-0 bg-white transition-all duration-200 ease-out ${
+                                    showBlockHide
+                                      ? "transform translate-y-0"
+                                      : "transform -translate-y-full"
+                                  }`}
+                                  // style={{
+                                  //   transitionDelay: showBlockHide ? `${index * 50}ms` : "0ms",
+                                  // }}
+                                />
+                              )}
+                              <Image
+                                src={image}
+                                width={500}
+                                height={500}
+                                alt={`Fashion ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          )
+                      )}
                   </div>
                 ) : (
                   // Video Showcase Phase - Responsive sizing

@@ -1,3 +1,4 @@
+import SmoothScrollProvider from "@/components/global/smoothScrollProvider.tsx";
 import CorporateGiftsContainer from "@/components/static/Corporate-container";
 import { Metadata } from "next";
 
@@ -62,6 +63,7 @@ const CorporateGiftsPage = () => {
   return (
     <main>
       <CorporateGiftsContainer />
+      <SmoothScrollProvider />
     </main>
   );
 };
