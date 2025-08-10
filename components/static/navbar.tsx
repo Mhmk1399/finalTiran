@@ -431,7 +431,7 @@ const Navbar = () => {
                     <div key={category.id}>
                       <div className="flex items-center justify-between">
                         <Link
-                          href={`/shop?category=${encodeURIComponent(
+                          href={`/shop?query=${encodeURIComponent(
                             category.cat_name
                           )}`}
                           onClick={() => {
@@ -505,7 +505,7 @@ const Navbar = () => {
                         >
                           {category.children.map((subcategory) => (
                             <div key={subcategory.id}>
-                              <Link href={`/category/${subcategory.slug}`}>
+                              <Link href={`shop?query=${subcategory.slug}`}>
                                 <span
                                   className="block px-4 py-1.5 text-xs font-medium text-gray-800 hover:text-black transition-all duration-200 hover:translate-x-1"
                                   onTouchStart={(e) =>
