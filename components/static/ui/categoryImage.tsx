@@ -19,14 +19,23 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   const [isTablet, setIsTablet] = useState(false);
 
   useEffect(() => {
-    if (window.innerWidth <= 430) {
-      setIsMobile(true);
-    } else if (window.innerWidth <= 1054) {
-      setIsTablet(true);
-    } else {
-      setIsMobile(false);
-      setIsTablet(false);
-    }
+    const handleResize = () => {
+      if (window.innerWidth <= 430) {
+        setIsMobile(true);
+        setIsTablet(false);
+      } else if (window.innerWidth <= 1054) {
+        setIsTablet(true);
+        setIsMobile(false);
+      } else {
+        setIsMobile(false);
+        setIsTablet(false);
+      }
+    };
+
+    handleResize(); // برای اجرا در mount
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const isInView = useInView(containerRef, {
@@ -190,7 +199,7 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
   return (
     <motion.div
       ref={containerRef}
-      className="relative w-full min-h-full px-4 p-23 pb-50 md:pb-40  flex flex-col items-center "
+      className="relative w-full min-h-full px-4 p-23 pb-20 md:pb-40  flex flex-col items-center "
       variants={containerVariants}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
@@ -233,16 +242,22 @@ const MixedGridShowcase: React.FC<MixedGridShowcaseProps> = ({
       <div className="flex justify-center items-center w-full">
         {isMobile ? (
           <div className="grid grid-cols-2 gap-4 w-full mt-8 max-w-md">
-            {categories.map((category) => (
-              <div key={category.id} className="aspect-[3/4]  overflow-hidden">
+            {categories.map((category, idx) => (
+              <div key={idx} className="flex flex-col items-center gap-2">
+                {" "}
+                <div className="aspect-[3/4]  overflow-hidden">
+                  <Link href={category.href}>
+                    <Image
+                      src={category.imageDefault}
+                      alt={category.title}
+                      className="w-full h-full object-cover"
+                      width={300}
+                      height={300}
+                    />
+                  </Link>
+                </div>
                 <Link href={category.href}>
-                  <Image
-                    src={category.imageDefault}
-                    alt={category.title}
-                    className="w-full h-full object-cover"
-                    width={300}
-                    height={300}
-                  />
+                  <span>{category.title}</span>
                 </Link>
               </div>
             ))}

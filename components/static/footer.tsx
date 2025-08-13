@@ -456,7 +456,7 @@ const Footer = () => {
         />{" "}
       </footer>
       {/* Backdrop Logo */}
-      <div className="relative z-99 min-h-screen bg-gradient-to-br from-slate-900 via-black to-slate-800 overflow-hidden">
+      <div className="relative z-99 min-h-screen bg-gradient-to-tr from-blue-950  via-black  to-blue-950  overflow-hidden">
         {/* Main Content Container */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center">
           {/* Logo Container with Multiple Animation Layers */}

@@ -90,9 +90,7 @@ const ProductImageSlider: React.FC<{
   }
 
   return (
-    <div
-      className="relative w-full aspect-square bg-gray-50 overflow-hidden group"
-    >
+    <div className="relative w-full aspect-square bg-gray-50 overflow-hidden group">
       {/* Main Image */}
       <Image
         src={images[currentImageIndex]?.src || ""}
@@ -462,7 +460,7 @@ const ProductRow: React.FC<ProductGridProps> = ({
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="bg-black cursor-pointer text-white px-8 py-3 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="bg-black cursor-pointer text-white px-8 py-3 hover:bg-transparent hover:text-black hover:font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {loadingMore ? "در حال بارگذاری..." : "مشاهده بیشتر"}
                 </button>

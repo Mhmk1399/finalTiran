@@ -145,7 +145,7 @@ export default function ProductGrid({ categoryFilter }: ProductGridProps) {
             <button
               onClick={handleLoadMore}
               disabled={loading}
-              className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="bg-blue-600 text-white px-8 py-3 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? "در حال بارگذاری..." : "مشاهده بیشتر"}
             </button>

@@ -44,7 +44,7 @@ export const categories = [
     id: 1,
     imageDefault: "/assets/images/bluesky.jpg", // Black & white version
     imageHover: "/assets/images/bluesky.jpg", // Black & white version
-    title: "لوازم الکترونیکی",
+    title: "گیف کارت",
     href: "/giftCard",
     color: "#fff",
   },
@@ -52,7 +52,7 @@ export const categories = [
     id: 2,
     imageDefault: "/assets/images/ahoramazda.jpg", // Black & white version
     imageHover: "/assets/images/ahoramazda.jpg", // Black & white version
-    title: "مد و پوشاک",
+    title: "خانه و سبک زندگی",
     href: "/shop?query=home",
     color: "#fff",
   },
@@ -60,7 +60,7 @@ export const categories = [
     id: 3,
     imageDefault: "/assets/images/lether.jpg", // Black & white version
     imageHover: "/assets/images/lether.jpg",
-    title: "خانه و آشپزخانه",
+    title: "چرم ترکیبی",
     href: "/shop?query=lethear",
     color: "#fff",
   },
@@ -68,7 +68,7 @@ export const categories = [
     id: 4,
     imageDefault: "/assets/images/purpleroof.jpg", // Black & white version
     imageHover: "/assets/images/purpleroof.jpg",
-    title: "ورزش و سرگرمی",
+    title: "اکسسوری",
     href: "/shop?query=accesories",
     color: "#fff",
   },
@@ -76,7 +76,7 @@ export const categories = [
     id: 5,
     imageDefault: "/assets/images/unicorn.jpg", // Black & white version
     imageHover: "/assets/images/unicorn.jpg",
-    title: "کتاب و فرهنگ",
+    title: "تابلو",
     href: "/shop?query=tablo",
     color: "#fff",
   },
@@ -84,7 +84,7 @@ export const categories = [
     id: 6,
     imageDefault: "/assets/images/zaferon.jpg", // Black & white version
     imageHover: "/assets/images/zaferon.jpg",
-    title: "اسباب بازی",
+    title: "کیف",
     href: "/shop?query=bags",
     color: "#fff",
   },
@@ -138,8 +138,8 @@ export const mediaItems: MediaItem[] = [
   },
 ];
 export const videoData = {
-  bag: {
-    id: "bag",
+  bags: {
+    id: "bags",
     name: "لوازم الکترونیکی",
     image: "/assets/images/category/kif.webp",
     videos: [
@@ -175,8 +175,8 @@ export const videoData = {
       "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/zlavyzbdEj/origin_3Gj2CXXw3WiG024StlsqHJhe9wEecFSRQYfXJOjV.mp4",
     ],
   },
-  board: {
-    id: "board",
+  tablo: {
+    id: "tablo",
     name: "ورزش و سرگرمی",
     image: "/assets/images/category/tablo.JPG",
     videos: [
@@ -185,8 +185,8 @@ export const videoData = {
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
     ],
   },
-  gift: {
-    id: "gift",
+  giftcard: {
+    id: "giftcard",
     name: "کتاب و فرهنگ",
     image: "/assets/images/category/gift.JPG",
     videos: [
@@ -194,8 +194,8 @@ export const videoData = {
       "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/XPWZ1knG8g/origin_pNOWoAo8XWYEt1PUGtD7fE7efFbh3TGFdJgUkEKI.mp4",
     ],
   },
-  "home and life style": {
-    id: "home and life style",
+  home: {
+    id: "home",
     name: "اسباب بازی",
     image: "/assets/images/category/sabkzendegi.jpg",
     videos: [
