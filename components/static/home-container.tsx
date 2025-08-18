@@ -8,14 +8,13 @@ import NewProductRow from "../global/newProducts";
 import VideoScrollScale from "./ui/videoScrollScale";
 import ProductSlideFendi from "../global/productSlideFendi";
 
-
 // Lazy load heavy components
 const LazyVideoSection = lazy(() => import("./ui/VideoSection"));
 const LazyBlogCardSlider = lazy(() => import("../global/BlogCardSlider"));
 
 const Page = () => {
   const SHOW_LOGO = true; // Set to false to disable logo loading
-  
+
   const [currentComponent, setCurrentComponent] = useState<
     "logo" | "grid" | "transition" | "showcase"
   >("showcase"); // Default to showcase
@@ -24,12 +23,11 @@ const Page = () => {
   const [showShowcase, setShowShowcase] = useState(false);
   const [assetsLoaded, setAssetsLoaded] = useState(false);
 
-
   // Preload critical assets
   const preloadAssets = async () => {
     const criticalImages = [
       "/assets/images/center.webp",
-        "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
+     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
@@ -73,8 +71,8 @@ const Page = () => {
     ];
 
     // Load images first (faster)
-    const imagePromises = criticalImages.map(src => {
-      return new Promise(resolve => {
+    const imagePromises = criticalImages.map((src) => {
+      return new Promise((resolve) => {
         const img = new window.Image();
         img.onload = resolve;
         img.onerror = resolve;
@@ -83,10 +81,10 @@ const Page = () => {
     });
 
     // Load video metadata (lighter than full video)
-    const videoPromises = criticalVideos.map(src => {
-      return new Promise(resolve => {
-        const video = document.createElement('video');
-        video.preload = 'metadata';
+    const videoPromises = criticalVideos.map((src) => {
+      return new Promise((resolve) => {
+        const video = document.createElement("video");
+        video.preload = "metadata";
         video.muted = true;
         video.onloadedmetadata = resolve;
         video.onerror = resolve;
@@ -100,28 +98,27 @@ const Page = () => {
     setAssetsLoaded(true);
   };
 
-  console.log(assetsLoaded)
-
+  console.log(assetsLoaded);
 
   // Check localStorage asynchronously to avoid blocking
   useLayoutEffect(() => {
     const checkGridStatus = async () => {
       try {
         const hasSeenGrid = localStorage.getItem("tiran-fashion-grid-seen");
-        
+
         if (hasSeenGrid !== "true") {
           if (SHOW_LOGO) {
             setCurrentComponent("logo");
             setShowLogo(true);
-            
+
             // First time: 3 seconds + asset loading
             const loadingPromise = preloadAssets();
-            
+
             await Promise.all([
-              new Promise(resolve => setTimeout(resolve, 7000)),
-              loadingPromise
+              new Promise((resolve) => setTimeout(resolve, 4000)),
+              loadingPromise,
             ]);
-            
+
             setShowLogo(false);
             setCurrentComponent("grid");
             setShowGrid(true);
@@ -135,14 +132,14 @@ const Page = () => {
           if (SHOW_LOGO) {
             setCurrentComponent("logo");
             setShowLogo(true);
-            
+
             const loadingPromise = preloadAssets();
-            
+
             await Promise.all([
-              new Promise(resolve => setTimeout(resolve, 300)),
-              loadingPromise
+              new Promise((resolve) => setTimeout(resolve, 300)),
+              loadingPromise,
             ]);
-            
+
             setShowLogo(false);
             setCurrentComponent("grid");
             setShowGrid(true);
@@ -160,7 +157,7 @@ const Page = () => {
     };
 
     // Use requestIdleCallback for better performance
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       requestIdleCallback(checkGridStatus);
     } else {
       setTimeout(checkGridStatus, 0);
@@ -187,13 +184,27 @@ const Page = () => {
             showLogo ? "opacity-100" : "opacity-0"
           }`}
         >
-          <Image 
-            src="/assets/images/logo.png" 
-            alt="TIRAN Logo" 
+          <Image
+            src="/assets/images/logo.png"
+            alt="TIRAN Logo"
             width={128}
             height={128}
             className="w-32 h-32 object-contain"
+            style={{
+              animation: "strongPulse 1s ease-in-out infinite",
+            }}
           />
+          <style jsx>{`
+            @keyframes strongPulse {
+              0%,
+              100% {
+                opacity: 0.3;
+              }
+              50% {
+                opacity: 1;
+              }
+            }
+          `}</style>
         </div>
       )}
 
@@ -243,7 +254,11 @@ const Page = () => {
               // category=""
             />
             <div className="min-h-screen">
-              <Suspense fallback={<div className="min-h-screen bg-gray-100 animate-pulse" />}>
+              <Suspense
+                fallback={
+                  <div className="min-h-screen bg-gray-100 animate-pulse" />
+                }
+              >
                 <LazyVideoSection />
               </Suspense>
             </div>
@@ -254,7 +269,9 @@ const Page = () => {
               className=""
               category=""
             />
-            <Suspense fallback={<div className="h-64 bg-gray-100 animate-pulse" />}>
+            <Suspense
+              fallback={<div className="h-64 bg-gray-100 animate-pulse" />}
+            >
               <LazyBlogCardSlider />
             </Suspense>
           </div>
