@@ -48,6 +48,7 @@ export default function VideoScrollScale({
   const [isLoaded, setIsLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [activeVideo, setActiveVideo] = useState(0);
+  const [videosLoaded, setVideosLoaded] = useState(false);
 
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -55,7 +56,6 @@ export default function VideoScrollScale({
   const videoRef2 = useRef<HTMLVideoElement | null>(null);
   const transitionImageRef = useRef<HTMLDivElement | null>(null);
 
-  // تابع امن برای پخش ویدیو
   const playVideoSafely = (video: HTMLVideoElement, src: string) => {
     video.pause();
     video.src = src;
@@ -65,7 +65,6 @@ export default function VideoScrollScale({
     };
   };
 
-  // تشخیص موبایل
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 640);
@@ -75,7 +74,6 @@ export default function VideoScrollScale({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // ترنزیشن تصویر به ویدیو
   useEffect(() => {
     if (isTransitioning && transitionImage) {
       const animateTransition = async () => {
@@ -109,7 +107,6 @@ export default function VideoScrollScale({
     }
   }, [isTransitioning, transitionImage]);
 
-  // انیمیشن اسکرول
   useEffect(() => {
     if (videoVisible && !isLoaded) {
       setIsLoaded(true);
@@ -144,56 +141,58 @@ export default function VideoScrollScale({
     }
   }, [videoVisible, isLoaded]);
 
-  // رفتن به اسلاید بعد
   const nextSlide = () => {
     const nextSlideIndex = (currentSlide + 1) % videoSlides.length;
     const nextVideoRef = activeVideo === 0 ? videoRef2 : videoRef1;
+    const slide = videoSlides[nextSlideIndex];
 
     if (nextVideoRef.current) {
       playVideoSafely(
         nextVideoRef.current,
-        isMobile
-          ? videoSlides[nextSlideIndex].mobileSrc
-          : videoSlides[nextSlideIndex].src
+        isMobile ? slide.mobileSrc : slide.src
       );
     }
     setCurrentSlide(nextSlideIndex);
     setActiveVideo(activeVideo === 0 ? 1 : 0);
   };
 
-  // رفتن به اسلاید قبل
   const prevSlide = () => {
     const prevSlideIndex =
       (currentSlide - 1 + videoSlides.length) % videoSlides.length;
     const nextVideoRef = activeVideo === 0 ? videoRef2 : videoRef1;
+    const slide = videoSlides[prevSlideIndex];
 
     if (nextVideoRef.current) {
       playVideoSafely(
         nextVideoRef.current,
-        isMobile
-          ? videoSlides[prevSlideIndex].mobileSrc
-          : videoSlides[prevSlideIndex].src
+        isMobile ? slide.mobileSrc : slide.src
       );
     }
     setCurrentSlide(prevSlideIndex);
     setActiveVideo(activeVideo === 0 ? 1 : 0);
   };
 
-  // لود اولیه ویدیوها
   useEffect(() => {
-    if (videoRef1.current) {
-      playVideoSafely(
-        videoRef1.current,
-        isMobile ? videoSlides[0].mobileSrc : videoSlides[0].src
-      );
-    }
-    if (videoRef2.current && videoSlides[1]) {
-      videoRef2.current.pause();
-      videoRef2.current.src = isMobile
-        ? videoSlides[1].mobileSrc
-        : videoSlides[1].src;
-      videoRef2.current.load();
-    }
+    const loadInitialVideos = () => {
+      if (videoRef1.current) {
+        playVideoSafely(
+          videoRef1.current,
+          isMobile ? videoSlides[0].mobileSrc : videoSlides[0].src
+        );
+      }
+      
+      if (videoRef2.current && videoSlides[1]) {
+        videoRef2.current.pause();
+        videoRef2.current.src = isMobile
+          ? videoSlides[1].mobileSrc
+          : videoSlides[1].src;
+        videoRef2.current.load();
+      }
+      
+      setVideosLoaded(true);
+    };
+
+    loadInitialVideos();
   }, [isMobile]);
 
   return (
@@ -217,24 +216,34 @@ export default function VideoScrollScale({
         className="relative w-full h-full overflow-hidden"
         style={{ transformOrigin: "center center", opacity: 0 }}
       >
+        {!videosLoaded && (
+          <div className="absolute inset-0 bg-gray-900 flex items-center justify-center z-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+          </div>
+        )}
+        
         <video
           ref={videoRef1}
           autoPlay
           muted
           playsInline
+          preload="metadata"
           onEnded={nextSlide}
           className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-300 ${
             activeVideo === 0 ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
+          style={{ willChange: 'transform' }}
         />
         <video
           ref={videoRef2}
           muted
           playsInline
+          preload="metadata"
           onEnded={nextSlide}
           className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-300 ${
             activeVideo === 1 ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
+          style={{ willChange: 'transform' }}
         />
 
         <div className="absolute inset-0 flex items-end justify-center mb-36 md:mb-28 z-30">

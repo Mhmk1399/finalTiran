@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import Image from "next/image";
 
 interface DynamicFashionGridProps {
@@ -8,7 +8,7 @@ interface DynamicFashionGridProps {
 }
 
 const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
-  const fashionImages = [
+  const fashionImages = useMemo(() => [
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/1.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/2.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/3.webp?versionId=",
@@ -44,10 +44,10 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/36.webp?versionId=",
-  ];
+  ], []);
 
   // Divide images into groups of 4 for each position
-  const positionImages = [
+  const positionImages = useMemo(() => [
     fashionImages.slice(0, 4), // Position 0
     fashionImages.slice(4, 8), // Position 1
     fashionImages.slice(8, 12), // Position 2
@@ -62,7 +62,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
     fashionImages.slice(24, 28), // Position 6
     fashionImages.slice(28, 32), // Position 7
     fashionImages.slice(32, 36), // Position 8
-  ];
+  ], [fashionImages]);
 
   const [currentImages, setCurrentImages] = useState<string[]>([]);
   const [centerImage] = useState("/assets/images/center.webp");
@@ -70,95 +70,103 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
   const [showBlockHide, setShowBlockHide] = useState(false);
   const [showCenterScale, setShowCenterScale] = useState(false);
   const [showVideoTransition, setShowVideoTransition] = useState(false);
-
   const [isTransitioning, setIsTransitioning] = useState(false);
-  // Slide variants for video transition
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  
+  const animationRef = useRef<number | undefined>(undefined);
+  const lastUpdateRef = useRef<number>(0);
 
+  // Preload critical images
   useEffect(() => {
-    const initialImages = positionImages.map((images) => images[0]);
-    setCurrentImages(initialImages);
-  }, []);
+    const criticalImages = positionImages.map((images) => images[0]);
+    const preloadPromises = criticalImages.map((src) => {
+      return new Promise((resolve) => {
+        const img = new window.Image();
+        img.onload = resolve;
+        img.onerror = resolve;
+        img.src = src;
+      });
+    });
 
-  // Enhanced animation sequence
+    Promise.all(preloadPromises).then(() => {
+      setCurrentImages(criticalImages);
+      setImagesLoaded(true);
+    });
+  }, [positionImages]);
+
+  // Enhanced animation sequence - only starts when images are loaded
   useEffect(() => {
+    if (!imagesLoaded) return;
+
     const startAnimationSequence = async () => {
-      // Reset all states
       setShowVideoTransition(false);
       setShowCenterScale(false);
       setShowBlockHide(false);
 
-      // Step 1: Start rapid image changing for 3 seconds
       setIsRapidChanging(true);
+      await new Promise((resolve) => setTimeout(resolve, 1200));
 
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Step 2: Stop rapid changing and show center.webp
       setIsRapidChanging(false);
       setCurrentImages((prev) => {
         const newImages = [...prev];
-        newImages[4] = centerImage; // Set final center image (center.webp)
+        newImages[4] = centerImage;
         return newImages;
       });
 
-      // Wait a moment to show center.webp
-      await new Promise((resolve) => setTimeout(resolve, 300));
-
-      // Step 3: Start individual block hide animations
+      await new Promise((resolve) => setTimeout(resolve, 200));
       setShowBlockHide(true);
-
       await new Promise((resolve) => setTimeout(resolve, 10));
-
-      // Step 3: Scale up center image
       setShowCenterScale(true);
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Step 4: Center image opacity animation
+      await new Promise((resolve) => setTimeout(resolve, 400));
       await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Start transition to video component
+      
       setIsTransitioning(true);
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 600));
 
-      // Call completion callback
       if (onComplete) {
         onComplete(centerImage);
       }
 
-      // Step 5: Transition to video showcase
       setShowVideoTransition(true);
-
-      // Update text
-
-      await new Promise((resolve) => setTimeout(resolve, 5000));
     };
 
-    const interval = setInterval(() => {
-      startAnimationSequence();
-    }, 5000); // Total cycle: 10 seconds
+    const timeoutId = setTimeout(startAnimationSequence, 100);
+    return () => clearTimeout(timeoutId);
+  }, [imagesLoaded, centerImage, onComplete]);
 
-    startAnimationSequence();
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (!isRapidChanging) return;
-
-    const rapidInterval = setInterval(() => {
+  // Optimized rapid animation using requestAnimationFrame
+  const updateImages = useCallback(() => {
+    const now = performance.now();
+    if (now - lastUpdateRef.current >= 300) {
       setCurrentImages((prevImages) => {
         const newImages = [...prevImages];
         for (let i = 0; i < 9; i++) {
-          // All positions: cycle through all 4 images randomly
           const randomIndex = Math.floor(Math.random() * 4);
           newImages[i] = positionImages[i][randomIndex];
         }
         return newImages;
       });
-    }, 200);
+      lastUpdateRef.current = now;
+    }
+    
+    if (isRapidChanging) {
+      animationRef.current = requestAnimationFrame(updateImages);
+    }
+  }, [isRapidChanging, positionImages]);
 
-    return () => clearInterval(rapidInterval);
-  }, [isRapidChanging, centerImage]);
+  useEffect(() => {
+    if (isRapidChanging && imagesLoaded) {
+      animationRef.current = requestAnimationFrame(updateImages);
+    } else if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [isRapidChanging, imagesLoaded, updateImages]);
 
   return (
     <div
@@ -215,6 +223,9 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                                 height={500}
                                 alt={`Fashion ${index + 1}`}
                                 className="w-full h-full object-cover"
+                                priority={index < 9}
+                                loading={index < 9 ? "eager" : "lazy"}
+                                style={{ willChange: isRapidChanging ? 'transform' : 'auto' }}
                               />
                             </div>
                           )
