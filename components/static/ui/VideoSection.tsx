@@ -10,8 +10,8 @@ const videoSlides = {
 
 export default function VideoSection() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  console.log(isMobile)
 
   const playVideoSafely = (src: string) => {
     if (!videoRef.current) return;
@@ -20,9 +20,12 @@ export default function VideoSection() {
     video.src = src;
     video.load();
     video.onloadeddata = () => {
+      setIsLoaded(true);
       video.play().catch(() => {});
     };
   };
+
+  console.log(isMobile)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -45,13 +48,22 @@ export default function VideoSection() {
       }}
     >
       <div className="relative w-full h-full overflow-hidden">
+        {!isLoaded && (
+          <div className="absolute inset-0 bg-gray-900 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+          </div>
+        )}
+        
         <video
           ref={videoRef}
           autoPlay
           muted
           playsInline
           loop
-          className="w-full h-full object-cover"
+          preload="metadata"
+          className={`w-full h-full object-cover transition-opacity duration-500 ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
         />
 
         {/* Text Overlay */}
