@@ -59,7 +59,7 @@ export const customersServices = [
   { name: "پرسش های متداول", href: "/" },
   { name: "بلاگ", href: "/blog" },
   { name: "ثبت شکایات", href: "/contact#contact-form" },
-  { name: "کارت هدیه", href: "/giftCard" },
+  { name: "کارت هدیه", href: "/giftCart" },
 ];
 export const Help = [
   { name: "راهنما", href: "/help" },
