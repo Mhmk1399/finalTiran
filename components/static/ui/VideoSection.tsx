@@ -39,10 +39,10 @@ export default function VideoSection() {
   return (
     <div
       className="w-screen h-screen"
-      style={{
-        backgroundImage: "url('/assets/images/texture.png')",
-        backgroundSize: "cover",
-      }}
+      // style={{
+      //   backgroundImage: "url('/assets/images/texture.png')",
+      //   backgroundSize: "cover",
+      // }}
     >
       <div className="relative w-full h-full overflow-hidden">
         <video

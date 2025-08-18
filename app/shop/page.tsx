@@ -101,8 +101,9 @@ function ShopPage() {
                 description={`جدیدترین ${category.cat_name} را کشف کنید`}
                 endpoint="/api/shop"
                 className=""
-                category={category.cat_name}
+                // category={category.cat_en_name}
                 showLoadMore={true}
+                
               />
             </div>
           ))}
