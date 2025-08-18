@@ -145,13 +145,13 @@ const Navbar = () => {
     checkAuth();
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="w-8 h-8 flex items-center justify-center">
-        <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="w-8 h-8 flex items-center justify-center">
+  //       <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+  //     </div>
+  //   );
+  // }
 
   // Don't render anything during SSR to prevent hydration mismatch
   if (!isMounted) {
