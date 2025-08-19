@@ -250,7 +250,7 @@ const Navbar = () => {
               </Link>
             </div>
 
-            <div>
+            {/* <div>
               <Link href="/auth">
                 <div
                   className="p-2 rounded-full hidden md:block hover:bg-gray-100 transition-colors duration-300"
@@ -272,12 +272,13 @@ const Navbar = () => {
                   <RiUser3Line className="h-6 w-6" />
                 </div>
               </Link>
-            </div>
+            </div> */}
             <div className="relative group">
               {isLoggedIn ? (
                 <>
-                  <button className="hidden md:flex items-center text-gray-700 hover:text-gray-900 transition-transform duration-200 hover:scale-105">
-                    <span className="ml-1 text-sm font-medium">
+                  <button className="hidden md:flex md:items-center md:gap-2 px-3 py-2 rounded-lg  text-gray-700 hover:text-gray-900 transition-all duration-200 hover:scale-105  ">
+                    <RiUser3Line className="h-5 w-5" />
+                    <span className="text-sm font-medium truncate max-w-24">
                       {userProfile?.user.username}
                     </span>
                   </button>
@@ -293,7 +294,7 @@ const Navbar = () => {
               ) : (
                 <Link href="/auth">
                   <button className="hidden md:flex items-center text-gray-700 hover:text-gray-900 transition-transform duration-200 hover:scale-105">
-                    <RiLoginCircleLine className="ml-1" />
+                    <RiUser3Line className="h-5 w-5 ml-1" />
                     <span className="text-sm font-medium">ورود / ثبت‌نام</span>
                   </button>
                 </Link>
@@ -569,7 +570,8 @@ const Navbar = () => {
 
             <div className="flex justify-between items-center mt-8 pt-6 border-t border-white/30 gap-4">
               <Link
-                href="/auth"
+                href={isLoggedIn ? "/dashboard" : "/auth"}
+                className="flex md:hidden items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 transition-all duration-200 hover:scale-105"
                 onClick={() => {
                   setIsOpen(false);
                   gsap.to(mobileMenuRef.current, {
@@ -579,10 +581,10 @@ const Navbar = () => {
                   });
                 }}
               >
-                <div className="flex items-center px-4 py-4 rounded-2xl text-base font-medium text-black bg-white/40 hover:bg-white/50 backdrop-blur-sm transition-all duration-200 active:scale-95">
-                  <RiUser3Line className="ml-2 h-5 w-5" />
-                  <span className="text-sm">ورود</span>
-                </div>
+                <RiUser3Line className="h-5 w-5" />
+                <span className="text-sm font-medium truncate max-w-24">
+                  {isLoggedIn ? userProfile?.user.username : "ورود / ثبت نام"}
+                </span>
               </Link>
 
               <Link

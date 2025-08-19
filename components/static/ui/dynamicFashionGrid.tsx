@@ -8,62 +8,67 @@ interface DynamicFashionGridProps {
 }
 
 const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
-  const fashionImages = useMemo(() => [
-
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-  ], []);
+  const fashionImages = useMemo(
+    () => [
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+    ],
+    []
+  );
 
   // Divide images into groups of 4 for each position
-  const positionImages = useMemo(() => [
-    fashionImages.slice(0, 4), // Position 0
-    fashionImages.slice(4, 8), // Position 1
-    fashionImages.slice(8, 12), // Position 2
-    fashionImages.slice(12, 16), // Position 3
-    [
-      fashionImages[16],
-      fashionImages[17],
-      fashionImages[18],
-      "/assets/images/center.webp",
-    ], // Position 4 (center) - 4 images with center.webp as last
-    fashionImages.slice(20, 24), // Position 5
-    fashionImages.slice(24, 28), // Position 6
-    fashionImages.slice(28, 32), // Position 7
-    fashionImages.slice(32, 36), // Position 8
-  ], [fashionImages]);
+  const positionImages = useMemo(
+    () => [
+      fashionImages.slice(0, 4), // Position 0
+      fashionImages.slice(4, 8), // Position 1
+      fashionImages.slice(8, 12), // Position 2
+      fashionImages.slice(12, 16), // Position 3
+      [
+        fashionImages[16],
+        fashionImages[17],
+        fashionImages[18],
+        "/assets/images/center.webp",
+      ], // Position 4 (center) - 4 images with center.webp as last
+      fashionImages.slice(20, 24), // Position 5
+      fashionImages.slice(24, 28), // Position 6
+      fashionImages.slice(28, 32), // Position 7
+      fashionImages.slice(32, 36), // Position 8
+    ],
+    [fashionImages]
+  );
 
   const [currentImages, setCurrentImages] = useState<string[]>([]);
   const [centerImage] = useState("/assets/images/center.webp");
@@ -73,9 +78,17 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
   const [showVideoTransition, setShowVideoTransition] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  
+
   const animationRef = useRef<number | undefined>(undefined);
   const lastUpdateRef = useRef<number>(0);
+
+  // Lock scroll when component mounts
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
 
   // Preload critical images
   useEffect(() => {
@@ -120,7 +133,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
       setShowCenterScale(true);
       await new Promise((resolve) => setTimeout(resolve, 400));
       await new Promise((resolve) => setTimeout(resolve, 100));
-      
+
       setIsTransitioning(true);
       await new Promise((resolve) => setTimeout(resolve, 600));
 
@@ -149,7 +162,7 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
       });
       lastUpdateRef.current = now;
     }
-    
+
     if (isRapidChanging) {
       animationRef.current = requestAnimationFrame(updateImages);
     }
@@ -226,7 +239,11 @@ const DynamicFashionGrid = ({ onComplete }: DynamicFashionGridProps) => {
                                 className="w-full h-full object-cover"
                                 priority={index < 9}
                                 loading={index < 9 ? "eager" : "lazy"}
-                                style={{ willChange: isRapidChanging ? 'transform' : 'auto' }}
+                                style={{
+                                  willChange: isRapidChanging
+                                    ? "transform"
+                                    : "auto",
+                                }}
                               />
                             </div>
                           )
