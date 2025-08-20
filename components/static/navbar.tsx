@@ -39,6 +39,8 @@ const Navbar = () => {
   const categoriesRef = useRef<HTMLDivElement>(null);
   const ticking = useRef(false);
 
+  console.log(isLoading)
+
   useEffect(() => {
     setIsMounted(true);
     setActiveItem(pathname);
