@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { videoData, getAllVideos } from "@/lib/homePageData";
-import { VideoItem, CategoryData } from "@/types/type";
+import { VideoItem, CategoryData, Category } from "@/types/type";
 import Image from "next/image";
 
 export default function VideoShowcase() {
@@ -30,12 +30,65 @@ export default function VideoShowcase() {
     };
   };
 
-  useEffect(() => {
-    if (query && videoData[query as keyof typeof videoData]) {
-      const categoryData = videoData[query as keyof typeof videoData];
-      setCurrentImage(categoryData.image);
+  // Function to find parent category for subcategory (recursive)
+  const findParentCategory = async (subcategoryQuery: string) => {
+    try {
+      const response = await fetch("/api/category");
+      const data = await response.json();
+      if (data.success && data.data) {
+        const findInCategory = (category: Category): string | null => {
+          // Check direct children
+          if (category.children) {
+            for (const child of category.children) {
+              if (child.cat_en_name === subcategoryQuery) {
+                return category.cat_en_name;
+              }
+              // Check nested children recursively
+              const found = findInCategory(child);
+              if (found) {
+                return category.cat_en_name;
+              }
+            }
+          }
+          return null;
+        };
+
+        for (const category of data.data) {
+          const found = findInCategory(category);
+          if (found) {
+            return found;
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error finding parent category:", error);
     }
-    // اگر کوئری در videoData نباشد، عکس فعلی را نگه دار
+    return null;
+  };
+
+  useEffect(() => {
+    const handleCategoryData = async () => {
+      if (query) {
+        // Check if query exists directly in videoData
+        if (videoData[query as keyof typeof videoData]) {
+          const categoryData = videoData[query as keyof typeof videoData];
+          setCurrentImage(categoryData.image);
+        } else {
+          // Query might be a subcategory, find its parent
+          const parentCategory = await findParentCategory(query);
+          if (
+            parentCategory &&
+            videoData[parentCategory as keyof typeof videoData]
+          ) {
+            const categoryData =
+              videoData[parentCategory as keyof typeof videoData];
+            setCurrentImage(categoryData.image);
+          }
+        }
+      }
+    };
+
+    handleCategoryData();
   }, [query]);
 
   useEffect(() => {
@@ -48,26 +101,48 @@ export default function VideoShowcase() {
   }, []);
 
   useEffect(() => {
-    if (query && videoData[query as keyof typeof videoData]) {
-      const categoryData = videoData[
-        query as keyof typeof videoData
-      ] as CategoryData;
-      const videos = categoryData.videos.map((video, index) => ({
-        id: `${categoryData.id}-${index}`,
-        videoUrl: video,
-        categoryId: categoryData.id,
-        categoryName: categoryData.name,
-        image: categoryData.image,
-      }));
-      setCurrentVideos(videos);
-      setCurrentImage(categoryData.image);
-    } else if (!query) {
-      const allVideos = getAllVideos();
-      setCurrentVideos(allVideos);
-      setCurrentImage(allVideos[0]?.image || "");
-    }
-    // اگر کوئری در videoData نباشد، ویدیوها و عکس تغییر نمیکند
-    setActiveVideoIndex(0);
+    const handleVideoData = async () => {
+      if (query) {
+        let categoryData = null;
+
+        // Check if query exists directly in videoData
+        if (videoData[query as keyof typeof videoData]) {
+          categoryData = videoData[
+            query as keyof typeof videoData
+          ] as CategoryData;
+        } else {
+          // Query might be a subcategory, find its parent
+          const parentCategory = await findParentCategory(query);
+          if (
+            parentCategory &&
+            videoData[parentCategory as keyof typeof videoData]
+          ) {
+            categoryData = videoData[
+              parentCategory as keyof typeof videoData
+            ] as CategoryData;
+          }
+        }
+
+        if (categoryData) {
+          const videos = categoryData.videos.map((video, index) => ({
+            id: `${categoryData.id}-${index}`,
+            videoUrl: video,
+            categoryId: categoryData.id,
+            categoryName: categoryData.name,
+            image: categoryData.image,
+          }));
+          setCurrentVideos(videos);
+          setCurrentImage(categoryData.image);
+        }
+      } else {
+        const allVideos = getAllVideos();
+        setCurrentVideos(allVideos);
+        setCurrentImage(allVideos[0]?.image || "");
+      }
+      setActiveVideoIndex(0);
+    };
+
+    handleVideoData();
   }, [query]);
 
   const handleVideoClick = (video: VideoItem, index: number) => {

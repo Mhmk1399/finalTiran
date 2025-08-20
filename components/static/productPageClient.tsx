@@ -19,6 +19,65 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
   const [error, setError] = useState<string | null>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  // Lock scroll when zoom modal is open
+  useEffect(() => {
+    if (isZoomed) {
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || "0") * -1);
+      }
+    }
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+    };
+  }, [isZoomed]);
+
+  // Mobile scroll detection for active image
+  useEffect(() => {
+    if (isDesktop || !product) return;
+
+    const handleScroll = () => {
+      const images = document.querySelectorAll("[data-image-index]");
+      let activeIndex = 0;
+      let maxVisibility = 0;
+
+      images.forEach((img, index) => {
+        const rect = img.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+
+        // Calculate how much of the image is visible
+        const visibleTop = Math.max(0, rect.top);
+        const visibleBottom = Math.min(windowHeight, rect.bottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        const visibility = visibleHeight / rect.height;
+
+        if (visibility > maxVisibility && visibility > 0.5) {
+          maxVisibility = visibility;
+          activeIndex = index;
+        }
+      });
+
+      setActiveImageIndex(activeIndex);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isDesktop, product]);
 
   // Check if desktop
   useEffect(() => {
@@ -117,9 +176,9 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
       <>
         {" "}
         <main className="min-h-screen relative bg-white py-20 px-20" dir="rtl">
-          <div className="absolute top-30 right-20 z-20">
+          <div className="absolute top-28 right-20 z-20">
             {" "}
-            <Breadcrumbs />
+            <Breadcrumbs customTitle={product.fa_name || product.en_name} />
           </div>
 
           {/* Your existing desktop layout */}
@@ -137,7 +196,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                 />
               </div>
 
-              <div className="col-span-5 overflow-auto min-h-full bg-white">
+              <div className="col-span-5 overflow-auto max-h-150 bg-white">
                 <ProductGallery
                   primaryImage={primaryImage}
                   secondaryImage={secondaryImage}
@@ -146,6 +205,8 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                   layout="desktop"
                   activeImageIndex={activeImageIndex}
                   onThumbnailClick={setActiveImageIndex}
+                  isZoomed={isZoomed}
+                  setIsZoomed={setIsZoomed}
                 />
               </div>
 
@@ -183,9 +244,9 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
         className="container relative mx-auto px-4 md:px-15 py-12"
         dir="rtl"
       >
-        <div className="absolute top-0 right-4 md:top-20 md:right-15 z-20">
+        <div className="absolute -top-5 right-4 md:top-20 md:right-15 z-20">
           {" "}
-          <Breadcrumbs />
+          <Breadcrumbs customTitle={product.fa_name || product.en_name} />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2  sm:mt-36 mt-15">
           <ProductGallery
@@ -194,6 +255,10 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
             additionalImages={additionalImages}
             productName={product.fa_name}
             layout="mobile"
+            activeImageIndex={activeImageIndex}
+            onThumbnailClick={setActiveImageIndex}
+            isZoomed={isZoomed}
+            setIsZoomed={setIsZoomed}
           />
 
           <ProductInfo product={product} layout="mobile" />
