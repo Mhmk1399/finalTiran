@@ -612,6 +612,7 @@ export default function ProductInfo({
                 </div>
 
                 <motion.button
+                
                   whileHover={{ backgroundColor: "#f9fafb" }}
                   whileTap={{ scale: 0.95 }}
                   onClick={incrementQuantity}
@@ -622,7 +623,7 @@ export default function ProductInfo({
               </div>
             </div>
             {/* Add to Cart Button */}
-            <div className="flex-1 ">
+            <div className="order-1 md:order-2">
               <motion.button
                 disabled={!selectedVariety || selectedVariety.store_stock <= 0}
                 onClick={handleAddToCart}
@@ -632,21 +633,25 @@ export default function ProductInfo({
                 whileTap={
                   (selectedVariety?.store_stock ?? 0) > 0 ? { scale: 0.99 } : {}
                 }
-                className={`w-full py-3.5 flex text-sm items-center bg-black text-white justify-center gap-3 border cursor-pointer font-medium duration-300 transition-all ${
+                className={`w-full py-3 md:py-4 flex items-center bg-black text-white justify-center px-6 border  cursor-pointer font-medium duration-300 transition-all ${
                   (selectedVariety?.store_stock ?? 0) > 0
                     ? " text-black hover:border-gray-300"
                     : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                } `}
+                }  `}
               >
                 {isAddingToCart ? (
                   <>
                     <Check size={18} />
-                    <span className="">اضافه شد</span>
+                    <span className="hidden sm:inline">اضافه شد</span>
+                    <span className="sm:hidden">✓</span>
                   </>
                 ) : (
                   <>
                     <ShoppingCart size={18} />
-                    <span className="">افزودن به سبد خرید</span>
+                    <span className="hidden sm:inline mr-2">
+                      افزودن به سبد خرید
+                    </span>
+                    <span className="sm:hidden"> افزودن به سبد خرید</span>
                   </>
                 )}
               </motion.button>
@@ -790,6 +795,12 @@ export default function ProductInfo({
           </div>
         </div>
       </motion.div>
+        {/* Address Modal */}
+        <AddressModal
+          isOpen={showAddressModal}
+          onClose={() => setShowAddressModal(false)}
+          onAddressCreated={handleAddressCreated}
+        />
     </div>
   );
 }
