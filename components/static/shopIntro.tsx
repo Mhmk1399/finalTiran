@@ -11,39 +11,29 @@ const ShopIntro: React.FC<ShopIntroProps> = ({ onComplete }) => {
   const [showLogo, setShowLogo] = useState(false);
 
   useEffect(() => {
-    // Show logo after background animation completes
+    // Lock scroll
+    document.body.style.overflow = "hidden";
+
     const logoTimer = setTimeout(() => {
       setShowLogo(true);
-    }, 1000);
+    }, 10);
 
-    // Complete the intro after 4 seconds
     const completeTimer = setTimeout(() => {
       onComplete();
     }, 4000);
 
     return () => {
+      // Unlock scroll
+      document.body.style.overflow = "unset";
       clearTimeout(logoTimer);
       clearTimeout(completeTimer);
     };
   }, [onComplete]);
 
   return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <motion.div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
       {/* Background animation - white overlay coming from bottom */}
-      <motion.div
-        className="absolute inset-0 bg-white"
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        transition={{
-          duration: 1.2,
-          ease: [0.22, 1, 0.36, 1], // Custom cubic-bezier for smooth animation
-        }}
-      />
+      <motion.div className="absolute inset-0 bg-white" />
 
       {/* Logo animation */}
       <AnimatePresence>

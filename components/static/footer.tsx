@@ -51,7 +51,6 @@ const Footer = () => {
           throw new Error("Failed to fetch categories");
         }
         const data = await response.json();
-        console.log(data);
 
         // Handle different possible data structures
         let categoriesArray: Category[] = [];

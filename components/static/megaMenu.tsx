@@ -122,10 +122,9 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                     className="text-gray-900 hover:text-black font-medium text-sm flex items-center group"
                   >
                     <span className="relative">
-                     همه  {categories[hoveredCategory].cat_name}  ها
+                      همه {categories[hoveredCategory].cat_name} ها
                       <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-black transition-all duration-300 group-hover:w-full"></span>
                     </span>
-                
                   </Link>
                 </motion.div>
 
@@ -145,21 +144,17 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                             onMouseEnter={() => setHoveredSubcategory(index)}
                             onMouseLeave={() => setHoveredSubcategory(null)}
                           >
-                            <Link
-                              href={`/shop?query=${subcategory.cat_en_name}`}
-                              className="text-gray-900 font-medium text-[12px] mb-3 hover:text-black transition-all w-fit duration-300  relative group"
-                            >
+                            <div className="text-gray-900 font-bold text-[12px] mb-3 hover:text-black transition-all w-fit duration-300  relative group">
                               <span className="inline-block">
                                 {subcategory.cat_name}
                               </span>
-                              <span className="absolute top-6 right-0 w-0 h-[1px] bg-black transition-all duration-300 group-hover:w-full -translate-y-1/2"></span>
-                            </Link>
+                            </div>
 
                             {/* Third level categories if they exist */}
                             {subcategory.children &&
                               subcategory.children.length > 0 && (
                                 <motion.div
-                                  className="flex flex-col space-y-2 pr-4"
+                                  className="flex flex-col space-y-2"
                                   variants={thirdLevelVariants}
                                   initial="hidden"
                                   animate="visible"
@@ -172,13 +167,13 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                                         className="overflow-hidden"
                                       >
                                         <Link
-                                          href={`/category/${thirdLevel.slug}`}
-                                          className="text-gray-600 text-sm hover:text-black hover:pr-1 transition-all duration-200 block relative group"
+                                          href={`/shop?query=${thirdLevel.slug}`}
+                                          className="text-gray-600 pb-2 text-sm hover:text-black w-fit hover:pr-1 transition-all duration-200 block relative group"
                                         >
                                           <span className="inline-block">
                                             {thirdLevel.cat_name}
                                           </span>
-                                          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-400 transition-all duration-300 group-hover:w-full"></span>
+                                          <span className="absolute bottom-0 right-0 w-0 h-[1px] bg-black transition-all duration-300 group-hover:w-full"></span>
                                         </Link>
                                       </motion.div>
                                     )

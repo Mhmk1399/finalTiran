@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { AnimatePresence } from "framer-motion";
 import ShopIntro from "@/components/static/shopIntro";
 import VideoShowcase from "@/components/static/ui/videoShowcase";
 import ProductRow from "@/components/global/ProductsRow";
@@ -10,7 +9,6 @@ import { Category } from "@/types/type";
 
 function ShopPage() {
   const [showIntro, setShowIntro] = useState(true);
-  const [selectedCategory] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
   const [filters, setFilters] = useState({
@@ -18,7 +16,7 @@ function ShopPage() {
     colors: [] as string[],
     available: false,
   });
-  console.log(filters)
+  console.log(filters);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -62,54 +60,44 @@ function ShopPage() {
     setShowIntro(false);
   };
 
+  if (showIntro) {
+    return <ShopIntro onComplete={handleIntroComplete} />;
+  }
+
   return (
-    <>
-      <AnimatePresence>
-        {showIntro && !selectedCategory && (
-          <ShopIntro onComplete={handleIntroComplete} />
-        )}
-      </AnimatePresence>
-
-      <main
-         >
-        <VideoShowcase />
-
-        <div className="md:px-8 lg:px-20">
-          {/* Filter Card */}
-          <div className="mt-8 mb-12">
-            <FilterCard
-              onFilterChange={setFilters}
-              categories={categories.map((cat) => ({
-                id: cat.id.toString(),
-                label: cat.cat_name,
-                cat_en_name: cat.cat_en_name,
-              }))}
-              colors={[
-                { id: "red", label: "قرمز" },
-                { id: "abi", label: "آبی" },
-                { id: "black", label: "مشکی" },
-                { id: "white", label: "سفید" },
-              ]}
+    <main>
+      <VideoShowcase />
+      <div className="md:px-8 lg:px-20">
+        <div className="mt-8 mb-12">
+          <FilterCard
+            onFilterChange={setFilters}
+            categories={categories.map((cat) => ({
+              id: cat.id.toString(),
+              label: cat.cat_name,
+              cat_en_name: cat.cat_en_name,
+            }))}
+            colors={[
+              { id: "red", label: "قرمز" },
+              { id: "abi", label: "آبی" },
+              { id: "black", label: "مشکی" },
+              { id: "white", label: "سفید" },
+            ]}
+          />
+        </div>
+        {filteredCategories.map((category) => (
+          <div key={category.id} className="mt-12">
+            <ProductRow
+              title={category.cat_name}
+              description={`جدیدترین ${category.cat_name} را کشف کنید`}
+              endpoint="/api/shop"
+              className=""
+              // category={category.cat_en_name}
+              showLoadMore={true}
             />
           </div>
-
-          {/* Dynamic Product Rows */}
-          {filteredCategories.map((category) => (
-            <div key={category.id} className="mt-12">
-              <ProductRow
-                title={category.cat_name}
-                description={`جدیدترین ${category.cat_name} را کشف کنید`}
-                endpoint="/api/shop"
-                className=""
-                // category={category.cat_en_name}
-                showLoadMore={true}
-                
-              />
-            </div>
-          ))}
-        </div>
-      </main>
-    </>
+        ))}
+      </div>
+    </main>
   );
 }
 

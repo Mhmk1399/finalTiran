@@ -172,6 +172,11 @@ const ProductRow: React.FC<ProductGridProps> = ({
 
       let productsArray = apiResponse.data.items;
 
+      // Filter products that have variety and variety is not null
+      productsArray = productsArray.filter((product) => 
+        product.variety !== null && product.variety !== undefined
+      );
+
       // Filter by parent category if provided
       if (category) {
         productsArray = productsArray.filter((product) => {

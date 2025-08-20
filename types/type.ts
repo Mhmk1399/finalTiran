@@ -349,6 +349,8 @@ export interface ProductGalleryProps {
   activeImageIndex?: number;
   onThumbnailClick?: (index: number) => void;
   onImageChange?: (index: number) => void;
+  isZoomed?: boolean;
+  setIsZoomed?: (zoomed: boolean) => void;
 }
 // ------------------------------- ProductInfo ------------------------
 

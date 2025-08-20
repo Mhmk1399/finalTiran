@@ -14,16 +14,17 @@ export default function ProductGallery({
   layout,
   activeImageIndex = 0,
   onThumbnailClick,
+  isZoomed,
+  setIsZoomed,
 }: // onImageChange,
 ProductGalleryProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [dotsFixed, setDotsFixed] = useState(true);
+
   const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isZoomed, setIsZoomed] = useState(false);
   const [zoomedImageSrc, setZoomedImageSrc] = useState("");
   const [canScrollUp, setCanScrollUp] = useState(false);
   const [canScrollDown, setCanScrollDown] = useState(false);
+  const [showDots, setShowDots] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const mainImagesRef = useRef<HTMLDivElement>(null);
 
@@ -49,43 +50,7 @@ ProductGalleryProps) {
     }
   }, [activeImageIndex, layout]);
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", handleScroll);
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
-
   // 📌 IntersectionObserver برای تشخیص عکس فعال
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const idx = Number(entry.target.getAttribute("data-index"));
-            setCurrentImageIndex(idx);
-          }
-        });
-      },
-
-      {
-        root: containerRef.current, // کانتینر اسکرول اصلی
-        threshold: 0.5, // حداقل ۵۰٪ تصویر تو دید باشه
-      }
-    );
-
-    imageRefs.current.forEach((el) => {
-      if (el) observer.observe(el);
-    });
-
-    return () => {
-      imageRefs.current.forEach((el) => {
-        if (el) observer.unobserve(el);
-      });
-    };
-  }, []);
 
   // Effect: Scroll to active thumbnail when image changes or layout switches to thumbnails
   useEffect(() => {
@@ -94,6 +59,24 @@ ProductGalleryProps) {
       scrollToActiveThumbnail(activeImageIndex);
     }
   }, [activeImageIndex, layout]);
+
+  // Global scroll listener for comments detection
+  useEffect(() => {
+    const handleGlobalScroll = () => {
+      const commentsSection = document.getElementById("product-comments");
+      if (commentsSection) {
+        const commentsRect = commentsSection.getBoundingClientRect();
+        if (commentsRect.top <= window.innerHeight * 0.5) {
+          setShowDots(false);
+        } else {
+          setShowDots(true);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleGlobalScroll);
+    return () => window.removeEventListener("scroll", handleGlobalScroll);
+  }, [layout]);
 
   // Effect: Set up scroll event listener for thumbnail navigation buttons
   useEffect(() => {
@@ -145,7 +128,12 @@ ProductGalleryProps) {
   // Function: Open zoom modal with selected image for detailed view
   const handleZoom = (imageSrc: string) => {
     setZoomedImageSrc(imageSrc);
-    setIsZoomed(true);
+    if (setIsZoomed) setIsZoomed(true);
+  };
+
+  // Function: Close zoom modal
+  const closeZoom = () => {
+    if (setIsZoomed) setIsZoomed(false);
   };
 
   // 📌 اسکرول به تصویر انتخابی
@@ -157,13 +145,6 @@ ProductGalleryProps) {
   };
 
   // 📌 بررسی وضعیت اسکرول برای تغییر حالت فیکس دات‌ها
-  const handleScroll = () => {
-    if (!containerRef.current) return;
-    const el = containerRef.current;
-    const scrollBottom = el.scrollTop + el.clientHeight;
-    const isAtBottom = scrollBottom >= el.scrollHeight - 5;
-    setDotsFixed(!isAtBottom);
-  };
 
   // Desktop Layout - Single Image with Navigation
   if (layout === "desktop") {
@@ -187,7 +168,7 @@ ProductGalleryProps) {
             alt={`${productName} - تصویر ${activeImageIndex + 1}`}
             width={500}
             height={700}
-            className="w-full h-full object-contain"
+            className="w-full h-150 object-contain"
             priority
           />
 
@@ -236,26 +217,25 @@ ProductGalleryProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 flex items-center justify-center p-4"
-              onClick={() => setIsZoomed(false)}
+              className="fixed inset-0 bg-black/40 z-50 backdrop-blur-md flex items-center justify-center p-8"
+              onClick={closeZoom}
             >
               <motion.div
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0.8 }}
-                className="relative max-w-full max-h-full"
+                className="relative w-150 h-150   "
                 onClick={(e) => e.stopPropagation()}
               >
                 <Image
                   src={zoomedImageSrc}
                   alt={`${productName} - تصویر بزرگ`}
-                  width={1200}
-                  height={1600}
-                  className="w-auto h-auto max-w-full max-h-full object-contain"
+                  fill
+                  className="object-contain "
                 />
                 <button
-                  onClick={() => setIsZoomed(false)}
-                  className="absolute top-4 right-4 p-2 bg-white/80 text-black rounded-full hover:bg-white/30 transition-colors cursor-pointer"
+                  onClick={closeZoom}
+                  className="absolute -top-8 -right-2 p-2   text-white rounded-full  hover:text-black transition-colors cursor-pointer"
                   aria-label="Close zoom"
                 >
                   ✕
@@ -307,11 +287,11 @@ ProductGalleryProps) {
     <div
       ref={containerRef}
       className="relative h-full overflow-y-auto p-4 space-y-4"
-      onScroll={handleScroll}
     >
       {allImages.map((image, index) => (
         <motion.div
           data-index={index}
+          data-image-index={index}
           ref={(el) => {
             imageRefs.current[index] = el;
           }}
@@ -333,22 +313,20 @@ ProductGalleryProps) {
       ))}
 
       {/* دات‌ها */}
-      <div
-        className={`${
-          dotsFixed ? "fixed top-1/2 -right-2" : "absolute right-2 bottom-4"
-        } flex flex-row-reverse rotate-90 gap-2 transition-all duration-300 z-50`}
-      >
-        {allImages.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handleDotClick(index)}
-            className={`w-5 h-1 rounded-sm transition-all ${
-              currentImageIndex === index ? "bg-black" : "bg-gray-300"
-            }`}
-            aria-label={`رفتن به تصویر ${index + 1}`}
-          />
-        ))}
-      </div>
+      {showDots && (
+        <div className="fixed right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-50">
+          {allImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handleDotClick(index)}
+              className={`w-1  h-4 transition-all ${
+                activeImageIndex === index ? "bg-black" : "bg-gray-300"
+              }`}
+              aria-label={`رفتن به تصویر ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       {/* زوم مودال */}
       <AnimatePresence>
@@ -357,8 +335,8 @@ ProductGalleryProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/30 backdrop-blur-lg z-50 flex items-center justify-center p-4"
-            onClick={() => setIsZoomed(false)}
+            className="fixed inset-0 bg-black/30 -mt-40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={closeZoom}
           >
             <motion.div
               initial={{ scale: 0.8 }}
@@ -372,14 +350,8 @@ ProductGalleryProps) {
                 alt={`${productName} - تصویر بزرگ`}
                 width={1200}
                 height={1600}
-                className="w-auto h-auto max-w-full max-h-full object-contain"
+                className="w-auto border border-gray-300 max-h-80 max-w-full object-contain"
               />
-              <button
-                onClick={() => setIsZoomed(false)}
-                className="absolute top-4 right-4 p-2 lg:bg-white/80 text-black rounded-full hover:bg-white/30 transition-colors"
-              >
-                ✕
-              </button>
             </motion.div>
           </motion.div>
         )}

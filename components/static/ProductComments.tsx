@@ -269,7 +269,7 @@ export default function ProductComments({
 
   return (
     <>
-      <div className="my-16">
+      <div id="product-comments" className="my-16">
         <h2
           className={`text-2xl ${AriaBold.className} border-b border-dashed w-fit pb-3 mb-6`}
         >

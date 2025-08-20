@@ -2,11 +2,11 @@
 import CategoryShowcase from "@/components/static/ui/categoryImage";
 import DynamicFashionGrid from "@/components/static/ui/dynamicFashionGrid";
 import { useState, useLayoutEffect, Suspense, lazy } from "react";
-import Image from "next/image";
 import { categories } from "@/lib/homePageData";
 import NewProductRow from "../global/newProducts";
 import VideoScrollScale from "./ui/videoScrollScale";
 import ProductSlideFendi from "../global/productSlideFendi";
+import LogoComponent from "./ui/logoComponent";
 
 // Lazy load heavy components
 const LazyVideoSection = lazy(() => import("./ui/VideoSection"));
@@ -27,41 +27,41 @@ const Page = () => {
   const preloadAssets = async () => {
     const criticalImages = [
       "/assets/images/center.webp",
-     "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
-    "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/19.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/20.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/21.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/26.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/27.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/33.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/34.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
+      "https://tiranstyle.s3.ir-thr-at1.arvanstorage.ir/35.webp?versionId=",
     ];
 
     const criticalVideos = [
@@ -176,37 +176,12 @@ const Page = () => {
   };
 
   return (
-    <div className="relative w-full min-h-screen overflow-hidden">
+    <div
+      className="
+    relative w-full min-h-screen overflow-hidden"
+    >
       {/* Logo Loading - shows for 100ms before grid */}
-      {currentComponent === "logo" && (
-        <div
-          className={`fixed inset-0 z-[60] bg-white flex items-center justify-center transition-all duration-300 ease-in-out ${
-            showLogo ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <Image
-            src="/assets/images/logo.png"
-            alt="TIRAN Logo"
-            width={128}
-            height={128}
-            className="w-32 h-32 object-contain"
-            style={{
-              animation: "strongPulse 1s ease-in-out infinite",
-            }}
-          />
-          <style jsx>{`
-            @keyframes strongPulse {
-              0%,
-              100% {
-                opacity: 0.3;
-              }
-              50% {
-                opacity: 1;
-              }
-            }
-          `}</style>
-        </div>
-      )}
+      {currentComponent === "logo" && <LogoComponent showLogo={showLogo} />}
 
       {/* DynamicFashionGrid - shows for exactly 5 seconds on first visit */}
       {currentComponent === "grid" && (
@@ -231,7 +206,7 @@ const Page = () => {
               : "opacity-0 transform translate-y-2"
           }`}
         >
-          <div className="min-h-screen mt-20">
+          <div className="min-h-screen mt-15 md:mt-20">
             <VideoScrollScale
             // transitionImage={videoTransitionImage}
             // isTransitioning={isFirstLoad}

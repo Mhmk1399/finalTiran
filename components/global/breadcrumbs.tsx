@@ -30,7 +30,11 @@ const routeTranslations: Record<string, string> = {
   "checkout/success": "تسویه حساب موفق",
 };
 
-const Breadcrumbs = () => {
+interface BreadcrumbsProps {
+  customTitle?: string;
+}
+
+const Breadcrumbs = ({ customTitle }: BreadcrumbsProps) => {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
 
@@ -49,7 +53,8 @@ const Breadcrumbs = () => {
     { path: "/", label: "صفحه اصلی", isHome: true },
     ...segments.map((segment, index) => {
       const path = `/${segments.slice(0, index + 1).join("/")}`;
-      const label = routeTranslations[segment] || segment;
+      const isLastSegment = index === segments.length - 1;
+      const label = isLastSegment && customTitle ? customTitle : (routeTranslations[segment] || segment);
       return { path, label, isHome: false };
     }),
   ];

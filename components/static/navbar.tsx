@@ -12,7 +12,6 @@ import {
   RiCloseLine,
   RiArrowRightSLine,
   RiDashboardLine,
-  RiLoginCircleLine,
 } from "react-icons/ri";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/context/cartContext";
@@ -147,13 +146,13 @@ const Navbar = () => {
     checkAuth();
   }, []);
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="w-8 h-8 flex items-center justify-center">
-  //       <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <div className="w-8 h-8 flex items-center justify-center">
+        <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   // Don't render anything during SSR to prevent hydration mismatch
   if (!isMounted) {
@@ -227,23 +226,7 @@ const Navbar = () => {
           <div className="flex gap-3 items-center">
             <div className="relative">
               <Link href="/cart">
-                <div
-                  className="p-2 hidden md:block rounded-full hover:bg-gray-100 transition-colors duration-300"
-                  onMouseEnter={(e) =>
-                    gsap.to(e.currentTarget, {
-                      scale: 1.1,
-                      rotation: 5,
-                      duration: 0.2,
-                    })
-                  }
-                  onMouseLeave={(e) =>
-                    gsap.to(e.currentTarget, {
-                      scale: 1,
-                      rotation: 0,
-                      duration: 0.2,
-                    })
-                  }
-                >
+                <div className="p-2 hidden md:block rounded-full hover:bg-gray-100 transition-colors duration-300">
                   <RiShoppingBag3Line className="h-6 w-6" />
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {totalItems}
@@ -252,34 +235,12 @@ const Navbar = () => {
               </Link>
             </div>
 
-            <div>
-              <Link href="/auth">
-                <div
-                  className="p-2 rounded-full hidden md:block hover:bg-gray-100 transition-colors duration-300"
-                  onMouseEnter={(e) =>
-                    gsap.to(e.currentTarget, {
-                      scale: 1.1,
-                      rotation: -5,
-                      duration: 0.2,
-                    })
-                  }
-                  onMouseLeave={(e) =>
-                    gsap.to(e.currentTarget, {
-                      scale: 1,
-                      rotation: 0,
-                      duration: 0.2,
-                    })
-                  }
-                >
-                  <RiUser3Line className="h-6 w-6" />
-                </div>
-              </Link>
-            </div>
             <div className="relative group">
               {isLoggedIn ? (
                 <>
-                  <button className="hidden md:flex items-center text-gray-700 hover:text-gray-900 transition-transform duration-200 hover:scale-105">
-                    <span className="ml-1 text-sm font-medium">
+                  <button className="hidden md:flex md:items-center md:gap-2 px-3 py-2 rounded-lg  text-gray-700 hover:text-gray-900 transition-all duration-200 hover:scale-105  ">
+                    <RiUser3Line className="h-5 w-5" />
+                    <span className="text-sm font-medium truncate max-w-24">
                       {userProfile?.user.username}
                     </span>
                   </button>
@@ -294,8 +255,8 @@ const Navbar = () => {
                 </>
               ) : (
                 <Link href="/auth">
-                  <button className="hidden md:flex items-center text-gray-700 hover:text-gray-900 transition-transform duration-200 hover:scale-105">
-                    <RiLoginCircleLine className="ml-1" />
+                  <button className="hidden md:flex items-center cursor-pointer text-gray-700 hover:text-gray-900 transition-transform duration-200 ">
+                    <RiUser3Line className="h-5 w-5 ml-1" />
                     <span className="text-sm font-medium">ورود / ثبت‌نام</span>
                   </button>
                 </Link>
@@ -571,7 +532,8 @@ const Navbar = () => {
 
             <div className="flex justify-between items-center mt-8 pt-6 border-t border-white/30 gap-4">
               <Link
-                href="/auth"
+                href={isLoggedIn ? "/dashboard" : "/auth"}
+                className="flex md:hidden items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:text-gray-900 transition-all duration-200 hover:scale-105"
                 onClick={() => {
                   setIsOpen(false);
                   gsap.to(mobileMenuRef.current, {
@@ -581,10 +543,10 @@ const Navbar = () => {
                   });
                 }}
               >
-                <div className="flex items-center px-4 py-4 rounded-2xl text-base font-medium text-black bg-white/40 hover:bg-white/50 backdrop-blur-sm transition-all duration-200 active:scale-95">
-                  <RiUser3Line className="ml-2 h-5 w-5" />
-                  <span className="text-sm">ورود</span>
-                </div>
+                <RiUser3Line className="h-5 w-5" />
+                <span className="text-sm font-medium truncate max-w-24">
+                  {isLoggedIn ? userProfile?.user.username : "ورود / ثبت نام"}
+                </span>
               </Link>
 
               <Link
