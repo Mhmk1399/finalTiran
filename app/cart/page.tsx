@@ -46,7 +46,15 @@ const CartPage = () => {
   const [userDataLoading, setUserDataLoading] = useState(true); // Shipping method options
   console.log(userDataLoading);
 
-  const [selectedDate, setSelectedDate] = useState("1404/03/01");
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toLocaleString("fa-IR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    })
+  );
   const [selectedDeliveryDate, setSelectedDeliveryDate] = useState<string>(
     moment().add(1, "day").format("jYYYY/jMM/jDD")
   );

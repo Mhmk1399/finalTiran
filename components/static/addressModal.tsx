@@ -154,6 +154,7 @@ export default function AddressModal({
       console.log(result.data.id, "address ID saved");
 
       toast.success("آدرس با موفقیت ثبت شد");
+      router.push("/cart");
 
       // Call the callback with the new address ID
       onAddressCreated(result.data.id);
