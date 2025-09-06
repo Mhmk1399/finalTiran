@@ -74,7 +74,7 @@ function ShopPage() {
             categories={categories.map((cat) => ({
               id: cat.id.toString(),
               label: cat.cat_name,
-              cat_en_name: cat.cat_en_name,
+              cat_en_name: cat.parent?.cat_en_name,
             }))}
             colors={[
               { id: "red", label: "قرمز" },
@@ -87,11 +87,12 @@ function ShopPage() {
         {filteredCategories.map((category) => (
           <div key={category.id} className="mt-12">
             <ProductRow
+              filters={filters}
               title={category.cat_name}
               description={`جدیدترین ${category.cat_name} را کشف کنید`}
               endpoint="/api/shop"
               className=""
-              // category={category.cat_en_name}
+              category={category.parent?.cat_en_name}
               showLoadMore={true}
             />
           </div>

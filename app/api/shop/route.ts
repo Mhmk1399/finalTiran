@@ -6,7 +6,7 @@ export async function GET(request: Request) {
     const page = searchParams.get("page") || "1";
 
     const response = await fetch(
-      `https://tiran.shop.hesabroclub.ir/api/web/shop-v1/v2/product/index?expand=variety,images,full_descrption&page=${page}`,
+      `https://tiran.shop.hesabroclub.ir/api/web/shop/product/index?expand=variety%2Cvariety.images%2Cimages%2Csrc%2Cin_wishlist%2Cvarieties_count%2Cvariety.show_price%2Cvariety.show_price_off%2Cvariety.show_unit&page=${page}`,
       {
         method: "GET",
         headers: {

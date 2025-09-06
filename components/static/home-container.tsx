@@ -238,10 +238,9 @@ const Page = () => {
               </Suspense>
             </div>
             <NewProductRow
-              title="مجموعه تابلوها"
+              title="محصولات جدید"
               description="جدیدترین کیف ها را کشف کنید"
               endpoint="/api/shop"
-              className=""
               category=""
             />
             <Suspense

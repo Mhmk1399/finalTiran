@@ -180,7 +180,7 @@ export default function VideoScrollScale({
           isMobile ? videoSlides[0].mobileSrc : videoSlides[0].src
         );
       }
-      
+
       if (videoRef2.current && videoSlides[1]) {
         videoRef2.current.pause();
         videoRef2.current.src = isMobile
@@ -188,7 +188,7 @@ export default function VideoScrollScale({
           : videoSlides[1].src;
         videoRef2.current.load();
       }
-      
+
       setVideosLoaded(true);
     };
 
@@ -221,7 +221,7 @@ export default function VideoScrollScale({
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
           </div>
         )}
-        
+
         <video
           ref={videoRef1}
           autoPlay
@@ -232,7 +232,7 @@ export default function VideoScrollScale({
           className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-300 ${
             activeVideo === 0 ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
-          style={{ willChange: 'transform' }}
+          style={{ willChange: "transform" }}
         />
         <video
           ref={videoRef2}
@@ -243,7 +243,7 @@ export default function VideoScrollScale({
           className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-300 ${
             activeVideo === 1 ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
-          style={{ willChange: 'transform' }}
+          style={{ willChange: "transform" }}
         />
 
         <div className="absolute inset-0 flex items-end justify-center mb-36 md:mb-28 z-30">
@@ -259,7 +259,7 @@ export default function VideoScrollScale({
 
         <button
           onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-50 hover:bg-black/20 text-white p-3 rounded-full transition-all"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-50 hover:bg-black/20 text-white p-3  transition-all"
         >
           <svg
             className="w-6 h-6"
@@ -277,7 +277,7 @@ export default function VideoScrollScale({
         </button>
         <button
           onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-50 hover:bg-black/20 text-white p-3 rounded-full transition-all"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-50 hover:bg-black/20 text-white p-3  transition-all"
         >
           <svg
             className="w-6 h-6"

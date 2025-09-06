@@ -41,7 +41,6 @@ const ProductImageSlider: React.FC<{
   mainImageId?: number;
 }> = ({ images, productTitle, mainImageId }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
 
   // Set initial image to main image if available
   useEffect(() => {
@@ -74,11 +73,7 @@ const ProductImageSlider: React.FC<{
   }
 
   return (
-    <div
-      className="relative w-full aspect-square bg-gray-50 overflow-hidden group"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="relative w-full aspect-square bg-gray-50 overflow-hidden group">
       {/* Main Image */}
       <Image
         src={images[currentImageIndex]?.src || ""}
@@ -89,18 +84,18 @@ const ProductImageSlider: React.FC<{
       />
 
       {/* Navigation Arrows - Show only if more than 1 image and on hover */}
-      {images.length > 1 && isHovered && (
+      {images.length > 1 && (
         <>
           <button
             onClick={prevImage}
-            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8  hover:bg-white/30 rounded-full flex items-center justify-center  transition-all duration-200 z-10"
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8  hover:bg-white/30  flex items-center justify-center  transition-all duration-200 z-10"
             aria-label="تصویر قبلی"
           >
             <ChevronLeft size={22} className="text-white font-bold" />
           </button>
           <button
             onClick={nextImage}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8  hover:bg-white/30 rounded-full flex items-center justify-center  transition-all duration-200 z-10"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8  hover:bg-white/30  flex items-center justify-center  transition-all duration-200 z-10"
             aria-label="تصویر بعدی"
           >
             <ChevronRight size={22} className="text-white" />
@@ -156,10 +151,7 @@ const NewProductRow: React.FC<ProductGridProps> = ({
               const productCategory = product.variety.category;
 
               if (
-                productCategory.cat_name
-                  .toLowerCase()
-                  .includes(category.toLowerCase()) ||
-                productCategory.cat_en_name
+                productCategory.parent?.cat_en_name
                   .toLowerCase()
                   .includes(category.toLowerCase())
               ) {
@@ -213,7 +205,7 @@ const NewProductRow: React.FC<ProductGridProps> = ({
           });
         }
 
-        const finalProducts = productsArray.slice(0, 6);
+        const finalProducts = productsArray.slice(0, 8);
         setProducts(finalProducts);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -239,8 +231,8 @@ const NewProductRow: React.FC<ProductGridProps> = ({
   };
 
   const getProductPrice = (product: Product): string | number => {
-    if (product.variety && product.variety.price_final) {
-      return product.variety.price_final;
+    if (product.variety && product.variety.price_main) {
+      return product.variety.price_main;
     }
 
     if (product.varieties && product.varieties.length > 0) {
@@ -336,7 +328,7 @@ const NewProductRow: React.FC<ProductGridProps> = ({
                 ))}
               </div>
             ) : products.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1">
                 {products.map((product) => {
                   const productPrice = getProductPrice(product);
                   const productTitle = getProductTitle(product);
@@ -376,15 +368,6 @@ const NewProductRow: React.FC<ProductGridProps> = ({
                                 `${formatPrice(productPrice)} تومان`
                               )}
                             </p>
-                          </div>
-                          <div>
-                            <Image
-                              src="/assets/images/Arrow.png"
-                              alt="Arrow Icon"
-                              width={400}
-                              height={400}
-                              className="w-10 h-2.5  transition-colors duration-300"
-                            />
                           </div>
                         </div>
                       </div>
