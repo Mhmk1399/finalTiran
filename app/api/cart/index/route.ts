@@ -55,14 +55,14 @@ export async function PUT(request: NextRequest) {
 
     // Check if the response is OK
     if (!response.ok) {
-      console.error("External API Error:", responseText);
+      console.log("External API Error:", responseText);
       
       // Try to parse error response
       let errorData;
       try {
         errorData = JSON.parse(responseText);
       } catch (parseError) {
-        console.error("Failed to parse error response:", parseError);
+        console.log("Failed to parse error response:", parseError);
         return NextResponse.json(
           {
             success: false,
@@ -87,7 +87,7 @@ export async function PUT(request: NextRequest) {
     try {
       data = JSON.parse(responseText);
     } catch (parseError) {
-      console.error("JSON Parse Error:", parseError);
+      console.log("JSON Parse Error:", parseError);
       return NextResponse.json(
         { success: false, message: "Invalid JSON response from external API" },
         { status: 500 }
@@ -99,7 +99,7 @@ export async function PUT(request: NextRequest) {
     // Return the response
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error("Error in cart API route:", error);
+    console.log("Error in cart API route:", error);
     return NextResponse.json(
       { success: false, message: "خطا در ارتباط با سرور" },
       { status: 500 }

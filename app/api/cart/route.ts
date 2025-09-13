@@ -55,7 +55,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    console.error("Checkout error:", error);
+    console.log("Checkout error:", error);
     return new Response(
       JSON.stringify({
         error: "خطای سرور داخلی",

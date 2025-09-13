@@ -36,11 +36,11 @@ const DashboardPageContainer = () => {
         if (data.success && data.data) {
           setUserProfile(data.data);
         } else {
-          console.error("Failed to fetch user profile:", data);
+          console.log("Failed to fetch user profile:", data);
           router.push("/auth");
         }
       } catch (error) {
-        console.error("Error fetching user profile:", error);
+        console.log("Error fetching user profile:", error);
       } finally {
         setLoading(false);
       }

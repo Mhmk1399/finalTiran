@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
     // Return the comments data
     return NextResponse.json(commentsData);
   } catch (error) {
-    console.error("Error fetching product comments:", error);
+    console.log("Error fetching product comments:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -142,7 +142,7 @@ export async function PUT(request: NextRequest) {
     const result = await response.json();
     return NextResponse.json(result);
   } catch (error) {
-    console.error("Error submitting comment:", error);
+    console.log("Error submitting comment:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

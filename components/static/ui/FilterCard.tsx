@@ -5,6 +5,7 @@ import { ChevronDown, Grid3X3, Palette, Check } from "lucide-react";
 interface FilterOption {
   id: string;
   label: string;
+  slug?: string;
   count?: number;
 }
 
@@ -34,9 +35,12 @@ const FilterCard: React.FC<FilterCardProps> = ({
   const filterRef = useRef<HTMLDivElement>(null);
 
   const handleCategoryChange = (categoryId: string) => {
-    const updated = selectedCategories.includes(categoryId)
-      ? selectedCategories.filter((id) => id !== categoryId)
-      : [...selectedCategories, categoryId];
+    const category = categories.find((cat) => cat.id === categoryId);
+    const categorySlug = category?.slug || categoryId;
+
+    const updated = selectedCategories.includes(categorySlug)
+      ? selectedCategories.filter((slug) => slug !== categorySlug)
+      : [...selectedCategories, categorySlug];
 
     setSelectedCategories(updated);
     onFilterChange({
@@ -129,14 +133,14 @@ const FilterCard: React.FC<FilterCardProps> = ({
                     key={category.id}
                     onClick={() => handleCategoryChange(category.id)}
                     className={`px-3 py-1.5 text-xs   transition-all duration-200 flex items-center gap-1 ${
-                      selectedCategories.includes(category.id)
+                      selectedCategories.includes(category.slug || category.id)
                         ? "bg-gray-500 text-white hover:bg-gray-800"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
-                    {selectedCategories.includes(category.id) && (
-                      <Check className="w-3 h-3" />
-                    )}
+                    {selectedCategories.includes(
+                      category.slug || category.id
+                    ) && <Check className="w-3 h-3" />}
                     {category.label}
                   </button>
                 ))}

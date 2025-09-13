@@ -98,11 +98,11 @@ const CartPage = () => {
       if (data.success && data.data) {
         setUserAccount(data.data);
       } else {
-        console.error("No account data found:", data);
+        console.log("No account data found:", data);
         // Set a fallback ID if needed
       }
     } catch (error) {
-      console.error("Error fetching user account:", error);
+      console.log("Error fetching user account:", error);
       // Set a fallback ID if needed
     } finally {
       setUserDataLoading(false);
@@ -145,7 +145,7 @@ const CartPage = () => {
         }
       }
     } catch (error) {
-      console.error("Error fetching payment methods:", error);
+      console.log("Error fetching payment methods:", error);
       toast.error("خطا در دریافت روش‌های پرداخت", {
         position: "top-center",
         autoClose: 3000,
@@ -353,7 +353,7 @@ const CartPage = () => {
         );
       }
     } catch (err) {
-      console.error("Checkout error:", err);
+      console.log("Checkout error:", err);
       const errorMessage =
         err instanceof Error ? err.message : "خطا در پردازش سفارش";
       setError(errorMessage);

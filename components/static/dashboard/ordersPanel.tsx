@@ -32,7 +32,7 @@ const OrdersPanel = () => {
           setError("خطا در دریافت سفارش‌ها");
         }
       } catch (error) {
-        console.error("Error fetching orders:", error);
+        console.log("Error fetching orders:", error);
         setError("خطا در ارتباط با سرور");
       } finally {
         setLoading(false);

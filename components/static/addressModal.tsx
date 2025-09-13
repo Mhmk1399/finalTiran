@@ -125,7 +125,7 @@ export default function AddressModal({
       console.log("Address API response:", result);
 
       if (!response.ok) {
-        console.error("Address API error:", response.status, result);
+        console.log("Address API error:", response.status, result);
 
         if (result.data && Array.isArray(result.data)) {
           // Handle validation errors
@@ -173,7 +173,7 @@ export default function AddressModal({
         adress: "",
       });
     } catch (err: unknown) {
-      console.error("Address submission error:", err);
+      console.log("Address submission error:", err);
       const errorMessage =
         err instanceof Error ? err.message : "خطا در ثبت آدرس";
       setError(errorMessage);

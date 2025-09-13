@@ -64,7 +64,7 @@ export default function ProductComments({
           setComments([]);
         }
       } catch (err) {
-        console.error("Error fetching comments:", err);
+        console.log("Error fetching comments:", err);
         setError("خطا در بارگذاری نظرات. لطفا دوباره تلاش کنید.");
       } finally {
         setLoading(false);
@@ -169,7 +169,7 @@ export default function ProductComments({
       setNewTitle("");
       setReplyToId(null);
     } catch (err) {
-      console.error("Error submitting comment:", err);
+      console.log("Error submitting comment:", err);
       setSubmitError(
         err instanceof Error
           ? err.message

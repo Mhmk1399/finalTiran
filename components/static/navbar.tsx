@@ -58,7 +58,7 @@ const Navbar = () => {
       },
     });
     if (!data.ok) {
-      console.error("Failed to fetch categories data");
+      console.log("Failed to fetch categories data");
       return;
     }
     const categoriesData = await data.json();
@@ -136,7 +136,7 @@ const Navbar = () => {
           setIsLoggedIn(false);
         }
       } catch (error) {
-        console.error("Error checking authentication:", error);
+        console.log("Error checking authentication:", error);
         setIsLoggedIn(false);
       } finally {
         setIsLoading(false);

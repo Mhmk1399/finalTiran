@@ -9,7 +9,7 @@ export async function GET() {
     const contacts = await contact.find().sort({ createdAt: -1 }).lean();
     return NextResponse.json(contacts, { status: 200 });
   } catch (error) {
-    console.error("Error fetching complaints:", error);
+    console.log("Error fetching complaints:", error);
     return NextResponse.json(
       { error: "خطا در دریافت پیام‌ها" },
       { status: 500 }
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Complaint form error:", error);
+    console.log("Complaint form error:", error);
     return NextResponse.json({ error: "خطا در ثبت شکایت" }, { status: 500 });
   }
 }

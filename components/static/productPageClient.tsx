@@ -122,7 +122,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
 
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching product:", error);
+        console.log("Error fetching product:", error);
         setError(" خطا در بارگذاری محصول");
         setLoading(false);
       }

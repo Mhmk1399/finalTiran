@@ -79,7 +79,7 @@ const Footer = () => {
 
         setCategories(parentCategories);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.log("Error fetching categories:", error);
         setCategories([]); // Set empty array on error
       } finally {
         setLoading(false);

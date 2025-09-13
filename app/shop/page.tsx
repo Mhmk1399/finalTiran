@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import ShopIntro from "@/components/static/shopIntro";
 import VideoShowcase from "@/components/static/ui/videoShowcase";
 import ProductRow from "@/components/global/ProductsRow";
-import FilterCard from "@/components/static/ui/FilterCard";
+// import FilterCard from "@/components/static/ui/FilterCard";
 import { Category } from "@/types/type";
 
 function ShopPage() {
@@ -16,7 +16,7 @@ function ShopPage() {
     colors: [] as string[],
     available: false,
   });
-  console.log(filters);
+  console.log(setFilters);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ function ShopPage() {
           setCategories(data.data);
         }
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.log("Error fetching categories:", error);
       }
     };
 
@@ -56,6 +56,14 @@ function ShopPage() {
     }
   }, [searchParams, categories]);
 
+  // Filter categories based on selected category filters (using slugs)
+  const displayCategories =
+    filters.categories.length > 0
+      ? filteredCategories.filter((category) =>
+          filters.categories.includes(category.slug)
+        )
+      : filteredCategories;
+
   const handleIntroComplete = () => {
     setShowIntro(false);
   };
@@ -68,12 +76,13 @@ function ShopPage() {
     <main>
       <VideoShowcase />
       <div className="md:px-8 lg:px-20">
-        <div className="mt-8 mb-12">
+        {/* <div className="mt-8 mb-12">
           <FilterCard
             onFilterChange={setFilters}
             categories={categories.map((cat) => ({
               id: cat.id.toString(),
               label: cat.cat_name,
+              slug: cat.slug,
               cat_en_name: cat.parent?.cat_en_name,
             }))}
             colors={[
@@ -83,8 +92,8 @@ function ShopPage() {
               { id: "white", label: "سفید" },
             ]}
           />
-        </div>
-        {filteredCategories.map((category) => (
+        </div> */}
+        {displayCategories.map((category) => (
           <div key={category.id} className="mt-12">
             <ProductRow
               filters={filters}
@@ -92,7 +101,7 @@ function ShopPage() {
               description={`جدیدترین ${category.cat_name} را کشف کنید`}
               endpoint="/api/shop"
               className=""
-              category={category.parent?.cat_en_name}
+              categorySlug={category.slug}
               showLoadMore={true}
             />
           </div>

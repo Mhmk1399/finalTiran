@@ -21,7 +21,7 @@ async function getProduct(slug: string) {
     });
 
     if (!response.ok) {
-      console.error(
+      console.log(
         `❌ Failed to fetch product: ${response.status} ${response.statusText}`
       );
       return null;
@@ -30,7 +30,7 @@ async function getProduct(slug: string) {
     const json = await response.json();
     return json.data;
   } catch (error) {
-    console.error("❌ Error fetching product:", error);
+    console.log("❌ Error fetching product:", error);
     return null;
   }
 }
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     };
   } catch (error) {
-    console.error("Error in generateMetadata:", error);
+    console.log("Error in generateMetadata:", error);
     return {
       title: "محصول یافت نشد | تیران",
       description: "محصول مورد نظر یافت نشد",

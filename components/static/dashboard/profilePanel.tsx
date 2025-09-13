@@ -445,7 +445,7 @@ const ProfilePanel = ({ userProfile, onProfileUpdate }: ProfilePanelProps) => {
         onProfileUpdate();
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
+      console.log("Error updating profile:", error);
       toast.error(
         error instanceof Error ? error.message : "خطا در به‌روزرسانی پروفایل"
       );
@@ -498,7 +498,7 @@ const ProfilePanel = ({ userProfile, onProfileUpdate }: ProfilePanelProps) => {
       toast.success("آدرس با موفقیت به‌روزرسانی شد");
       setIsEditingAddress(false);
     } catch (error) {
-      console.error("Error updating address:", error);
+      console.log("Error updating address:", error);
       toast.error(
         error instanceof Error ? error.message : "خطا در به‌روزرسانی آدرس"
       );

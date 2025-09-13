@@ -208,7 +208,7 @@ const NewProductRow: React.FC<ProductGridProps> = ({
         const finalProducts = productsArray.slice(0, 8);
         setProducts(finalProducts);
       } catch (err) {
-        console.error("Error fetching products:", err);
+        console.log("Error fetching products:", err);
         setError(
           err instanceof Error
             ? err.message

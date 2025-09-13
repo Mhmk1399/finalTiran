@@ -28,7 +28,7 @@ const initDB = () => {
       resolve();
     };
     request.onerror = () => {
-      console.error("🚨 IndexedDB open error:", request.error);
+      console.log("🚨 IndexedDB open error:", request.error);
       reject(request.error);
     };
   });

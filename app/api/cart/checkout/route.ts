@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     // Check if the response is OK
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("External API Error:", errorText);
+      console.log("External API Error:", errorText);
       return NextResponse.json(
         {
           success: false,
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     try {
       data = await response.json();
     } catch (parseError) {
-      console.error("JSON Parse Error:", parseError);
+      console.log("JSON Parse Error:", parseError);
       return NextResponse.json(
         { success: false, message: "Invalid JSON response from external API" },
         { status: 500 }
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error("Error in checkout info API route:", error);
+    console.log("Error in checkout info API route:", error);
     return NextResponse.json(
       { success: false, message: "خطا در ارتباط با سرور" },
       { status: 500 }
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     // Check if the response is OK
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("External API Error:", errorText);
+      console.log("External API Error:", errorText);
       return NextResponse.json(
         {
           success: false,
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
     try {
       data = await response.json();
     } catch (parseError) {
-      console.error("JSON Parse Error:", parseError);
+      console.log("JSON Parse Error:", parseError);
       return NextResponse.json(
         { success: false, message: "Invalid JSON response from external API" },
         { status: 500 }
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error("Error in checkout API route:", error);
+    console.log("Error in checkout API route:", error);
     return NextResponse.json(
       { success: false, message: "خطا در ارتباط با سرور" },
       { status: 500 }

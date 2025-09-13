@@ -29,6 +29,7 @@ interface ProductGridProps {
   description: string;
   endpoint: string;
   category?: string;
+  categorySlug?: string;
   className?: string;
   showLoadMore?: boolean;
   filters?: {
@@ -45,7 +46,6 @@ interface PaginationMeta {
   perPage: number;
 }
 
-// Image Slider Component
 const ProductImageSlider: React.FC<{
   images: Array<{ id: number; src: string }>;
   productTitle: string;
@@ -131,6 +131,7 @@ const ProductRow: React.FC<ProductGridProps> = ({
   description,
   endpoint,
   category,
+  categorySlug,
   className = "",
   showLoadMore = false,
   filters,
@@ -151,9 +152,11 @@ const ProductRow: React.FC<ProductGridProps> = ({
       }
       setError(null);
 
-      const url = `${endpoint}${
-        endpoint.includes("?") ? "&" : "?"
-      }page=${page}`;
+      let url = `${endpoint}${endpoint.includes("?") ? "&" : "?"}page=${page}`;
+
+      if (categorySlug) {
+        url += `&category_slug=${categorySlug}`;
+      }
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -294,7 +297,7 @@ const ProductRow: React.FC<ProductGridProps> = ({
       setPagination(apiResponse.data._meta);
       setCurrentPage(page);
     } catch (err) {
-      console.error("Error fetching products:", err);
+      console.log("Error fetching products:", err);
       setError(
         err instanceof Error
           ? err.message
@@ -313,7 +316,7 @@ const ProductRow: React.FC<ProductGridProps> = ({
     if (endpoint) {
       fetchProducts(1, false);
     }
-  }, [endpoint, category, filters]);
+  }, [endpoint, category, categorySlug, filters]);
 
   const handleLoadMore = () => {
     if (pagination && currentPage < pagination.pageCount) {
@@ -324,7 +327,7 @@ const ProductRow: React.FC<ProductGridProps> = ({
   const shouldShowLoadMore =
     showLoadMore &&
     pagination &&
-    pagination.totalCount > 20 &&
+    pagination.totalCount > 8 &&
     currentPage < pagination.pageCount;
 
   const formatPrice = (price: string | number) => {
@@ -370,7 +373,7 @@ const ProductRow: React.FC<ProductGridProps> = ({
             <h2
               className={`text-2xl flex gap-2 lg:text-[32px] text-black leading-tight  ${AriaBold.className} `}
             >
-              <span>█ </span>
+              <span>█</span>
               {title}
             </h2>
             <p className="text-gray-400 text-base lg:text-base leading-relaxed">
@@ -404,6 +407,7 @@ const ProductRow: React.FC<ProductGridProps> = ({
                     <Link
                       key={product.id + "-" + idx}
                       href={`/shop/${product.slug}`}
+                      target="_blank"
                       className="group block transition-all duration-300 hover:transform"
                     >
                       <div className="space-y-3">

@@ -36,7 +36,7 @@ export const getCheckoutInfo = async (addressId?: number) => {
     // Check if the response is OK
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("API Error Response:", errorText);
+      console.log("API Error Response:", errorText);
 
       // Handle specific error cases
       if (response.status === 404) {
@@ -57,7 +57,7 @@ export const getCheckoutInfo = async (addressId?: number) => {
     try {
       result = await response.json();
     } catch (parseError) {
-      console.error("JSON Parse Error:", parseError);
+      console.log("JSON Parse Error:", parseError);
       throw new Error("خطا در پردازش پاسخ سرور");
     }
 
@@ -83,7 +83,7 @@ export const getCheckoutInfo = async (addressId?: number) => {
 
     return result.data;
   } catch (error: any) {
-    console.error("Checkout Info Error:", error);
+    console.log("Checkout Info Error:", error);
 
     // If it's an address-related error, clear the stored address
     if (
@@ -136,14 +136,14 @@ export const addToCart = async (varietyId: number, quantity: number) => {
     try {
       result = JSON.parse(responseText);
     } catch (parseError) {
-      console.error("Failed to parse response:", parseError);
+      console.log("Failed to parse response:", parseError);
       throw new Error("Invalid response from server");
     }
 
     console.log("addToCart parsed result:", result);
 
     if (!response.ok) {
-      console.error("API Error Response:", result);
+      console.log("API Error Response:", result);
 
       // Handle specific 422 errors
       if (response.status === 422) {
@@ -167,7 +167,7 @@ export const addToCart = async (varietyId: number, quantity: number) => {
 
     return result.data;
   } catch (error) {
-    console.error("Add to Cart Error:", error);
+    console.log("Add to Cart Error:", error);
     throw error;
   }
 };
@@ -210,7 +210,7 @@ export const completeCheckout = async (
     // Check if the response is OK
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("API Error Response:", errorText);
+      console.log("API Error Response:", errorText);
 
       let errorData;
       try {
@@ -231,7 +231,7 @@ export const completeCheckout = async (
     try {
       result = await response.json();
     } catch (parseError) {
-      console.error("JSON Parse Error:", parseError);
+      console.log("JSON Parse Error:", parseError);
       throw new Error("خطا در پردازش پاسخ سرور");
     }
 
@@ -240,7 +240,7 @@ export const completeCheckout = async (
     // Return the full result object to preserve the structure
     return result;
   } catch (error: any) {
-    console.error("Complete Checkout Error:", error);
+    console.log("Complete Checkout Error:", error);
     throw new Error(error.message || "خطا در تکمیل سفارش");
   }
 };

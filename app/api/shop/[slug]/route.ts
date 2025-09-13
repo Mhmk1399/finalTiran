@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
     return Response.json(data);
   } catch (error) {
-    console.error("Error fetching product detail:", error);
+    console.log("Error fetching product detail:", error);
     return Response.json(
       { success: false, message: "Internal server error" },
       { status: 500 }

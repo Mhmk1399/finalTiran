@@ -61,7 +61,7 @@ export default function VideoShowcase() {
         }
       }
     } catch (error) {
-      console.error("Error finding parent category:", error);
+      console.log("Error finding parent category:", error);
     }
     return null;
   };

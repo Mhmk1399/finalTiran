@@ -17,7 +17,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error fetching categories:", error);
+    console.log("Error fetching categories:", error);
     // Return an error response instead of null
     return new Response(JSON.stringify({ error: "Failed to fetch categories" }), {
       status: 500,

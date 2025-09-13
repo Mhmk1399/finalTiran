@@ -43,7 +43,7 @@ export async function GET() {
       );
     }
   } catch (error) {
-    console.error("Error fetching addresses:", error);
+    console.log("Error fetching addresses:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }
@@ -110,7 +110,7 @@ export async function PUT(request: Request) {
       );
     }
   } catch (error) {
-    console.error("Error updating profile:", error);
+    console.log("Error updating profile:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }

@@ -209,7 +209,7 @@ export default function AddBlogPage() {
         editor?.commands.clearContent();
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
       toast.error("خطا در ایجاد بلاگ");
     }
   };

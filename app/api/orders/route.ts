@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Account fetch error:", error);
+    console.log("Account fetch error:", error);
     return new Response(
       JSON.stringify({
         error: "خطای سرور داخلی",

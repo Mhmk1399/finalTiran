@@ -49,7 +49,7 @@ export async function PUT(request: NextRequest) {
     // Return the response
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
-    console.error("Error in address API route:", error);
+    console.log("Error in address API route:", error);
     return NextResponse.json(
       { success: false, message: "خطا در ارتباط با سرور" },
       { status: 500 }
@@ -133,7 +133,7 @@ export async function PATCH(request: NextRequest) {
       data: data,
     });
   } catch (error) {
-    console.error("Address update error:", error);
+    console.log("Address update error:", error);
     return NextResponse.json(
       {
         success: false,

@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Payment methods fetch error:", error);
+    console.log("Payment methods fetch error:", error);
     return new Response(
       JSON.stringify({
         error: "خطای سرور داخلی",
