@@ -22,8 +22,8 @@ docker-build:
     - docker:24-dind
   script:
     - echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-    - docker build -t docker.io/$DOCKERHUB_USER/finalTiran:${CI_COMMIT_SHA} .
-    - docker push docker.io/$DOCKERHUB_USER/finalTiran:${CI_COMMIT_SHA}
+    - docker build -t docker.io/$DOCKERHUB_USER/tiran:${CI_COMMIT_SHA} .
+    - docker push docker.io/$DOCKERHUB_USER/tiran:${CI_COMMIT_SHA}
   only:
     - main
   tags:

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: tiran-app
-        image: docker.io/$DOCKERHUB_USER/finalTiran:${CI_COMMIT_SHA}
+        image: docker.io/$DOCKERHUB_USER/tiran:${CI_COMMIT_SHA}
         ports:
         - containerPort: 3000
         env:
