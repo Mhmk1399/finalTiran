@@ -21,8 +21,8 @@ docker-build:
     - docker:24-dind
   script:
     - echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
-    - docker build -t docker.io/$DOCKERHUB_USER/tiran:${CI_COMMIT_SHA} .
-    - docker push docker.io/$DOCKERHUB_USER/tiran:${CI_COMMIT_SHA}
+    - docker build -t docker.io/$DOCKERHUB_USER/${SITE_NAME}:${CI_COMMIT_SHA} .
+    - docker push docker.io/$DOCKERHUB_USER/${SITE_NAME}:${CI_COMMIT_SHA}
   only:
     - main
   tags:
@@ -33,11 +33,15 @@ deploy:
   script:
     - echo "=== DEPLOY TO K8S (Docker Hub / public repo) ==="
     - export KUBECONFIG=/home/gitlab-runner/.kube/config
-    - kubectl config set-context --current --namespace=mamad
+    - kubectl config set-context --current --namespace=${PRODUCTION_NAMESPACE}
+    # Apply Deployment + Service
     - envsubst < k8s/manifest.yaml | kubectl apply -f -
-    - kubectl get ingress tiran-ingress -n mamad || kubectl apply -f k8s/ingress.yaml
-    - kubectl rollout status deployment/tiran-app --timeout=300s
+    # Apply Ingress
+    - envsubst < k8s/ingress.yaml | kubectl apply -f -
+    # Wait for rollout
+    - kubectl rollout status deployment/${SITE_NAME}-app --timeout=300s
   only:
     - main
   tags:
     - shell
+
