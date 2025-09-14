@@ -1,5 +1,4 @@
 stages:
-  - build
   - docker
   - deploy
 
@@ -11,36 +10,10 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
-    - .next/cache/
   policy: pull-push
 
-
-
 # ----------------------------
-# 1. Build Next.js app
-# ----------------------------
-build:
-  stage: build
-  image: node:18-alpine
-  script:
-    - npm ci --prefer-offline --audit=false
-    - npm run build
-  artifacts:
-    paths:
-      - .next/
-      - public/
-      - package.json
-      - package-lock.json
-    expire_in: 1h
-  only:
-    - main
-  tags:
-    - docker
-
-
-
-# ----------------------------
-# 2. Build & Push Docker Image
+# 1. Build & Push Docker Image
 # ----------------------------
 docker-build:
   stage: docker
@@ -58,7 +31,7 @@ docker-build:
 
 
 # ----------------------------
-# 3. Deploy to Kubernetes (using Docker Hub)
+# 2. Deploy to Kubernetes (using Docker Hub)
 # ----------------------------
 deploy:
   stage: deploy
