@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tiran-app
-  namespace: production
+  namespace: mamad
 spec:
   replicas: 2
   selector:
@@ -14,15 +14,15 @@ spec:
         app: tiran-app
     spec:
       containers:
-      - name: tiran-app
-        image: docker.io/$DOCKERHUB_USER/tiran:${CI_COMMIT_SHA}
-        ports:
-        - containerPort: 3000
-        env:
-        - name: MONGODB_URI
-          value: "mongodb+srv://hoseinzolghadr021:QNb0BV7Osu0Nflye@cluster0.vambg7i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-        - name: NODE_ENV
-          value: "production"
+        - name: tiran-app
+          image: docker.io/$DOCKERHUB_USER/tiran:${CI_COMMIT_SHA}
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGODB_URI
+              value: "mongodb+srv://hoseinzolghadr021:QNb0BV7Osu0Nflye@cluster0.vambg7i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+            # - name: NODE_ENV
+            #   value: "production"
           resources:
             requests:
               memory: "1000Mi"         # 2 × 500m CPU = 1Gi
@@ -32,6 +32,7 @@ spec:
               memory: "2000Mi"         # 2 × 1000m CPU = 2Gi
               cpu: "1000m"
               ephemeral-storage: "500Mi"
+
 ---
 apiVersion: v1
 kind: Service
@@ -42,7 +43,6 @@ spec:
   selector:
     app: tiran-app
   ports:
-  - port: 80
-    targetPort: 3000
+    - port: 80
+      targetPort: 3000
   type: ClusterIP
-
