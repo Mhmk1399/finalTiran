@@ -3,6 +3,7 @@ stages:
   - docker
   - deploy
 
+variables:
 DOCKER_TLS_CERTDIR: ""
 DOCKER_HOST: tcp://docker:2375/
 
