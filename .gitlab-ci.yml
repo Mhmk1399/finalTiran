@@ -44,7 +44,7 @@ deploy:
     # Apply Ingress
     - envsubst < k8s/ingress.yaml | kubectl apply -f -
     # Wait for rollout
-    - kubectl rollout status deployment/${SITE_NAME}-app --timeout=300s
+    - kubectl rollout status deployment/${SITE_NAME}-app --timeout=600s
   only:
     - main
   tags:
