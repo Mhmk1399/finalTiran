@@ -7,28 +7,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { AriaBold } from "@/next-persian-fonts/woff2";
 import { maneli } from "@/next-persian-fonts/maneli";
+import { useProducts } from "@/hooks/useNewProducts";
 
-interface ApiResponse {
-  success: boolean;
-  data: {
-    items: Product[];
-    _links: {
-      self: { href: string };
-      first: { href: string };
-      last: { href: string };
-    };
-    _meta: {
-      totalCount: number;
-      pageCount: number;
-      currentPage: number;
-      perPage: number;
-    };
-  };
-}
+ 
 
 interface ProductGridProps {
   title: string;
-  description: string;
   endpoint: string;
   category?: string;
   className?: string;
@@ -41,6 +25,8 @@ const ProductImageSlider: React.FC<{
   mainImageId?: number;
 }> = ({ images, productTitle, mainImageId }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
 
   // Set initial image to main image if available
   useEffect(() => {
@@ -52,17 +38,57 @@ const ProductImageSlider: React.FC<{
     }
   }, [images, mainImageId]);
 
-  const nextImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const nextImage = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    nextImageAction();
+  };
+
+  const prevImage = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const nextImageAction = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
-  const prevImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const prevImageAction = () => {
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(0);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextImageAction();
+    }
+    if (isRightSwipe) {
+      prevImageAction();
+    }
+  };
+
+  // const goToImage = (index: number, e: React.MouseEvent) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   setCurrentImageIndex(index);
+  // };
 
   if (!images || images.length === 0) {
     return (
@@ -73,7 +99,12 @@ const ProductImageSlider: React.FC<{
   }
 
   return (
-    <div className="relative w-full aspect-square bg-gray-50 overflow-hidden group">
+    <div
+      className="relative w-full aspect-square bg-gray-50 overflow-hidden group"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Main Image */}
       <Image
         src={images[currentImageIndex]?.src || ""}
@@ -88,14 +119,14 @@ const ProductImageSlider: React.FC<{
         <>
           <button
             onClick={prevImage}
-            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8  hover:bg-white/30  flex items-center justify-center  transition-all duration-200 z-10"
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 md:opacity-0 group-hover:opacity-100  hover:bg-white/30 flex items-center justify-center  transition-all duration-200 z-10"
             aria-label="تصویر قبلی"
           >
             <ChevronLeft size={22} className="text-white font-bold" />
           </button>
           <button
             onClick={nextImage}
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8  hover:bg-white/30  flex items-center justify-center  transition-all duration-200 z-10"
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 md:opacity-0 group-hover:opacity-100 hover:bg-white/30 flex items-center justify-center  transition-all duration-200 z-10"
             aria-label="تصویر بعدی"
           >
             <ChevronRight size={22} className="text-white" />
@@ -111,119 +142,15 @@ const ProductImageSlider: React.FC<{
 
 const NewProductRow: React.FC<ProductGridProps> = ({
   title,
-  // description,
   endpoint,
   category,
   className = "",
 }) => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await fetch(endpoint);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const apiResponse: ApiResponse = await response.json();
-
-        if (!apiResponse.success) {
-          throw new Error("API returned unsuccessful response");
-        }
-
-        if (!apiResponse.data || !Array.isArray(apiResponse.data.items)) {
-          throw new Error("Invalid data structure received from API");
-        }
-
-        let productsArray = apiResponse.data.items;
-
-        // Filter by parent category if provided
-        if (category) {
-          productsArray = productsArray.filter((product) => {
-            if (product.variety && product.variety.category) {
-              const productCategory = product.variety.category;
-
-              if (
-                productCategory.parent?.cat_en_name
-                  .toLowerCase()
-                  .includes(category.toLowerCase())
-              ) {
-                return true;
-              }
-
-              if (productCategory.parent) {
-                return (
-                  productCategory.parent.cat_name
-                    .toLowerCase()
-                    .includes(category.toLowerCase()) ||
-                  productCategory.parent.cat_en_name
-                    .toLowerCase()
-                    .includes(category.toLowerCase())
-                );
-              }
-            }
-
-            if (product.varieties && product.varieties.length > 0) {
-              return product.varieties.some((variety) => {
-                if (variety.category) {
-                  const varietyCategory = variety.category;
-
-                  if (
-                    varietyCategory.cat_name
-                      .toLowerCase()
-                      .includes(category.toLowerCase()) ||
-                    varietyCategory.cat_en_name
-                      .toLowerCase()
-                      .includes(category.toLowerCase())
-                  ) {
-                    return true;
-                  }
-
-                  if (varietyCategory.parent) {
-                    return (
-                      varietyCategory.parent.cat_name
-                        .toLowerCase()
-                        .includes(category.toLowerCase()) ||
-                      varietyCategory.parent.cat_en_name
-                        .toLowerCase()
-                        .includes(category.toLowerCase())
-                    );
-                  }
-                }
-                return false;
-              });
-            }
-
-            return false;
-          });
-        }
-
-        const finalProducts = productsArray.slice(0, 8);
-        setProducts(finalProducts);
-      } catch (err) {
-        console.log("Error fetching products:", err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : "An error occurred while fetching products"
-        );
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (endpoint) {
-      fetchProducts();
-    }
-  }, [endpoint, category]);
+  const {
+    products,
+    isLoading: loading,
+    error,
+  } = useProducts(endpoint, category, 8);
 
   const formatPrice = (price: string | number) => {
     const numPrice = typeof price === "string" ? parseInt(price) : price;
@@ -253,7 +180,6 @@ const NewProductRow: React.FC<ProductGridProps> = ({
       <div className={`w-full ${className}`}>
         <div className="text-center py-8">
           <p className="text-gray-500 text-sm">خطا در بارگذاری محصولات</p>
-          <p className="text-gray-400 text-xs mt-1">{error}</p>
         </div>
       </div>
     );

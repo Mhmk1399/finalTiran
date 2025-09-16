@@ -11,6 +11,8 @@ interface VideoSlide {
   mobileSrc: string;
   title: string;
   description: string;
+  poster: string;
+  posterSm: string;
 }
 
 interface VideoScrollScaleProps {
@@ -26,6 +28,8 @@ const videoSlides: VideoSlide[] = [
       "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/JgkjrgQM1L/origin_cmnAgrjNDQIW1v9QWIRJylVyk5sZLLZ1EUVqhcL6.mp4",
     title: "مجموعه ی چرم فرش",
     description: "استایل جور دیگر",
+    poster: "/assets/images/poster/poster1.png",
+    posterSm: "/assets/images/poster/postersm.png",
   },
   {
     id: 2,
@@ -34,6 +38,8 @@ const videoSlides: VideoSlide[] = [
       "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/JgkjrgQM1L/origin_cmnAgrjNDQIW1v9QWIRJylVyk5sZLLZ1EUVqhcL6.mp4",
     title: "تیران استایل",
     description: "استایل جور دیگر",
+    poster: "/assets/images/poster/poster1.png",
+    posterSm: "/assets/images/poster/postersm.png",
   },
 ];
 
@@ -49,7 +55,6 @@ export default function VideoScrollScale({
   const [isMobile, setIsMobile] = useState(false);
   const [activeVideo, setActiveVideo] = useState(0);
   const [videosLoaded, setVideosLoaded] = useState(false);
-
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const videoWrapperRef = useRef<HTMLDivElement | null>(null);
   const videoRef1 = useRef<HTMLVideoElement | null>(null);
@@ -226,6 +231,11 @@ export default function VideoScrollScale({
           ref={videoRef1}
           autoPlay
           muted
+          poster={
+            isMobile
+              ? videoSlides[currentSlide].posterSm
+              : videoSlides[currentSlide].poster
+          }
           playsInline
           preload="metadata"
           onEnded={nextSlide}
@@ -237,6 +247,11 @@ export default function VideoScrollScale({
         <video
           ref={videoRef2}
           muted
+          poster={
+            isMobile
+              ? videoSlides[currentSlide].posterSm
+              : videoSlides[currentSlide].poster
+          }
           playsInline
           preload="metadata"
           onEnded={nextSlide}

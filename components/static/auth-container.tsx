@@ -11,7 +11,6 @@ import { AriaBold } from "@/next-persian-fonts/woff2";
 const AuthPage = () => {
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const digitRefs = useRef<(HTMLInputElement | null)[]>([]);
-
   const [smsDigits, setSmsDigits] = useState(["", "", "", ""]);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({ phone: "", smsCode: "" });
@@ -21,6 +20,7 @@ const AuthPage = () => {
   const [redirectMessage, setRedirectMessage] = useState("");
   const [isRedirecting, setIsRedirecting] = useState("");
   const [isRedirectingDashboard, setIsRedirectingDashboard] = useState("");
+  const [timeLeft, setTimeLeft] = useState(0);
 
   // Initialize redirect messages
   useEffect(() => {
@@ -45,8 +45,35 @@ const AuthPage = () => {
       setTimeout(() => phoneInputRef.current?.focus(), 300);
     } else if (step === 2) {
       setTimeout(() => digitRefs.current[0]?.focus(), 600);
+      setTimeLeft(120); // Start 2-minute timer
     }
   }, [step]);
+
+  // Timer countdown
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (timeLeft === 0 && step === 2) {
+      // Reset to phone input when timer expires
+      setTimeout(() => {
+        setStep(1);
+        setFormData((prev) => ({ ...prev, smsCode: "" }));
+        setErrors({});
+        setTouched({});
+        setSmsDigits(["", "", "", ""]);
+        toast.info(
+          "زمان وارد کردن کد به پایان رسید. لطفاً مجدداً شماره خود را وارد کنید"
+        );
+      }, 2000);
+    }
+  }, [timeLeft, step]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
 
   // Validation functions with touched check
   const validatePhoneForm = () => {
@@ -158,7 +185,10 @@ const AuthPage = () => {
       setTouched({ phone: true });
       if (validatePhoneForm()) {
         const success = await handleSendPhoneNumber();
-        if (success) setStep(2);
+        if (success) {
+          setStep(2);
+          setTimeLeft(120); // Reset timer when sending new code
+        }
       }
     } else {
       setTouched({ smsCode: true });
@@ -286,7 +316,7 @@ const AuthPage = () => {
               {(redirectMessage || isRedirecting || isRedirectingDashboard) && (
                 <motion.div
                   variants={itemVariants}
-                  className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200"
+                  className="text-center p-3 bg-blue-50  border-b border-dashed border-blue-200"
                   role="alert"
                   aria-live="polite"
                 >
@@ -332,7 +362,7 @@ const AuthPage = () => {
                         value={formData.phone}
                         onChange={handleChange}
                         disabled={isLoading}
-                        className={`w-full px-4 py-4 pr-12 placeholder:text-gray-300 rounded-lg border ${
+                        className={`w-full px-4 py-4 pr-12 placeholder:text-gray-300   border ${
                           errors.phone && touched.phone
                             ? "border-red-500"
                             : "border-gray-300"
@@ -358,7 +388,7 @@ const AuthPage = () => {
                   <>
                     <motion.div
                       variants={itemVariants}
-                      className="text-center mb-6 p-4 bg-blue-50 rounded-lg"
+                      className="text-center "
                     >
                       <p className="text-gray-700">
                         کد تایید به شماره{" "}
@@ -367,14 +397,21 @@ const AuthPage = () => {
                         </span>{" "}
                         ارسال شد
                       </p>
+                      {timeLeft > 0 && (
+                        <p className="text-sm text-gray-600 mt-2">
+                          زمان باقی‌مانده:{" "}
+                          <span className="font-bold text-gray-900 ">
+                            {formatTime(timeLeft)}
+                          </span>
+                        </p>
+                      )}
+                      {timeLeft === 0 && (
+                        <p className="text-sm text-red-600 mt-2">
+                          زمان وارد کردن کد به پایان رسید
+                        </p>
+                      )}
                     </motion.div>
                     <motion.div variants={itemVariants}>
-                      <label
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                        htmlFor="smsCode"
-                      >
-                        کد تایید
-                      </label>
                       <div
                         className="flex flex-row gap-4 justify-center"
                         dir="ltr"
@@ -389,7 +426,7 @@ const AuthPage = () => {
                             inputMode="numeric"
                             pattern="[0-9]*"
                             maxLength={1}
-                            className="w-12 h-14 text-center text-lg font-bold border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                            className="w-12 h-14 text-center text-lg font-bold border border-gray-300   focus:ring-2 focus:ring-gray-700 focus:outline-none transition-all"
                             value={digit}
                             disabled={isLoading}
                             onChange={(e) => handleDigitChange(e, index)}
@@ -414,7 +451,7 @@ const AuthPage = () => {
                   variants={itemVariants}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`w-full py-4 mt-8 rounded-lg bg-black text-white font-semibold hover:bg-black/80 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg ${
+                  className={`w-full py-4 mt-8   bg-black text-white font-semibold hover:bg-black/80 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg ${
                     isLoading ||
                     (step === 1 &&
                       (!formData.phone || formData.phone.length !== 11)) ||
@@ -427,7 +464,8 @@ const AuthPage = () => {
                     isLoading ||
                     (step === 1 &&
                       (!formData.phone || formData.phone.length !== 11)) ||
-                    (step === 2 && smsDigits.some((d) => !d))
+                    (step === 2 &&
+                      (smsDigits.some((d) => !d) || timeLeft === 0))
                   }
                   aria-busy={isLoading}
                 >
@@ -458,7 +496,7 @@ const AuthPage = () => {
                       setTouched({});
                       setSmsDigits(["", "", "", ""]);
                     }}
-                    className="text-blue-600 hover:text-blue-800 transition-colors font-medium underline"
+                    className="text-blue-600 hover:text-blue-800 transition-colors font-medium border-b border-dashed cursor-pointer"
                     disabled={isLoading}
                   >
                     تغییر شماره موبایل

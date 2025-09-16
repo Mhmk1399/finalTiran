@@ -65,7 +65,6 @@ export default function RootLayout({
           {children}
           <TopFooterText />
           <Footer />
-
         </CartProvider>
       </body>
     </html>

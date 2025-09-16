@@ -52,7 +52,7 @@ const CartPage = () => {
       month: "2-digit",
       day: "2-digit",
       hour: "2-digit",
-      minute: "2-digit"
+      minute: "2-digit",
     })
   );
   const [selectedDeliveryDate, setSelectedDeliveryDate] = useState<string>(
@@ -326,7 +326,8 @@ const CartPage = () => {
 
           // Clear cart and redirect to success page
           setTimeout(() => {
-            router.push("/checkout/success");
+            localStorage.removeItem("cart");
+            router.replace("/checkout/success");
           }, 2000);
         } else {
           // Handle other payment types or fallback
@@ -342,7 +343,7 @@ const CartPage = () => {
             }, 2000);
           } else {
             setTimeout(() => {
-              router.push("/checkout/success");
+              router.replace("/checkout/success");
             }, 2000);
           }
         }
@@ -388,7 +389,7 @@ const CartPage = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white rounded-lg shadow-sm p-8 text-center"
+            className="bg-white p-8 text-center"
           >
             <div className="flex justify-center mb-4">
               <RiShoppingCartLine className="h-16 w-16 text-blue-400" />
@@ -396,14 +397,14 @@ const CartPage = () => {
             <h2 className="text-xl font-semibold text-gray-700 mb-4">
               سبد خرید شما خالی است
             </h2>
-            <p className="text-gray-500 mb-6">
+            <p className="text-gray-500 mb-6 w-fit text-center mx-auto border-b pb-4 border-dashed">
               محصولات مورد نظر خود را به سبد خرید اضافه کنید
             </p>
             <Link href="/shop">
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-gray-800 text-white px-6 py-3 rounded-md font-medium hover:bg-gray-700 transition-colors"
+                className="bg-gray-800 text-white px-6 py-3   font-medium hover:bg-gray-700 transition-colors"
               >
                 مشاهده محصولات
               </motion.button>
@@ -509,7 +510,9 @@ const CartPage = () => {
                   <span className="text-lg font-semibold">
                     مبلغ قابل پرداخت:
                   </span>
-                  <span className={`text-xl text-gray-900  ${AriaBold.className}`}>
+                  <span
+                    className={`text-xl text-gray-900  ${AriaBold.className}`}
+                  >
                     {formatPrice(totalPrice)} تومان
                   </span>
                 </div>

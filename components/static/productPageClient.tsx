@@ -6,7 +6,6 @@ import ProductComments from "@/components/static/ProductComments";
 import RelatedProducts from "@/components/static/RelatedProducts";
 import { Product } from "@/types/type";
 import Breadcrumbs from "../global/breadcrumbs";
-import SmoothScrollProvider from "../global/smoothScrollProvider.tsx";
 
 interface ProductPageClientProps {
   slug: string;
@@ -231,7 +230,6 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
             </div>
           </div>
         </main>
-        <SmoothScrollProvider />
       </>
     );
   }
@@ -270,7 +268,6 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
           <RelatedProducts products={relatedProducts} />
         )}
       </main>
-      <SmoothScrollProvider />
     </>
   );
 }

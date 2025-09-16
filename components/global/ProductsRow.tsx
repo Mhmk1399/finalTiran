@@ -1,10 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import useSWRInfinite from "swr/infinite";
 import { Product } from "@/types/type";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AriaBold } from "@/next-persian-fonts/woff2";
+import { FiBox } from "react-icons/fi";
 
 interface ApiResponse {
   success: boolean;
@@ -46,12 +48,59 @@ interface PaginationMeta {
   perPage: number;
 }
 
+const fetcher = async (url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const apiResponse: ApiResponse = await response.json();
+  if (!apiResponse.success) {
+    throw new Error("API returned unsuccessful response");
+  }
+  if (!apiResponse.data || !Array.isArray(apiResponse.data.items)) {
+    throw new Error("Invalid data structure received from API");
+  }
+  return apiResponse;
+};
+
+const useProductsData = ({
+  endpoint,
+  categorySlug,
+  showLoadMore,
+  isVisible,
+}: {
+  endpoint: string;
+  categorySlug?: string;
+  showLoadMore?: boolean;
+  isVisible: boolean;
+}) => {
+  const getKey = (pageIndex: number, previousPageData: ApiResponse | null) => {
+    if (!isVisible) return null;
+    if (previousPageData && !previousPageData.data.items.length) return null;
+    if (!showLoadMore && pageIndex > 0) return null;
+
+    let url = `${endpoint}${endpoint.includes("?") ? "&" : "?"}page=${
+      pageIndex + 1
+    }`;
+    if (categorySlug) {
+      url += `&category_slug=${categorySlug}`;
+    }
+    return url;
+  };
+
+  return useSWRInfinite<ApiResponse>(getKey, fetcher, {
+    revalidateFirstPage: false,
+  });
+};
+
 const ProductImageSlider: React.FC<{
   images: Array<{ id: number; src: string }>;
   productTitle: string;
   mainImageId?: number;
 }> = ({ images, productTitle, mainImageId }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
 
   // Set initial image to main image if available
   useEffect(() => {
@@ -63,16 +112,50 @@ const ProductImageSlider: React.FC<{
     }
   }, [images, mainImageId]);
 
-  const nextImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const nextImage = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    nextImageAction();
+  };
+
+  const prevImage = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const nextImageAction = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
   };
 
-  const prevImage = (e: React.MouseEvent) => {
+  const prevImageAction = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(0);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextImageAction();
+    }
+    if (isRightSwipe) {
+      prevImageAction();
+    }
   };
 
   // const goToImage = (index: number, e: React.MouseEvent) => {
@@ -90,7 +173,12 @@ const ProductImageSlider: React.FC<{
   }
 
   return (
-    <div className="relative w-full aspect-square bg-gray-50 overflow-hidden group">
+    <div
+      className="relative w-full aspect-square bg-gray-50 overflow-hidden group"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Main Image */}
       <Image
         src={images[currentImageIndex]?.src || ""}
@@ -136,51 +224,52 @@ const ProductRow: React.FC<ProductGridProps> = ({
   showLoadMore = false,
   filters,
 }) => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
-  const fetchProducts = async (page: number = 1, append: boolean = false) => {
-    try {
-      if (append) {
-        setLoadingMore(true);
-      } else {
-        setLoading(true);
-      }
-      setError(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-      let url = `${endpoint}${endpoint.includes("?") ? "&" : "?"}page=${page}`;
+    if (rootRef.current) {
+      observer.observe(rootRef.current);
+    }
 
-      if (categorySlug) {
-        url += `&category_slug=${categorySlug}`;
-      }
-      const response = await fetch(url);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+  const {
+    data,
+    error: swrError,
+    isLoading,
+    isValidating,
+    size,
+    setSize,
+  } = useProductsData({
+    endpoint,
+    categorySlug,
+    showLoadMore,
+    isVisible,
+  });
 
-      const apiResponse: ApiResponse = await response.json();
+  const allItems = useMemo(() => {
+    if (!data) return [];
 
-      if (!apiResponse.success) {
-        throw new Error("API returned unsuccessful response");
-      }
-
-      if (!apiResponse.data || !Array.isArray(apiResponse.data.items)) {
-        throw new Error("Invalid data structure received from API");
-      }
-
-      let productsArray = apiResponse.data.items;
-
-      // Filter products that have variety and variety is not null
-      productsArray = productsArray.filter(
+    return data.flatMap((apiResponse) => {
+      let productsArray = apiResponse.data.items.filter(
         (product) => product.variety !== null && product.variety !== undefined
       );
 
-      // Filter by parent category if provided
+      // Filter by category
       if (category) {
         productsArray = productsArray.filter((product) => {
           if (product.variety && product.variety.category) {
@@ -244,11 +333,10 @@ const ProductRow: React.FC<ProductGridProps> = ({
         });
       }
 
-      // Apply filters
+      // Filter by other filters
       let filteredProducts = productsArray;
       if (filters) {
         filteredProducts = productsArray.filter((product) => {
-          // Category filter
           if (filters.categories.length > 0) {
             const productCategory = product.variety?.category;
             if (!productCategory) return false;
@@ -261,7 +349,6 @@ const ProductRow: React.FC<ProductGridProps> = ({
             if (!categoryMatch) return false;
           }
 
-          // Color filter
           if (filters.colors.length > 0) {
             const productColors =
               product.variety?.Properties?.filter(
@@ -275,7 +362,6 @@ const ProductRow: React.FC<ProductGridProps> = ({
             if (!colorMatch) return false;
           }
 
-          // Available filter
           if (filters.available && product.store_stock <= 0) {
             return false;
           }
@@ -284,51 +370,24 @@ const ProductRow: React.FC<ProductGridProps> = ({
         });
       }
 
-      const finalProducts = showLoadMore
-        ? filteredProducts
-        : filteredProducts.slice(0, 6);
+      return filteredProducts;
+    });
+  }, [data, category, filters]); // فقط وقتی یکی از اینا تغییر کنه دوباره محاسبه میشه
 
-      if (append) {
-        setProducts((prev) => [...prev, ...finalProducts]);
-      } else {
-        setProducts(finalProducts);
-      }
+  const displayedProducts = showLoadMore ? allItems : allItems.slice(0, 6);
 
-      setPagination(apiResponse.data._meta);
-      setCurrentPage(page);
-    } catch (err) {
-      console.log("Error fetching products:", err);
-      setError(
-        err instanceof Error
-          ? err.message
-          : "An error occurred while fetching products"
-      );
-      if (!append) {
-        setProducts([]);
-      }
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  };
-
-  useEffect(() => {
-    if (endpoint) {
-      fetchProducts(1, false);
-    }
-  }, [endpoint, category, categorySlug, filters]);
-
-  const handleLoadMore = () => {
-    if (pagination && currentPage < pagination.pageCount) {
-      fetchProducts(currentPage + 1, true);
-    }
-  };
+  const pagination: PaginationMeta | null =
+    data?.[data.length - 1]?.data._meta || null;
 
   const shouldShowLoadMore =
     showLoadMore &&
     pagination &&
     pagination.totalCount > 8 &&
-    currentPage < pagination.pageCount;
+    size < pagination.pageCount;
+
+  const handleLoadMore = () => {
+    setSize(size + 1);
+  };
 
   const formatPrice = (price: string | number) => {
     const numPrice = typeof price === "string" ? parseInt(price) : price;
@@ -353,19 +412,18 @@ const ProductRow: React.FC<ProductGridProps> = ({
     return product.fa_name || product.en_name || `محصول ${product.id}`;
   };
 
-  if (error) {
+  if (swrError) {
     return (
       <div className={`w-full ${className}`}>
         <div className="text-center py-8">
           <p className="text-gray-500 text-sm">خطا در بارگذاری محصولات</p>
-          <p className="text-gray-400 text-xs mt-1">{error}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`w-full py-5 ${className}`} dir="rtl">
+    <div ref={rootRef} className={`w-full py-5 ${className}`} dir="rtl">
       <div className="px-4">
         {/* Title and Description Section */}
         <div className="w-full flex flex-col justify-center mb-8">
@@ -384,7 +442,7 @@ const ProductRow: React.FC<ProductGridProps> = ({
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
           {/* Products Grid Section */}
           <div className="w-full">
-            {loading ? (
+            {!data || isLoading ? (
               // Loading skeleton
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[...Array(4)].map((_, index) => (
@@ -397,9 +455,9 @@ const ProductRow: React.FC<ProductGridProps> = ({
                   </div>
                 ))}
               </div>
-            ) : products.length > 0 ? (
+            ) : displayedProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1">
-                {products.map((product, idx) => {
+                {displayedProducts.map((product, idx) => {
                   const productPrice = getProductPrice(product);
                   const productTitle = getProductTitle(product);
 
@@ -458,8 +516,9 @@ const ProductRow: React.FC<ProductGridProps> = ({
                 })}
               </div>
             ) : (
-              <div className="text-center py-8">
-                <p className="text-gray-500">محصولی یافت نشد</p>
+              <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+                <FiBox className="text-5xl mb-3" />
+                <p className="text-base font-medium">محصولی یافت نشد</p>
               </div>
             )}
 
@@ -468,10 +527,10 @@ const ProductRow: React.FC<ProductGridProps> = ({
               <div className="text-center mt-8">
                 <button
                   onClick={handleLoadMore}
-                  disabled={loadingMore}
+                  disabled={isValidating}
                   className="bg-black cursor-pointer text-white px-8 py-3 hover:bg-transparent hover:text-black hover:font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {loadingMore ? "در حال بارگذاری..." : "مشاهده بیشتر"}
+                  {isValidating ? "در حال بارگذاری..." : "مشاهده بیشتر"}
                 </button>
               </div>
             )}

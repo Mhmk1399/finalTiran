@@ -6,6 +6,8 @@ const videoSlides = {
   mobileSrc:
     "https://tiranstyle.arvanvod.ir/lD6vqZnXY3/xqOg6q0Rd8/origin_5ft3HKzQiAzHw6trjTp6DwR1ok8KxPOsXId25BFl.mp4",
   title: "استایل جور دیگر",
+  poster: "/assets/images/poster/poster1.png",
+  posterSm: "/assets/images/poster/postersm.png",
 };
 
 export default function VideoSection() {
@@ -25,7 +27,7 @@ export default function VideoSection() {
     };
   };
 
-  console.log(isMobile)
+  console.log(isMobile);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -53,16 +55,17 @@ export default function VideoSection() {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
           </div>
         )}
-        
+
         <video
           ref={videoRef}
           autoPlay
           muted
           playsInline
+          poster={isMobile ? videoSlides.posterSm : videoSlides.poster}
           loop
           preload="metadata"
           className={`w-full h-full object-cover transition-opacity duration-500 ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
+            isLoaded ? "opacity-100" : "opacity-0"
           }`}
         />
 

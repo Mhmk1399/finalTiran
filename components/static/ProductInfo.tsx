@@ -474,13 +474,6 @@ export default function ProductInfo({
             </div>
 
             {/* Stock Info */}
-            <div className="text-center md:text-right">
-              <span className="text-xs md:text-sm text-gray-500">
-                {(selectedVariety?.store_stock ?? 0) > 0
-                  ? `${selectedVariety?.store_stock} عدد موجود`
-                  : "ناموجود"}
-              </span>
-            </div>
           </div>
         </div>
 
@@ -612,7 +605,6 @@ export default function ProductInfo({
                 </div>
 
                 <motion.button
-                
                   whileHover={{ backgroundColor: "#f9fafb" }}
                   whileTap={{ scale: 0.95 }}
                   onClick={incrementQuantity}
@@ -658,16 +650,7 @@ export default function ProductInfo({
             </div>
           </div>
           {/* Price, Add to Cart Button, and Quantity in One Row - Last */}
-          <div className="pt-6 space-y-4">
-            {/* Stock Info */}
-            <div className="text-center md:text-right">
-              <span className="text-xs md:text-sm text-gray-500">
-                {(selectedVariety?.store_stock ?? 0) > 0
-                  ? `${selectedVariety?.store_stock} عدد موجود`
-                  : "ناموجود"}
-              </span>
-            </div>
-          </div>
+
           <p className="text-sm text-gray-500 text-right my-8">
             {product.seo_description}
           </p>
@@ -795,12 +778,12 @@ export default function ProductInfo({
           </div>
         </div>
       </motion.div>
-        {/* Address Modal */}
-        <AddressModal
-          isOpen={showAddressModal}
-          onClose={() => setShowAddressModal(false)}
-          onAddressCreated={handleAddressCreated}
-        />
+      {/* Address Modal */}
+      <AddressModal
+        isOpen={showAddressModal}
+        onClose={() => setShowAddressModal(false)}
+        onAddressCreated={handleAddressCreated}
+      />
     </div>
   );
 }

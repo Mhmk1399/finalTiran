@@ -20,7 +20,6 @@ import MegaMenu from "./megaMenu";
 
 const Navbar = () => {
   const { totalItems } = useCart();
-
   const [isOpen, setIsOpen] = useState(false);
   const [activeItem, setActiveItem] = useState("/");
   const [expandedCategory, setExpandedCategory] = useState(false);
@@ -38,8 +37,6 @@ const Navbar = () => {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
   const ticking = useRef(false);
-
-  console.log(isLoading)
 
   useEffect(() => {
     setIsMounted(true);
@@ -216,8 +213,8 @@ const Navbar = () => {
                   src="/assets/images/logo.png"
                   alt="Tiran Logo"
                   width={200}
-                  height={60}
-                  className="md:h-10 w-70 md:mb-4 -mt-1   transition-all duration-300 group-hover:brightness-110"
+                  height={40}
+                  className="md:h-7 w-60      transition-all duration-300 group-hover:brightness-110"
                 />
               </div>
             </Link>
@@ -227,7 +224,7 @@ const Navbar = () => {
             <div className="relative">
               <Link href="/cart">
                 <div className="p-2 hidden md:block rounded-full hover:bg-gray-100 transition-colors duration-300">
-                  <RiShoppingBag3Line className="h-6 w-6" />
+                  <RiShoppingBag3Line title="سبد خرید" className="h-6 w-6" />
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {totalItems}
                   </span>
@@ -469,76 +466,97 @@ const Navbar = () => {
                           {category.children.map((subcategory, subIndex) => (
                             <div key={subcategory.id}>
                               <div className="flex items-center justify-between">
-                                <span
-                                  className="block px-4 py-1.5 text-xs font-medium text-gray-800 cursor-default"
-                                >
+                                <span className="block px-4 py-1.5 text-xs font-medium text-gray-800 cursor-default">
                                   {subcategory.cat_name}
                                 </span>
-                                {subcategory.children && subcategory.children.length > 0 && (
-                                  <button
-                                    onClick={() => {
-                                      const thirdLevelList = document.getElementById(
-                                        `thirdlevel-${index}-${subIndex}`
-                                      );
-                                      const arrow = document.getElementById(
-                                        `thirdlevel-arrow-${index}-${subIndex}`
-                                      );
-                                      
-                                      const isExpanded = thirdLevelList?.style.height !== '0px';
-                                      
-                                      if (!isExpanded) {
-                                        gsap.fromTo(
-                                          thirdLevelList,
-                                          { height: 0, opacity: 0 },
-                                          { height: "auto", opacity: 1, duration: 0.3 }
+                                {subcategory.children &&
+                                  subcategory.children.length > 0 && (
+                                    <button
+                                      onClick={() => {
+                                        const thirdLevelList =
+                                          document.getElementById(
+                                            `thirdlevel-${index}-${subIndex}`
+                                          );
+                                        const arrow = document.getElementById(
+                                          `thirdlevel-arrow-${index}-${subIndex}`
                                         );
-                                        gsap.to(arrow, { rotation: 270, duration: 0.3 });
-                                      } else {
-                                        gsap.to(thirdLevelList, {
-                                          height: 0,
-                                          opacity: 0,
-                                          duration: 0.3,
-                                        });
-                                        gsap.to(arrow, { rotation: 90, duration: 0.3 });
-                                      }
-                                    }}
-                                    className="px-2 py-1 active:scale-90 transition-transform duration-100"
-                                  >
-                                    <div id={`thirdlevel-arrow-${index}-${subIndex}`}>
-                                      <RiArrowRightSLine className="h-3 rotate-90 text-gray-600 w-3" />
-                                    </div>
-                                  </button>
-                                )}
-                              </div>
-                              
-                              {subcategory.children && subcategory.children.length > 0 && (
-                                <div
-                                  id={`thirdlevel-${index}-${subIndex}`}
-                                  className="overflow-hidden bg-gray-100/20 mr-4 border-r border-gray-300"
-                                  style={{ height: 0, opacity: 0 }}
-                                >
-                                  {subcategory.children.map((thirdLevel) => (
-                                    <div key={thirdLevel.id}>
-                                      <Link
-                                        onClick={() => setIsOpen(!isOpen)}
-                                        href={`/shop?query=${thirdLevel.cat_en_name}`}
+
+                                        const isExpanded =
+                                          thirdLevelList?.style.height !==
+                                          "0px";
+
+                                        if (!isExpanded) {
+                                          gsap.fromTo(
+                                            thirdLevelList,
+                                            { height: 0, opacity: 0 },
+                                            {
+                                              height: "auto",
+                                              opacity: 1,
+                                              duration: 0.3,
+                                            }
+                                          );
+                                          gsap.to(arrow, {
+                                            rotation: 270,
+                                            duration: 0.3,
+                                          });
+                                        } else {
+                                          gsap.to(thirdLevelList, {
+                                            height: 0,
+                                            opacity: 0,
+                                            duration: 0.3,
+                                          });
+                                          gsap.to(arrow, {
+                                            rotation: 90,
+                                            duration: 0.3,
+                                          });
+                                        }
+                                      }}
+                                      className="px-2 py-1 active:scale-90 transition-transform duration-100"
+                                    >
+                                      <div
+                                        id={`thirdlevel-arrow-${index}-${subIndex}`}
                                       >
-                                        <span
-                                          className="block px-4 py-1 text-xs font-medium text-gray-700 hover:text-black transition-all duration-200 hover:translate-x-1"
-                                          onTouchStart={(e) =>
-                                            gsap.to(e.target, { x: 5, duration: 0.1 })
-                                          }
-                                          onTouchEnd={(e) =>
-                                            gsap.to(e.target, { x: 0, duration: 0.1 })
-                                          }
+                                        <RiArrowRightSLine className="h-3 rotate-90 text-gray-600 w-3" />
+                                      </div>
+                                    </button>
+                                  )}
+                              </div>
+
+                              {subcategory.children &&
+                                subcategory.children.length > 0 && (
+                                  <div
+                                    id={`thirdlevel-${index}-${subIndex}`}
+                                    className="overflow-hidden bg-gray-100/20 mr-4 border-r border-gray-300"
+                                    style={{ height: 0, opacity: 0 }}
+                                  >
+                                    {subcategory.children.map((thirdLevel) => (
+                                      <div key={thirdLevel.id}>
+                                        <Link
+                                          onClick={() => setIsOpen(!isOpen)}
+                                          href={`/shop?query=${thirdLevel.cat_en_name}`}
                                         >
-                                          {thirdLevel.cat_name}
-                                        </span>
-                                      </Link>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
+                                          <span
+                                            className="block px-4 py-1 text-xs font-medium text-gray-700 hover:text-black transition-all duration-200 hover:translate-x-1"
+                                            onTouchStart={(e) =>
+                                              gsap.to(e.target, {
+                                                x: 5,
+                                                duration: 0.1,
+                                              })
+                                            }
+                                            onTouchEnd={(e) =>
+                                              gsap.to(e.target, {
+                                                x: 0,
+                                                duration: 0.1,
+                                              })
+                                            }
+                                          >
+                                            {thirdLevel.cat_name}
+                                          </span>
+                                        </Link>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                             </div>
                           ))}
                         </div>
@@ -619,7 +637,10 @@ const Navbar = () => {
                 }}
               >
                 <div className="flex items-center px-4 py-4 rounded-2xl text-base font-medium text-black bg-white/40 hover:bg-white/50 backdrop-blur-sm transition-all duration-200 active:scale-95">
-                  <RiShoppingBag3Line className="ml-2 h-5 w-5" />
+                  <RiShoppingBag3Line
+                    title="سبد خرید"
+                    className="ml-2 h-5 w-5"
+                  />
                   <span className="text-sm">سبد خرید</span>
                   <span className="mr-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {totalItems}

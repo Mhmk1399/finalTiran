@@ -115,7 +115,7 @@ const Page = () => {
             const loadingPromise = preloadAssets();
 
             await Promise.all([
-              new Promise((resolve) => setTimeout(resolve, 4000)),
+              new Promise((resolve) => setTimeout(resolve, 2000)),
               loadingPromise,
             ]);
 
@@ -221,13 +221,7 @@ const Page = () => {
           </div>
 
           <div className="">
-            {" "}
-            <ProductSlideFendi
-              title="محصولات جدید"
-              // className="my-8"
-              // endpoint="/api/shop"
-              // category=""
-            />
+            <ProductSlideFendi title="محصولات جدید" />
             <div className="min-h-screen">
               <Suspense
                 fallback={
@@ -238,10 +232,9 @@ const Page = () => {
               </Suspense>
             </div>
             <NewProductRow
-              title="محصولات جدید"
-              description="جدیدترین کیف ها را کشف کنید"
-              endpoint="/api/shop"
-              category=""
+              title="محصولات جدید چرم ترکیبی"
+              endpoint="/api/shop/any"
+              category="lethear"
             />
             <Suspense
               fallback={<div className="h-64 bg-gray-100 animate-pulse" />}
