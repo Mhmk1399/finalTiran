@@ -84,7 +84,7 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
       const tl = gsap.timeline({
         defaults: {
           duration: 0.6,
-          ease: "sine.inOut",
+          ease: "power2.inOut",
         },
         onComplete: () => {
           setCurrentIndex(newIndex);
@@ -129,33 +129,6 @@ const ProductSlideFendi: React.FC<ProductSlideshowProps> = ({ title }) => {
     setTransitioning("prev");
     setIsAnimating(true);
   };
-
-  useEffect(() => {
-    if (products.length > 0 && !transitioning) {
-      productRefs.current.forEach((card, i) => {
-        if (card) {
-          const targetX = (i - 2) * 500;
-          const isCenter = i === 2;
-
-          gsap.fromTo(
-            card,
-            {
-              x: targetX + 100,
-              scale: 0.8,
-              opacity: 0.7,
-            },
-            {
-              x: targetX,
-              opacity: isCenter ? 1 : 0.7,
-              scale: isCenter ? 1.2 : 0.8,
-              ease: "expo.out",
-              duration: 0.8, // Reduced initial animation duration for quicker setup
-            }
-          );
-        }
-      });
-    }
-  }, [products]);
 
   const visibleProducts = getVisibleProducts();
   const centerProduct =
