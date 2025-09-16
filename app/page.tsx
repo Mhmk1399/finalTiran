@@ -3,7 +3,7 @@ import HomeContainer from "@/components/static/home-container";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "فروشگاه اینترنتی قاسم",
+  title: "فروشگاه اینترنتی تیران",
   description:
     "به فروشگاه تیران خوش آمدید. ارائه بهترین محصولات با تضمین کیفیت، قیمت مناسب و ارسال سریع. تیران انتخاب اول برای خرید اینترنتی.",
   keywords: [
