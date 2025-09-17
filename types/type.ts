@@ -15,6 +15,22 @@ export interface Category {
   children: Category[];
   image_url: string;
 }
+export interface Blog {
+  id: string;
+  title: string;
+  excerpt: string;
+  coverImage: string;
+  author: string;
+  date: string;
+  readTime: string;
+  category: string;
+  contentHtml: string;
+  seoTitle: string;
+  images: string[];
+  updatedAt: string;
+  tags: string[];
+  tableOfContents: string[];
+}
 
 // --------------------------------- product type ---------------------------
 

@@ -1,5 +1,7 @@
 "use client";
-import React, { useState } from "react";
+
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
@@ -9,10 +11,13 @@ import Highlight from "@tiptap/extension-highlight";
 import TextAlign from "@tiptap/extension-text-align";
 import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
-import toast from "react-hot-toast";
-import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion";
 import { CustomEditor } from "@/types/editor";
+import Image from "@tiptap/extension-image";
+import { TextSelection } from "prosemirror-state";
+import toast from "react-hot-toast";
+import { Blog } from "@/types/type";
+import ImageUploadModal from "../global/ImageUploadModal";
 
 const MenuButton = ({
   onClick,
@@ -24,10 +29,11 @@ const MenuButton = ({
   children: React.ReactNode;
 }) => (
   <button
+    aria-label="addblog"
     type="button"
     onClick={onClick}
-    className={`p-2  transition-colors ${
-      active ? "bg-white text-black" : "hover:bg-gray-800 text-white"
+    className={`p-2 rounded-md transition-colors ${
+      active ? "bg-blue-100 text-blue-600" : "hover:bg-gray-100 text-gray-600"
     }`}
   >
     {children}
@@ -69,12 +75,13 @@ const ColorPickerDropdown = ({
   if (!isOpen) return null;
 
   return (
-    <div className="absolute mt-2 p-2 bg-black border border-white  shadow-xl z-50 w-48">
+    <div className="absolute mt-2 p-2 bg-white rounded-lg shadow-xl border z-50 w-48">
       <div className="grid grid-cols-10 gap-1">
         {colors.map((color) => (
           <button
             key={color}
-            className="w-6 h-6  border border-white hover:scale-110 transition-transform"
+            aria-label="color"
+            className="w-6 h-6 rounded-sm border border-gray-200 hover:scale-110 transition-transform"
             style={{ backgroundColor: color }}
             onClick={() => {
               onColorSelect(color);
@@ -87,15 +94,21 @@ const ColorPickerDropdown = ({
   );
 };
 
-export default function AddBlogPage() {
+export default function AddPostBlog() {
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
+  const isEditMode = !!editId;
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [seoTitle, setSeoTitle] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   const [showTextColorPicker, setShowTextColorPicker] = useState(false);
   const [showBgColorPicker, setShowBgColorPicker] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
 
   const handleAddTag = () => {
     if (tags.length >= 3) {
@@ -109,6 +122,60 @@ export default function AddBlogPage() {
     }
   };
 
+  // آیا selection داخل یک بلاک (پاراگراف) واحده؟
+  const isWithinSingleBlock = (editor: CustomEditor) => {
+    const { $from, $to } = editor.state.selection;
+    return $from.sameParent($to);
+  };
+
+  // بخش انتخاب‌شده را به یک بلاک مستقل تبدیل می‌کند
+  const isolateSelectionToOwnBlock = (editor: CustomEditor) => {
+    const { state, view } = editor;
+    const { from, to, empty, $from } = state.selection;
+
+    // اگر انتخاب خالی است یا چند بلاک را شامل می‌شود یا کل بلاک انتخاب شده، نیازی به split نیست
+    if (empty) return false;
+    if (!isWithinSingleBlock(editor)) return false;
+    if (from === $from.start() && to === $from.end()) return false;
+
+    // یک ترنزاکشن می‌سازیم: ابتدا در انتهای انتخاب split، سپس در ابتدای انتخاب split
+    let tr = state.tr;
+
+    // split در انتهای selection
+    tr = tr.split(to);
+
+    // نگاشت موقعیت آغاز selection بعد از split اول
+    const mappedFrom = tr.mapping.map(from);
+
+    // split در ابتدای selection (بعد از نگاشت)
+    tr = tr.split(mappedFrom);
+
+    // اعمال ترنزاکشن splitها
+    view.dispatch(tr);
+
+    // حالا selection را روی بلاک میانی (بخش جداشده) قرار می‌دهیم
+    const middlePos = tr.mapping.map(from) + 1; // یک پوزیشن داخل بلاک میانی
+    const $pos = view.state.doc.resolve(
+      Math.min(middlePos, view.state.doc.content.size)
+    );
+    view.dispatch(view.state.tr.setSelection(TextSelection.near($pos)));
+
+    return true;
+  };
+
+  // هدینگ را طوری اعمال می‌کند که اگر انتخاب «داخل یک پاراگراف» باشد، اول جدا و بعد هدینگ شود
+  const toggleHeadingOnSelection = (
+    editor: CustomEditor,
+    level: 1 | 2 | 3 | 4 | 5 | 6
+  ) => {
+    // اگر انتخاب غیرخالی و داخل یک بلاک است، اول جداش کن
+    if (!editor.state.selection.empty && isWithinSingleBlock(editor)) {
+      isolateSelectionToOwnBlock(editor);
+    }
+    // حالا هدینگ فقط روی بلاک میانی (بخش انتخاب‌شده) اعمال می‌شود
+    editor.chain().focus().toggleHeading({ level }).run();
+  };
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -117,6 +184,7 @@ export default function AddBlogPage() {
         bulletList: false,
         orderedList: false,
       }),
+
       BulletList.configure({
         keepMarks: true,
         HTMLAttributes: { class: "list-disc ml-4" },
@@ -139,13 +207,17 @@ export default function AddBlogPage() {
         alignments: ["left", "center", "right"],
         defaultAlignment: "left",
       }),
+      Image.configure({
+        HTMLAttributes: {
+          class: "w-full h-64 object-cover rounded-lg my-4",
+        },
+      }),
     ],
     editorProps: {
       attributes: {
         class: "prose prose-lg max-w-none focus:outline-none min-h-[200px] rtl",
       },
     },
-
     onUpdate: ({ editor }: { editor: CustomEditor }) => {
       const text = editor.getText();
       const words: string[] = text
@@ -155,6 +227,39 @@ export default function AddBlogPage() {
       setWordCount(words.length);
     },
   }) as CustomEditor;
+
+  useEffect(() => {
+    if (isEditMode && editId && editor) {
+      fetchBlogData();
+    }
+  }, [isEditMode, editId, editor]);
+
+  const fetchBlogData = async () => {
+    try {
+      const response = await fetch("/api/blog");
+      const blogs = await response.json();
+      const blog = blogs.find((b: Blog) => b.id === editId);
+
+      if (blog) {
+        setTitle(blog.title);
+        setDescription(blog.excerpt);
+        setSeoTitle(blog.seoTitle);
+        setImages(blog.images || []);
+        setTags(blog.tags || []);
+
+        // Set editor content after a small delay to ensure editor is ready
+        setTimeout(() => {
+          if (editor && blog.contentHtml) {
+            editor.commands.setContent(blog.contentHtml);
+          }
+        }, 100);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("خطا در بارگذاری بلاگ");
+    } finally {
+    }
+  };
 
   const setLink = () => {
     const previousUrl = editor?.getAttributes("link").href;
@@ -167,69 +272,97 @@ export default function AddBlogPage() {
     }
     editor?.chain().focus().setLink({ href: url }).run();
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate required fields
-    if (!title || !description || !seoTitle || !editor?.getHTML()) {
-      toast.error("لطفا تمام فیلدها را پر کنید");
-      return;
-    }
-    // const token = localStorage.getItem("token");
-    // if (!token) {
-    //   toast.error("لطفا مجددا وارد شوید");
-    //   return;
-    // }
-    const blogData = {
-      title,
-      description,
-      seoTitle,
-      content: editor?.getHTML(),
-      image:
-        "https://images.pexels.com/photos/1005644/pexels-photo-1005644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", // You'll need to handle image upload
-      tags,
-    };
-
     try {
-      const response = await fetch("/api/blog", {
-        method: "POST",
+      // Validate required fields
+      if (!title || !description || !seoTitle || !editor?.getHTML()) {
+        toast.error("لطفا تمام فیلدهای اجباری را پر کنید");
+        return;
+      }
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("لطفا مجددا وارد شوید");
+        return;
+      }
+
+      const blogData = {
+        title,
+        excerpt: description,
+        seoTitle,
+        contentHtml: editor?.getHTML() || "",
+        images: images,
+        coverImage: images.length > 0 ? images[0] : undefined,
+        tags,
+      };
+
+      console.log(blogData);
+
+      const url = isEditMode ? `/api/blog/${editId}` : "/api/blog";
+      const method = isEditMode ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
-          // token: token, // The API expects token in headers
+          token: token,
         },
         body: JSON.stringify(blogData),
       });
 
+      const result = await response.json();
+
       if (response.ok) {
-        toast.success("بلاگ با موفقیت ایجاد شد");
-        setTitle("");
-        setDescription("");
-        setSeoTitle("");
-        setTags([]);
-        editor?.commands.clearContent();
+        toast.success(
+          isEditMode ? "بلاگ با موفقیت بروزرسانی شد" : "بلاگ با موفقیت ایجاد شد"
+        );
+        if (!isEditMode) {
+          setTitle("");
+          setDescription("");
+          setSeoTitle("");
+          setImages([]);
+          setTags([]);
+          editor?.commands.clearContent();
+          setWordCount(0);
+        }
+      } else {
+        toast.error(
+          result.message ||
+            (isEditMode ? "خطا در بروزرسانی بلاگ" : "خطا در ایجاد بلاگ")
+        );
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error creating blog:", error);
       toast.error("خطا در ایجاد بلاگ");
     }
   };
-  // Reset form
+
+  // Handler for saving images from modal
+  const handleImagesSelected = (mainImage: string, thumbnails: string[]) => {
+    setImages([mainImage, ...thumbnails]);
+    toast.success("تصاویر با موفقیت ذخیره شد");
+  };
 
   return (
-    <div className="max-w-4xl mx-6 py-16 lg:mx-auto  min-h-screen">
+    <div className="max-w-4xl mx-6 mt-28 md:mt-36 my-16 lg:mx-auto">
       <motion.h2
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="text-2xl md:text-4xl font-black my-4 text-center text-black"
       >
-        افزودن بلاگ جدید
+        {isEditMode ? "ویرایش بلاگ" : "افزودن بلاگ جدید"}
       </motion.h2>
       <motion.p
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="text-base md:text-xl font-medium mb-8 text-center text-gray-400"
+        className="text-base md:text-xl font-medium mb-8 text-center text-[#000]/50"
       >
-        در این قسمت میتوانید بلاگ جدید خود را ایجاد کنید
+        {isEditMode
+          ? "در این قسمت میتوانید بلاگ خود را ویرایش کنید"
+          : "در این قسمت میتوانید بلاگ جدید خود را ایجاد کنید"}
       </motion.p>
 
       <link
@@ -238,39 +371,44 @@ export default function AddBlogPage() {
       />
 
       <form onSubmit={handleSubmit} className="space-y-6" dir="rtl">
-        <div className="bg-white p-8 border border-gray-300 shadow-lg ">
-          <label className="block mb-4 text-xl text-center text-black">
-            <span className="text-black font-bold">قسمت سئو</span>
+        {/* SEO Section */}
+        <div className="backdrop-blur-sm p-8 border border-[#e5d8d0]/20 shadow-lg rounded-xl">
+          <label className="block mb-4 text-xl text-center text-gray-100">
+            <span className="text-[#000] font-bold">قسمت سئو</span>
           </label>
           <input
             type="text"
             value={seoTitle}
             onChange={(e) => setSeoTitle(e.target.value)}
-            className="w-full px-6 py-4 mb-1 text-black  border border-gray-300 bg-white focus:outline-none focus:border-black transition-all duration-300"
-            placeholder="عنوان سئو"
+            className="w-full px-6 py-4 mb-4 text-[#000] rounded-xl border border-[#e4e4e4] bg-white/80 focus:outline-none focus:border-[#000] transition-all duration-300"
+            placeholder="عنوان سئو *"
             required
           />
-          <input
+          <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-6 py-4 text-black rounded-xl border border-gray-300 bg-white focus:outline-none focus:border-black transition-all duration-300"
-            placeholder="توضیحات کوتاه"
+            className="w-full px-6 py-4 text-[#000] rounded-xl border border-[#e4e4e4] bg-white/80 focus:outline-none focus:border-[#000] transition-all duration-300 min-h-[100px]"
+            placeholder="توضیحات کوتاه *"
             required
           />
+
+          {/* Tags Section */}
           <div className="space-y-4 mt-5">
             <div className="flex gap-2">
               <input
                 type="text"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleAddTag()}
-                className="w-full px-6 py-4 text-black  border border-gray-300 bg-white outline-none focus:border-black"
+                onKeyPress={(e) =>
+                  e.key === "Enter" && (e.preventDefault(), handleAddTag())
+                }
+                className="w-full px-6 py-4 text-[#000] rounded-xl border border-[#e4e4e4] bg-white/80 outline-none focus:border-[#000]"
                 placeholder="برچسبها را وارد کنید..."
               />
               <button
                 type="button"
                 onClick={handleAddTag}
-                className="bg-black text-white px-6  hover:bg-gray-800 transition-all duration-300"
+                className="bg-gray-500 text-white px-6 rounded-xl hover:bg-gray-600 transition-all duration-300"
               >
                 <i className="fas fa-plus mt-1.5"></i>
               </button>
@@ -282,7 +420,7 @@ export default function AddBlogPage() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   key={index}
-                  className="bg-black text-white px-4 py-2 rounded-full flex items-center gap-2 font-medium"
+                  className="bg-[#d0e5d9] text-[#000] px-4 py-2 rounded-full flex items-center gap-2 font-medium"
                 >
                   {tag}
                   <button
@@ -297,24 +435,90 @@ export default function AddBlogPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white p-8 border border-gray-300 shadow-lg ">
-          <label className="block text-2xl font-bold text-black text-center mb-6">
+
+        {/* Image Upload Section with Modal */}
+        <div className="backdrop-blur-sm p-8 border border-[#e5d8d0]/20 shadow-lg rounded-xl">
+          <label className="block mb-4 text-xl text-center">
+            <span className="text-[#000] font-bold">
+              تصاویر بلاگ (حداکثر 5 تصویر)
+            </span>
+          </label>
+
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            disabled={images.length >= 5}
+            className="w-full bg-blue-500 text-white py-4 rounded-xl hover:bg-blue-600 transition-all duration-300 disabled:opacity-50"
+          >
+            آپلود تصاویر
+          </button>
+
+          {images.length > 0 && (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-4">
+              {images.map((image, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={image}
+                    alt={`تصویر ${index + 1}`}
+                    className="w-full h-24 object-cover rounded-lg"
+                  />
+                  <div className="absolute top-1 right-1 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                    {index === 0 ? "اصلی" : index + 1}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setImages((prev) => prev.filter((_, i) => i !== index))
+                    }
+                    className="absolute top-1 left-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-4 text-sm text-gray-600 space-y-1">
+            <p>• اولین تصویر به عنوان تصویر اصلی بلاگ استفاده میشود</p>
+            <p>
+              • برای درج تصاویر در محتوا، از منوی درج تصویر در نوار ابزار
+              استفاده کنید
+            </p>
+            <p>• فرمتهای مجاز: PNG, JPG, JPEG, GIF, WebP</p>
+            <p>• حداکثر حجم: 30 مگابایت</p>
+          </div>
+        </div>
+
+        {/* Image Upload Modal */}
+        <ImageUploadModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onImagesSelected={handleImagesSelected}
+          initialMainImage={images[0] || ""}
+          initialThumbnails={images.slice(1)}
+        />
+
+        {/* Content Section */}
+        <div className="backdrop-blur-sm p-8 border border-[#e5d8d0]/20 shadow-lg rounded-xl">
+          <label className="block text-2xl font-bold text-[#000] text-center mb-6">
             عنوان بلاگ
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-6 py-4 text-black  border border-gray-300 bg-white focus:outline-none focus:border-black transition-all duration-300"
-            placeholder="عنوان بلاگ"
+            className="w-full px-6 py-4 mb-6 text-[#000] rounded-xl border border-[#e4e4e4] bg-white/80 focus:outline-none focus:border-[#000] transition-all duration-300"
+            placeholder="عنوان بلاگ *"
+            required
           />
 
           <div>
-            <label className="block text-2xl font-bold text-black text-center my-6">
+            <label className="block text-2xl font-bold text-[#000] text-center my-6">
               محتوای بلاگ
             </label>
-            <div className="border border-gray-300  overflow-hidden shadow-lg">
-              <div className="bg-black p-4 border-b border-gray-300 flex flex-wrap gap-3">
+            <div className="border border-[#e5d8d0] rounded-2xl overflow-hidden shadow-lg">
+              <div className="bg-[#fff]/70 p-4 border-b border-[#e5d8d0] flex flex-wrap gap-3">
                 <MenuButton
                   onClick={() => editor?.chain().focus().toggleBold().run()}
                   active={editor?.isActive("bold")}
@@ -340,21 +544,48 @@ export default function AddBlogPage() {
                   <i className="fas fa-unlink"></i>
                 </MenuButton>
 
-                {[2, 3, 4, 5].map((level) => (
-                  <MenuButton
-                    key={level}
-                    onClick={() =>
-                      editor
-                        ?.chain()
-                        .focus()
-                        .toggleHeading({ level: level as 1 | 2 | 3 | 4 | 5 })
-                        .run()
-                    }
-                    active={editor?.isActive("heading", { level })}
-                  >
-                    H{level}
-                  </MenuButton>
-                ))}
+                {/* Heading Buttons */}
+                <MenuButton
+                  onClick={() => editor && toggleHeadingOnSelection(editor, 1)}
+                  active={editor?.isActive("heading", { level: 1 })}
+                >
+                  H1
+                </MenuButton>
+
+                <MenuButton
+                  onClick={() => editor && toggleHeadingOnSelection(editor, 2)}
+                  active={editor?.isActive("heading", { level: 2 })}
+                >
+                  H2
+                </MenuButton>
+
+                <MenuButton
+                  onClick={() => editor && toggleHeadingOnSelection(editor, 3)}
+                  active={editor?.isActive("heading", { level: 3 })}
+                >
+                  H3
+                </MenuButton>
+
+                <MenuButton
+                  onClick={() => editor && toggleHeadingOnSelection(editor, 4)}
+                  active={editor?.isActive("heading", { level: 4 })}
+                >
+                  H4
+                </MenuButton>
+
+                <MenuButton
+                  onClick={() => editor && toggleHeadingOnSelection(editor, 5)}
+                  active={editor?.isActive("heading", { level: 5 })}
+                >
+                  H5
+                </MenuButton>
+
+                <MenuButton
+                  onClick={() => editor && toggleHeadingOnSelection(editor, 6)}
+                  active={editor?.isActive("heading", { level: 6 })}
+                >
+                  H6
+                </MenuButton>
 
                 <div className="relative">
                   <MenuButton
@@ -432,13 +663,53 @@ export default function AddBlogPage() {
                 >
                   <i className="fas fa-list-ol"></i>
                 </MenuButton>
+
+                {/* Image Insertion Dropdown */}
+                {images.length > 0 && (
+                  <div className="relative">
+                    <select
+                      onChange={async (e) => {
+                        if (!e.target.value) return;
+                        const imageUrl = e.target.value;
+                        editor
+                          .chain()
+                          .focus()
+                          .setImage({ src: imageUrl })
+                          .run();
+                        e.target.value = "";
+                      }}
+                      className="px-3 py-2 text-sm border border-gray-300 rounded-md bg-white text-gray-700"
+                    >
+                      <option value="">درج تصویر</option>
+                      {images.map((image, index) => (
+                        <option key={index} value={image}>
+                          تصویر {index + 1} {index === 0 ? "(اصلی)" : ""}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
 
-              <div className="p-6 text-black bg-white">
+              <div className="p-6 text-black bg-white/90">
+                <style>{`
+                  .ProseMirror img {
+                    max-width: 150px;
+                    height: auto;
+                    border-radius: 8px;
+                    margin: 8px 0;
+                    cursor: pointer;
+                    display: block;
+                  }
+                  .ProseMirror img + * {
+                    margin-top: 16px;
+                  }
+
+                `}</style>
                 <EditorContent editor={editor} />
               </div>
 
-              <div className="mt-2 text-sm text-black text-right border-t border-gray-300 p-4 bg-white">
+              <div className="mt-2 text-sm text-[#000]/50 text-right border-t border-[#e5d8d0] p-4">
                 تعداد کلمات: {wordCount}
               </div>
             </div>
@@ -448,9 +719,9 @@ export default function AddBlogPage() {
         <div className="text-right pt-6">
           <button
             type="submit"
-            className="bg-black text-white px-8 py-2.5 border border-white hover:bg-gray-800 w-full  hover:shadow-lg transition-all duration-300 font-bold text-lg"
+            className="bg-transparent text-black px-8 py-2.5 border hover:bg-gray-50 w-full rounded-lg hover:shadow-lg transition-all duration-300 font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            انتشار بلاگ
+            {isEditMode ? "بروزرسانی" : "ثبت"}
           </button>
         </div>
       </form>
