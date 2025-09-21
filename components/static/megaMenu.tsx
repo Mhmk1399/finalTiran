@@ -167,7 +167,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({
                                         className="overflow-hidden"
                                       >
                                         <Link
-                                          href={`/shop?query=${thirdLevel.slug}`}
+                                          href={`/shop?query=${thirdLevel.cat_en_name}`}
                                           className="text-gray-600 pb-2 text-sm hover:text-black w-fit hover:pr-1 transition-all duration-200 block relative group"
                                         >
                                           <span className="inline-block">

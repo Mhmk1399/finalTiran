@@ -25,7 +25,7 @@ function ShopPage() {
       try {
         const response = await fetch("/api/category");
         const data = await response.json();
-        if (data.success && data.data) {
+         if (data.success && data.data) {
           setCategories(data.data);
         }
       } catch (error) {
@@ -35,7 +35,7 @@ function ShopPage() {
 
     fetchCategories();
   }, []);
-
+ 
   useEffect(() => {
     const query = searchParams.get("query");
 
@@ -44,10 +44,21 @@ function ShopPage() {
       const parentCategory = categories.find(
         (cat) => cat.cat_en_name === query
       );
+      
       if (parentCategory && parentCategory.children.length > 0) {
         setFilteredCategories(parentCategory.children);
       } else {
-        setFilteredCategories([]);
+        // Search for third level category
+        const thirdLevelCategory = categories
+          .flatMap(cat => cat.children)
+          .flatMap(child => child.children || [])
+          .find(grandChild => grandChild.cat_en_name === query);
+        
+        if (thirdLevelCategory) {
+          setFilteredCategories([thirdLevelCategory]);
+        } else {
+          setFilteredCategories([]);
+        }
       }
       setShowIntro(false);
     } else {
@@ -55,6 +66,7 @@ function ShopPage() {
       setFilteredCategories(categories);
     }
   }, [searchParams, categories]);
+ 
 
   // Filter categories based on selected category filters (using slugs)
   const displayCategories =
