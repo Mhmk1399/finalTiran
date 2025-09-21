@@ -1,7 +1,7 @@
 import SmoothScrollProvider from "@/components/global/smoothScrollProvider.tsx";
 import AboutContainer from "@/components/static/about-container";
 import { Metadata } from "next";
-
+ 
 export const metadata: Metadata = {
   title: "درباره ما | فروشگاه لباس تیران",
   description:
